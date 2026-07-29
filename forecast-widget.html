@@ -1,0 +1,644 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Growth Forecast — The Mission Automation</title>
+<style>
+  /* ------------------------------------------------------------------ *
+   * THEME — calm, professional. Dark by default; light via the OS pref. *
+   * Mirrors the intake app's palette so the widget reads as one brand.  *
+   * ------------------------------------------------------------------ */
+  :root {
+    --bg: #0a0e17;
+    --panel: #121826;
+    --panel-2: #1a2133;
+    --line: #253049;
+    --ink: #e8edf7;
+    --ink-dim: #8b98b4;
+    --ink-faint: #5b6885;
+    --accent: #4da3ff;
+    --gold: #f2c14e;
+    --green: #35d07f;
+    --amber: #f2a93b;
+    --red: #ff5c72;
+    --radius: 12px;
+    color-scheme: dark;
+  }
+  /* OS light preference — only when the host hasn't forced a theme via ?theme= */
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+      --bg: #f5f7fb;
+      --panel: #ffffff;
+      --panel-2: #f0f3f9;
+      --line: #dfe5f0;
+      --ink: #131a2a;
+      --ink-dim: #4a5773;
+      --ink-faint: #7b88a6;
+      --accent: #1f6fe0;
+      --gold: #b8860b;
+      --green: #1a9f5e;
+      --amber: #c47f14;
+      --red: #d63a52;
+      color-scheme: light;
+    }
+  }
+  /* Explicit ?theme=light forced by the host page — wins over the OS media query. */
+  :root[data-theme="light"] {
+    --bg: #f5f7fb; --panel: #ffffff; --panel-2: #f0f3f9; --line: #dfe5f0;
+    --ink: #131a2a; --ink-dim: #4a5773; --ink-faint: #7b88a6; --accent: #1f6fe0;
+    --gold: #b8860b; --green: #1a9f5e; --amber: #c47f14; --red: #d63a52; color-scheme: light;
+  }
+  /* ?embed=1 — nested under a host page that already provides the heading. */
+  .wrap.embed { padding: 4px 0 8px; }
+  .wrap.embed header.top { display: none; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: radial-gradient(1200px 600px at 80% -10%, color-mix(in srgb, var(--accent) 12%, var(--bg)) 0%, var(--bg) 55%);
+    color: var(--ink);
+    font: 14px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 18px 72px; }
+  header.top h1 { font-size: 21px; margin: 0; }
+  header.top .sub { color: var(--ink-dim); font-size: 13px; margin-top: 5px; max-width: 640px; }
+
+  .layout { display: grid; grid-template-columns: 384px 1fr; gap: 18px; align-items: start; margin-top: 20px; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; } }
+
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 17px; margin-bottom: 15px; }
+  .formcard { position: sticky; top: 16px; }
+  @media (max-width: 860px) { .formcard { position: static; } }
+
+  fieldset { border: none; border-top: 1px solid var(--line); margin: 0 0 6px; padding: 13px 0 2px; }
+  fieldset:first-of-type { border-top: none; padding-top: 0; }
+  legend { font-size: 11.5px; letter-spacing: .7px; text-transform: uppercase; color: var(--ink-faint); padding: 0; }
+  .grpnote { color: var(--ink-faint); font-size: 12px; margin: 5px 0 12px; }
+
+  .field { display: block; margin-bottom: 13px; }
+  .flabel { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
+  .req { color: var(--accent); margin-left: 3px; }
+  .finput { display: flex; align-items: center; background: color-mix(in srgb, var(--bg) 55%, var(--panel)); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .field.missing .finput { border-color: var(--red); }
+  .finput input, .finput select { flex: 1; width: 100%; background: transparent; border: none; color: var(--ink); padding: 9px 11px; font-size: 14px; outline: none; font-family: inherit; }
+  .finput select { cursor: pointer; }
+  .finput .affix { color: var(--ink-faint); padding: 0 4px 0 11px; font-size: 14px; }
+  .finput .affix.right { padding: 0 11px 0 4px; }
+  .fhelp { display: block; color: var(--ink-faint); font-size: 11.5px; margin-top: 5px; }
+  .formerr { color: var(--red); font-size: 12.5px; margin-top: 10px; }
+
+  .btn { cursor: pointer; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink);
+    border-radius: 9px; padding: 11px 15px; font-size: 14px; transition: filter .15s, border-color .15s;
+    text-decoration: none; display: inline-block; text-align: center; font-family: inherit; }
+  .btn:hover { filter: brightness(1.06); }
+  .btn:disabled { opacity: .55; cursor: default; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #04121f; font-weight: 700; }
+  .btn.gold { background: var(--gold); border-color: var(--gold); color: #241c02; font-weight: 700; }
+  .btn.wide { width: 100%; margin-top: 6px; }
+
+  .resultcol { min-width: 0; }
+  .placeholder { color: var(--ink-dim); text-align: center; padding: 46px 26px; }
+  .placeholder p { max-width: 460px; margin: 12px auto 0; }
+  .ph-emoji { font-size: 32px; }
+  .err { border-color: color-mix(in srgb, var(--red) 50%, var(--line)); }
+  .warn { border-color: color-mix(in srgb, var(--amber) 45%, var(--line)); }
+  .err h3, .warn h3 { margin: 0 0 8px; }
+  pre { background: color-mix(in srgb, var(--bg) 55%, var(--panel)); border: 1px solid var(--line); border-radius: 8px;
+    padding: 11px; overflow-x: auto; font-size: 12.5px; color: var(--ink-dim); white-space: pre-wrap; }
+
+  .section-title { font-size: 11.5px; letter-spacing: .8px; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 10px; }
+  .muted { color: var(--ink-faint); font-size: 12.5px; margin: 0 0 12px; }
+
+  .headline .hl-label { color: var(--ink-dim); font-size: 13px; }
+  .headline .hl-band { font-size: 25px; font-weight: 800; letter-spacing: .3px; margin: 8px 0 6px; word-spacing: 2px; }
+  .headline .hl-scale { color: var(--ink-faint); font-size: 12px; }
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 11px; margin-top: 15px; }
+  @media (max-width: 540px) { .tiles { grid-template-columns: 1fr; } }
+  .tile { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 12px 13px; display: flex; flex-direction: column; gap: 3px; }
+  .tile .tv { font-size: 19px; font-weight: 800; }
+  .tile .tl { color: var(--ink-faint); font-size: 11.5px; }
+
+  .fit-top { display: flex; justify-content: space-between; gap: 14px; flex-wrap: wrap; }
+  .fit-tier { display: flex; align-items: center; gap: 9px; margin-top: 3px; flex-wrap: wrap; }
+  .fit-biz { color: var(--ink-dim); font-size: 13px; }
+  .fit-nums { display: flex; gap: 16px; }
+  .fit-nums > div { display: flex; flex-direction: column; }
+  .fit-nums b { font-size: 15px; }
+  .fit-nums span { color: var(--ink-faint); font-size: 11px; }
+  .fit-rationale { margin: 12px 0 0; font-size: 13px; }
+
+  .pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--ink-dim); background: var(--panel-2); }
+  .pill.big { font-size: 12.5px; padding: 3px 11px; }
+  .pill.blue { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+  .pill.green { color: var(--green); border-color: color-mix(in srgb, var(--green) 45%, var(--line)); }
+  .pill.amber { color: var(--amber); border-color: color-mix(in srgb, var(--amber) 45%, var(--line)); }
+  .pill.red { color: var(--red); border-color: color-mix(in srgb, var(--red) 45%, var(--line)); }
+  .pill.grey { color: var(--ink-faint); }
+
+  .flags { margin: 4px 0 0; padding-left: 18px; }
+  .flags li { margin: 5px 0; font-size: 13px; }
+
+  .correction { border-top: 1px solid var(--line); padding: 10px 0; }
+  .correction:first-of-type { border-top: none; }
+  .corr-field { font-weight: 700; font-size: 13px; }
+  .corr-body { display: flex; flex-direction: column; gap: 2px; margin-top: 3px; font-size: 12.5px; }
+  .corr-why { color: var(--ink-dim); }
+
+  .provgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 540px) { .provgrid { grid-template-columns: 1fr; } }
+  .provcol { background: var(--panel-2); border: 1px solid var(--line); border-radius: 9px; padding: 10px; }
+  .provcol.assumed { border-color: color-mix(in srgb, var(--amber) 40%, var(--line)); }
+  .provhead { font-size: 11px; color: var(--ink-faint); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 7px; }
+  .provitem { font-size: 12.5px; margin: 3px 0; }
+  .provempty { color: var(--ink-faint); }
+  .conf-row { display: flex; align-items: center; gap: 8px; margin-top: 12px; }
+
+  .cta { border-color: color-mix(in srgb, var(--gold) 40%, var(--line)); background: color-mix(in srgb, var(--gold) 7%, var(--panel)); }
+  .cta h3 { margin: 0 0 6px; }
+  .cta p { margin: 0 0 12px; font-size: 13px; color: var(--ink-dim); }
+
+  .disclaimer { color: var(--ink-faint); font-size: 11.5px; line-height: 1.55; margin: 4px 2px 0; }
+
+  .spin { display: inline-block; width: 15px; height: 15px; border: 2px solid var(--line); border-top-color: var(--accent);
+    border-radius: 50%; animation: spin .8s linear infinite; vertical-align: -3px; margin-right: 8px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+<div class="wrap" id="tma-forecast" data-forecast-api="" data-booking-url="">
+  <header class="top">
+    <h1>Growth Forecast</h1>
+    <div class="sub">Tell us your numbers and we model the honest <b>range</b> of outcomes — judgment plus
+      maths, never a single guaranteed figure. If the inputs can't support an honest forecast, we say so.</div>
+  </header>
+
+  <div class="layout">
+    <form class="card formcard" id="form" novalidate>
+      <fieldset>
+        <legend>Your business</legend>
+        <label class="field" data-key="businessName">
+          <span class="flabel">Business name<b class="req">*</b></span>
+          <div class="finput"><input type="text" name="businessName" /></div>
+        </label>
+        <label class="field" data-key="whatTheyDo">
+          <span class="flabel">What does your business do?<b class="req">*</b></span>
+          <div class="finput"><input type="text" name="whatTheyDo" /></div>
+          <span class="fhelp">A plain sentence — e.g. “air-conditioning installation &amp; servicing for homes”.
+            This lets us reason about your business, not just crunch numbers.</span>
+        </label>
+        <label class="field" data-key="pricingModel">
+          <span class="flabel">How you charge</span>
+          <div class="finput">
+            <select name="pricingModel">
+              <option value="project">One-off projects</option>
+              <option value="retainer" selected>Retainer</option>
+              <option value="subscription">Subscription</option>
+              <option value="usage">Usage-based</option>
+            </select>
+          </div>
+          <span class="fhelp">Recurring models (retainer / subscription / usage) let us model lifetime value; one-off projects do not.</span>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Your economics</legend>
+        <p class="grpnote">If you don't track these in a CRM with a real sample behind them, they widen the range and
+          get flagged — honestly — as estimates.</p>
+        <label class="field" data-key="acv">
+          <span class="flabel">Average deal value<b class="req">*</b></span>
+          <div class="finput"><span class="affix">£</span><input type="number" name="acv" inputmode="decimal" min="1" /></div>
+          <span class="fhelp">Upfront revenue from one new client, before any recurring.</span>
+        </label>
+        <label class="field" data-key="margin">
+          <span class="flabel">Gross margin<b class="req">*</b></span>
+          <div class="finput"><input type="number" name="margin" inputmode="decimal" min="1" max="98" /><span class="affix right">%</span></div>
+          <span class="fhelp">Roughly what fraction of revenue is left after delivering the work.</span>
+        </label>
+        <label class="field" data-key="ltv">
+          <span class="flabel">Lifetime value multiple</span>
+          <div class="finput"><input type="number" name="ltv" inputmode="decimal" min="1" value="2" /><span class="affix right">×</span></div>
+          <span class="fhelp">Total value of a client as a multiple of the first deal. 1 = one-and-done, 2.5 = worth ~2.5× the first sale.</span>
+        </label>
+      </fieldset>
+
+      <fieldset>
+        <legend>The plan we'd model</legend>
+        <label class="field" data-key="monthly_spend">
+          <span class="flabel">Monthly ad / outreach budget<b class="req">*</b></span>
+          <div class="finput"><span class="affix">£</span><input type="number" name="monthly_spend" inputmode="decimal" min="0" /></div>
+          <span class="fhelp">The spend we'd put through the funnel each month.</span>
+        </label>
+        <label class="field" data-key="horizon_months">
+          <span class="flabel">Horizon</span>
+          <div class="finput"><input type="number" name="horizon_months" inputmode="decimal" min="3" max="36" value="12" /><span class="affix right">months</span></div>
+          <span class="fhelp">How far out to project. 12 months is typical.</span>
+        </label>
+      </fieldset>
+
+      <button class="btn primary wide" type="submit" id="run">Run my forecast</button>
+      <div class="formerr" id="formerr" hidden></div>
+    </form>
+
+    <main class="resultcol" id="result">
+      <div class="card placeholder">
+        <div class="ph-emoji">📈</div>
+        <p>Tell us what your business does and your numbers. We read the business, right-size the plan,
+          calibrate every input — flagging what we measured vs estimated — and model the honest range of outcomes.</p>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---- CONFIG (edit these two lines, or override at runtime) --------------
+  // Priority: window global  >  ?query param  >  data-attribute on #tma-forecast  >  default.
+  var ROOT = document.getElementById('tma-forecast');
+  var QS = new URLSearchParams(location.search);
+  function cfg(winKey, qsKey, dataAttr, fallback) {
+    if (window[winKey]) return String(window[winKey]).replace(/\/+$/, '');
+    var q = QS.get(qsKey);
+    if (q) return q.replace(/\/+$/, '');
+    var d = ROOT && ROOT.getAttribute(dataAttr);
+    if (d) return d.replace(/\/+$/, '');
+    return fallback;
+  }
+  // Where the Python prediction engine (Engine B) lives. Local dev default below;
+  // in production point this at the deployed engine URL (see EMBED.md).
+  var API_BASE = cfg('TMA_FORECAST_API', 'api', 'data-forecast-api', 'http://localhost:8791');
+  // Where "book a call" sends the prospect. Replace with your real scheduler link.
+  var BOOKING_URL = cfg('TMA_BOOKING_URL', 'booking', 'data-booking-url', 'https://themissionautomation.com/#book');
+  // Host-forced theme (?theme=dark|light) and embed mode (?embed=1 hides the widget's
+  // own header when the surrounding page already provides one). Both optional.
+  var THEME = QS.get('theme');
+  if (THEME === 'dark' || THEME === 'light') document.documentElement.setAttribute('data-theme', THEME);
+  if (QS.get('embed') === '1') {
+    if (ROOT) ROOT.classList.add('embed');
+    // Kill body min-height:100vh in embed mode — a host that auto-sizes the iframe
+    // to body height would otherwise feed back into 100vh and ratchet the height up.
+    document.body.style.minHeight = '0';
+  }
+
+  var form = document.getElementById('form');
+  var out = document.getElementById('result');
+  var runBtn = document.getElementById('run');
+  var formErr = document.getElementById('formerr');
+
+  // Report our content height to a host page so it can size the iframe with no
+  // inner scrollbar. Works same-origin AND cross-origin (postMessage), so the
+  // widget can be hosted on its own domain. Fires on load, on any content/size
+  // change, and after each render. Harmless when not embedded (no listener).
+  function reportHeight() {
+    try { parent.postMessage({ type: 'tma-forecast-height', height: document.documentElement.scrollHeight }, '*'); }
+    catch (e) {}
+  }
+  try { if ('ResizeObserver' in window) new ResizeObserver(reportHeight).observe(document.body); } catch (e) {}
+  window.addEventListener('load', reportHeight);
+
+  // Pre-warm the engine on load so a sleeping free-tier host (Render ~50s cold
+  // start) is already waking by the time the visitor hits "Run". Fire-and-forget.
+  try { fetch(API_BASE + '/health', { method: 'GET' }).catch(function () {}); } catch (e) {}
+
+  // ---- formatting (mirrors the intake app) --------------------------------
+  function money(v, signed) {
+    if (v == null || Number.isNaN(v)) return 'n/a';
+    var sign = v < 0 ? '−' : signed ? '+' : '';
+    return sign + '£' + Math.abs(Math.round(v)).toLocaleString('en-GB');
+  }
+  function pct(v) { return Math.round(v * 100) + '%'; }
+  function band(p, signed) {
+    // ALWAYS a range — p10 · p50 (most likely) · p90. Never collapses to one number.
+    return money(p ? p.p10 : null, signed) + '  ·  ' + money(p ? p.p50 : null, signed) + '  ·  ' + money(p ? p.p90 : null, signed);
+  }
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // Human labels for the engine's calibrated input keys (mirrors fields.ts).
+  var INPUT_LABELS = {
+    cost_per_lead: 'Cost per lead', cost_per_lead_gbp: 'Cost per lead',
+    lead_to_call: 'Lead → call booked', call_show: 'Call show-up rate', show_to_close: 'Show → close',
+    baseline_deals_per_month: 'Baseline deals / month',
+    deal_value: 'Deal value', deal_value_gbp: 'Deal value',
+    gross_margin: 'Gross margin', gross_margin_pct: 'Gross margin',
+    monthly_recurring: 'Monthly recurring', monthly_recurring_gbp: 'Monthly recurring',
+    retention_months: 'Retention (months)', ltv: 'Lifetime value', acv: 'Deal value', margin: 'Gross margin'
+  };
+  var AI_PROV_LABELS = {
+    client: 'You measured it',
+    ai_inferred: 'AI estimate (from your business type)',
+    needs_diagnosis: 'We measure it on the call'
+  };
+  var TIER_LABELS = { small_build: 'Small build', core: 'Core build', custom: 'Custom', not_a_fit: 'Not a fit' };
+  function inLabel(k) { return INPUT_LABELS[k] || String(k).replace(/_gbp$|_pct$/, '').replace(/_/g, ' '); }
+
+  // ---- request ------------------------------------------------------------
+  function ServiceDown(m) { this.message = m; } // network / non-JSON => engine unreachable
+  function AiOffline(m) { this.message = m; }   // 503 => AI calibration layer offline
+  function Refused(body) { this.refusal = body; } // 422 refused:true => first-class honest refusal
+
+  function buildBody() {
+    var g = function (n) { return form.elements[n] ? form.elements[n].value : ''; };
+    var num = function (n, dflt) { var v = Number(g(n)); return Number.isFinite(v) ? v : dflt; };
+    var spend = Number(g('monthly_spend'));
+    return {
+      answers: {
+        businessName: g('businessName').trim(),
+        whatTheyDo: g('whatTheyDo').trim(),
+        pricingModel: g('pricingModel') || 'retainer',
+        acv: Number(g('acv')),
+        margin: Number(g('margin')),
+        ltv: Number(g('ltv') || 1),
+        monthly_spend: spend
+      },
+      // TOP-LEVEL too: the engine's validate_plan() reads monthly_spend from the
+      // payload root (not from answers) and that is the spend the headline models.
+      // Sending it here makes it the prospect's STATED budget (honestly labelled),
+      // not a defaulted £3000 assumption.
+      monthly_spend: spend,
+      horizon_months: num('horizon_months', 12)
+    };
+  }
+
+  function requestForecast(body) {
+    return fetch(API_BASE + '/forecast/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(function (res) {
+      return res.json().catch(function () {
+        // Non-JSON body => the proxy/host couldn't reach a live engine.
+        throw new ServiceDown('forecast service unreachable');
+      }).then(function (j) {
+        if (res.status === 503) throw new AiOffline((j && j.error) || 'AI calibration is offline');
+        if (res.status === 422 && j && j.refused && j.refusal) throw new Refused(j.refusal);
+        if (!res.ok || !j || !j.ok) throw new Error((j && j.error) || ('forecast failed (HTTP ' + res.status + ')'));
+        return j;
+      });
+    }, function () {
+      // fetch itself rejected => the network never reached the host (or it's asleep).
+      throw new ServiceDown('forecast service unreachable');
+    });
+  }
+
+  // ---- validation ---------------------------------------------------------
+  function validate() {
+    var el = form.elements;
+    var missing = [];
+    var required = ['businessName', 'whatTheyDo', 'acv', 'margin', 'monthly_spend'];
+    required.forEach(function (k) { if (!String(el[k].value).trim()) missing.push(k); });
+
+    var n = function (k) { return Number(el[k].value); };
+    var bad = [];
+    if (String(el.acv.value).trim() && !(n('acv') > 0)) bad.push('acv');
+    if (String(el.margin.value).trim() && !(n('margin') >= 1 && n('margin') <= 98)) bad.push('margin');
+    if (String(el.ltv.value).trim() && !(n('ltv') >= 1)) bad.push('ltv');
+    if (String(el.monthly_spend.value).trim() && !(Number.isFinite(n('monthly_spend')) && n('monthly_spend') >= 0)) bad.push('monthly_spend');
+    if (String(el.horizon_months.value).trim() && !(n('horizon_months') >= 3 && n('horizon_months') <= 36)) bad.push('horizon_months');
+
+    // paint
+    Array.prototype.forEach.call(form.querySelectorAll('.field'), function (f) {
+      var k = f.getAttribute('data-key');
+      f.classList.toggle('missing', missing.indexOf(k) >= 0 || bad.indexOf(k) >= 0);
+    });
+    if (missing.length) { showFormErr('Fill in the highlighted fields to run.'); return false; }
+    if (bad.length) { showFormErr('Check the highlighted numbers — deal value must be positive, margin 1–98%, budget can’t be negative, horizon 3–36 months.'); return false; }
+    showFormErr('');
+    return true;
+  }
+  function showFormErr(msg) { formErr.textContent = msg; formErr.hidden = !msg; }
+
+  // ---- render helpers -----------------------------------------------------
+  function card(cls, html) { return '<div class="card ' + cls + '">' + html + '</div>'; }
+
+  function ctaCard(title, blurb) {
+    return card('cta',
+      '<h3>' + esc(title) + '</h3>' +
+      '<p>' + esc(blurb) + '</p>' +
+      '<a class="btn gold wide" href="' + esc(BOOKING_URL) + '" target="_blank" rel="noopener noreferrer">Book a call →</a>');
+  }
+
+  // Loading — upgrades to an honest "waking up" note if the engine is cold.
+  function renderLoading() {
+    out.innerHTML = card('placeholder',
+      '<p><span class="spin"></span>Reading your business, right-sizing the plan, and running the model…</p>' +
+      '<p class="muted" id="warming" hidden>The forecast engine runs on free hosting and may be waking from sleep — this can take up to a minute on the first run of the day.</p>');
+  }
+
+  // Service unreachable / cold — honest, with retry. NEVER a fabricated number.
+  function renderServiceDown() {
+    out.innerHTML =
+      card('err',
+        '<h3>The forecast engine isn’t responding</h3>' +
+        '<p>It may be waking from sleep (free hosting), or it’s offline right now. Either way we won’t invent a number — give it a moment and try again.</p>' +
+        '<button class="btn wide" id="retry" type="button">Try again</button>') +
+      ctaCard('Rather just talk it through?', 'Book a call and we’ll run your numbers live with you.');
+    var r = document.getElementById('retry');
+    if (r) r.addEventListener('click', function () { form.requestSubmit ? form.requestSubmit() : form.dispatchEvent(new Event('submit', { cancelable: true })); });
+  }
+
+  function renderAiOffline(msg) {
+    out.innerHTML =
+      card('err',
+        '<h3>The judgment layer is offline</h3>' +
+        '<p>The AI that reads your business can’t run right now, so rather than show you a blind number we’re telling you straight.' +
+        (msg ? ' <span class="muted">(' + esc(msg) + ')</span>' : '') + '</p>') +
+      ctaCard('Let’s do it together', 'Book a call and we’ll produce your forecast live, no engine required.');
+  }
+
+  // Refusal — a FIRST-CLASS honest outcome, not an error. The engine declined to
+  // turn a questionable input into a confident-looking number.
+  function renderRefusal(rf) {
+    var html = card('warn',
+      '<div class="section-title">We’re not going to show you a number we don’t trust</div>' +
+      '<p><b>' + esc(rf.headline) + '</b> That’s deliberate: this engine refuses to turn a questionable input ' +
+      'into a confident-looking forecast. A refusal here is the system working, not failing.</p>');
+
+    if (rf.reasons && rf.reasons.length) {
+      html += card('',
+        '<div class="section-title">What didn’t add up</div>' +
+        rf.reasons.map(function (r) {
+          return '<div class="correction"><div class="corr-field">' + esc(inLabel(r.field)) + '</div>' +
+            '<div class="corr-body"><span class="corr-why">' + esc(r.problem) + '</span></div></div>';
+        }).join(''));
+    }
+    if (rf.you_must_supply && rf.you_must_supply.length) {
+      html += card('',
+        '<div class="section-title">What we need from you to forecast</div>' +
+        '<ul class="flags">' + rf.you_must_supply.map(function (f) { return '<li>' + esc(f.label) + '</li>'; }).join('') + '</ul>');
+    }
+    if (rf.we_measure_on_the_call && rf.we_measure_on_the_call.length) {
+      html += card('',
+        '<div class="section-title">What we’d measure on the diagnosis call</div>' +
+        '<ul class="flags">' + rf.we_measure_on_the_call.map(function (f) { return '<li>' + esc(f.label) + '</li>'; }).join('') + '</ul>');
+    }
+    html += ctaCard('Let’s get the numbers we can stand behind',
+      'Fix the flagged inputs and run it again, or book the call and we’ll measure the missing pieces together — then the forecast rests on data, not guesses.');
+    out.innerHTML = html;
+  }
+
+  // Success — always a RANGE, provenance, caveats honoured, never a bare certainty.
+  function renderResult(res) {
+    var ai = res.ai || {};
+    var r = res.report || {};
+    var fit = ai.engagement_fit || res.engagement_fit || {};
+    var caveats = r.confidence_caveats || [];
+    var hasCaveats = caveats.length > 0;
+    var notAFit = (fit.tier === 'not_a_fit') || r.not_a_fit;
+    var guessed = {};
+    (r.guessed_inputs || []).forEach(function (k) { guessed[k] = true; });
+
+    var html = '';
+
+    // Engagement fit
+    html += card('' + (notAFit ? 'warn' : ''),
+      '<div class="fit-top"><div>' +
+        '<div class="section-title">How we’d run this</div>' +
+        '<div class="fit-tier"><span class="pill ' + (notAFit ? 'red' : 'blue') + ' big">' + esc(TIER_LABELS[fit.tier] || fit.tier || '—') + '</span>' +
+        '<span class="fit-biz">' + esc(ai.business_type || '') + '</span></div></div>' +
+        (notAFit ? '' :
+          '<div class="fit-nums">' +
+            '<div><b>' + money(fit.recommended_build_fee_gbp) + '</b><span>build</span></div>' +
+            '<div><b>' + money(fit.recommended_monthly_fee_gbp) + '/mo</b><span>retainer</span></div>' +
+            '<div><b>' + money(fit.recommended_monthly_spend_gbp) + '/mo</b><span>ad spend</span></div>' +
+          '</div>') +
+      '</div>' +
+      (fit.rationale ? '<p class="fit-rationale">' + esc(fit.rationale) + '</p>' : ''));
+
+    // Caveats — the range rests on inferred, not measured, economics.
+    if (hasCaveats) {
+      html += card('warn',
+        '<div class="section-title">Why this range rests on assumptions</div>' +
+        '<p class="muted">These numbers lean on economics we <b>inferred</b>, not ones you’ve measured. ' +
+        'Treat the range as directional until we verify these on the call.</p>' +
+        '<ul class="flags">' + caveats.map(function (c) { return '<li>' + esc(c) + '</li>'; }).join('') + '</ul>');
+    }
+
+    if (notAFit) {
+      html += card('warn',
+        '<div class="section-title">Our honest read</div>' +
+        '<p><b>We don’t think we can grow this profitably right now — so we’re telling you, not selling you.</b> ' +
+        'The economics as described don’t clear even a small build. That’s a real answer, and usually a signal ' +
+        'to change the model (pricing, recurring revenue) before spending on acquisition.</p>');
+    } else {
+      var pb = r.payback_month || {};
+      var loseColor = r.p_lose_money > 0.3 ? 'var(--red)' : 'var(--ink)';
+      // HONESTY RULE: never present a probability as a BARE certainty. A 0% chance of
+      // losing money or a 100% chance of clearing the fee is a modelling artefact of
+      // unverified inputs, not a promise — so any time the model is leaning on
+      // assumptions (confidence_caveats OR honesty_flags), OR the number rounds to an
+      // extreme (>=99.5% / <=0.5%), we tie it to a footnote instead of stating it flat.
+      var hasFlags = !!(ai.honesty_flags && ai.honesty_flags.length);
+      var leansOnAssumptions = hasCaveats || hasFlags;
+      var feeExtreme  = r.p_beat_our_fee >= 0.995;
+      var loseExtreme = r.p_lose_money <= 0.005;
+      var qualifyFee  = leansOnAssumptions || feeExtreme;
+      var qualifyLose = leansOnAssumptions || loseExtreme;
+      var footNote = '*Modelled on assumptions we haven’t verified with you yet — a probability under this ' +
+        'model, not a guarantee. We measure the real inputs on the call.';
+      html += card('headline',
+        '<div class="hl-label">Net uplift over ' + esc(r.horizon_months) + ' months with this plan, after our fee and your ad spend</div>' +
+        '<div class="hl-band">' + band(r.uplift_vs_no_intervention, true) + '</div>' +
+        '<div class="hl-scale">P10 · P50 (most likely) · P90 — the control is “change nothing”, worth £0.</div>' +
+        '<div class="tiles">' +
+          '<div class="tile"><span class="tv" style="color:var(--green)">' + pct(r.p_beat_our_fee) + (qualifyFee ? '*' : '') + '</span>' +
+            '<span class="tl">chance you clear our fee' + (qualifyFee ? ' — modelled, not promised' : '') + '</span></div>' +
+          '<div class="tile"><span class="tv" style="color:' + loseColor + '">' + pct(r.p_lose_money) + (qualifyLose ? '*' : '') + '</span>' +
+            '<span class="tl">chance you lose money' + (qualifyLose ? ' — modelled, not promised' : '') + '</span></div>' +
+          '<div class="tile"><span class="tv">' + (pb.p50_among_those_that_pay_back != null ? 'mo ' + Math.round(pb.p50_among_those_that_pay_back) : '—') + '</span>' +
+            '<span class="tl">typical payback (' + pct(pb.share_that_pay_back || 0) + ' of runs)</span></div>' +
+        '</div>' +
+        ((qualifyFee || qualifyLose) ? '<p class="muted" style="margin:12px 0 0">' + footNote + '</p>' : ''));
+    }
+
+    // What we adjusted
+    if (ai.input_corrections && ai.input_corrections.length) {
+      html += card('',
+        '<div class="section-title">What we adjusted (and why)</div>' +
+        '<p class="muted">Where a number looked off for your business type, we modelled a more realistic version — in the open, never silently.</p>' +
+        ai.input_corrections.map(function (c) {
+          return '<div class="correction"><div class="corr-field">' + esc(inLabel(c.field)) + '</div>' +
+            '<div class="corr-body"><span>you said: ' + esc(c.client_said) + '</span>' +
+            '<span>we modelled: ' + esc(c.we_modelled) + '</span>' +
+            '<span class="corr-why">' + esc(c.why) + '</span></div></div>';
+        }).join(''));
+    }
+
+    // Provenance — measured vs AI-estimated vs need-to-measure
+    var byProv = { client: [], ai_inferred: [], needs_diagnosis: [] };
+    var provInputs = (res.provenance && res.provenance.inputs) || {};
+    Object.keys(provInputs).forEach(function (k) {
+      var tag = provInputs[k]; (byProv[tag] || (byProv[tag] = [])).push(k);
+    });
+    html += card('',
+      '<div class="section-title">What we measured, estimated, and still need to measure</div>' +
+      '<div class="provgrid">' +
+        ['client', 'ai_inferred', 'needs_diagnosis'].map(function (tag) {
+          var items = byProv[tag] || [];
+          return '<div class="provcol' + (tag === 'needs_diagnosis' ? ' assumed' : '') + '">' +
+            '<div class="provhead">' + esc(AI_PROV_LABELS[tag]) + '</div>' +
+            (items.length ? items.map(function (it) { return '<div class="provitem">' + esc(inLabel(it)) + (guessed[it] ? ' <span class="pill amber">estimate</span>' : '') + '</div>'; }).join('')
+              : '<div class="provempty">—</div>') + '</div>';
+        }).join('') +
+      '</div>' +
+      (ai.confidence ? '<div class="conf-row"><span class="muted">Overall confidence in this calibration:</span>' +
+        '<span class="pill ' + (ai.confidence === 'high' ? 'green' : ai.confidence === 'medium' ? 'amber' : 'grey') + '">' + esc(ai.confidence) + '</span></div>' : ''));
+
+    // Honesty flags
+    if (ai.honesty_flags && ai.honesty_flags.length) {
+      html += card('',
+        '<div class="section-title">Read this before you trust the numbers</div>' +
+        '<ul class="flags">' + ai.honesty_flags.map(function (f) { return '<li>' + esc(f) + '</li>'; }).join('') + '</ul>');
+    }
+
+    // CTA + disclaimer
+    html += ctaCard(
+      notAFit ? 'Let’s talk it through' : 'See the whole system, live',
+      notAFit ? 'Even if the numbers aren’t there yet, a quick call shows exactly what we build and whether it can change the picture.'
+              : 'That was your numbers. Book a call and we’ll walk the full system end to end and pressure-test this range with you.');
+
+    html += '<p class="disclaimer">This is AI-calibrated then simulated — an honest range conditional on your inputs and the ' +
+      'plan above, <b>not</b> a trained-model prediction and <b>not</b> a guarantee. Inputs marked “AI estimate” are our ' +
+      'reasoned priors from your business type, not measured facts. Every run is logged so the engine’s accuracy can be scored ' +
+      'as real outcomes arrive.</p>';
+
+    out.innerHTML = html;
+  }
+
+  // ---- submit -------------------------------------------------------------
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (!validate()) return;
+    runBtn.disabled = true;
+    runBtn.textContent = 'Reading your business…';
+    renderLoading();
+    var warmTimer = setTimeout(function () {
+      var w = document.getElementById('warming'); if (w) w.hidden = false;
+    }, 5000);
+
+    requestForecast(buildBody()).then(function (res) {
+      renderResult(res);
+    }).catch(function (err) {
+      if (err instanceof Refused) renderRefusal(err.refusal);
+      else if (err instanceof AiOffline) renderAiOffline(err.message);
+      else if (err instanceof ServiceDown) renderServiceDown();
+      else {
+        out.innerHTML = card('err', '<h3>Couldn’t run the forecast</h3><p>' + esc(err && err.message ? err.message : String(err)) + '</p>') +
+          ctaCard('Rather just talk it through?', 'Book a call and we’ll run your numbers live with you.');
+      }
+    }).then(function () {
+      clearTimeout(warmTimer);
+      runBtn.disabled = false;
+      runBtn.textContent = 'Run my forecast';
+    });
+  });
+})();
+</script>
+</body>
+</html>
