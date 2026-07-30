@@ -338,6 +338,21 @@ p{margin:0}
 .pill.nurture{background:rgba(77,163,255,.12);color:#a9d3ff;box-shadow:0 0 0 1px rgba(77,163,255,.3) inset}
 .pill.review{background:rgba(129,74,200,.16);color:#e2c6ff;box-shadow:0 0 0 1px rgba(129,74,200,.4) inset}
 
+/* ---------- forecast: driver bars + caveat list ------------------------- */
+.drv{display:flex;align-items:center;gap:12px;padding:9px 0;
+  border-bottom:1px solid var(--line-soft);font-size:13.5px}
+.drv:last-child{border-bottom:0}
+.drv .dlab{flex:1;min-width:0;color:var(--muted)}
+.drv .dbar{flex:0 0 116px;height:7px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.drv .dbar i{display:block;height:100%;border-radius:99px}
+.drv .dval{flex:none;width:48px;text-align:right;font-weight:600;
+  font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;color:#fff}
+
+ul.notes{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+ul.notes li{position:relative;padding-left:18px;font-size:13.5px;line-height:1.6;color:var(--muted)}
+ul.notes li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;
+  border-radius:2px;background:var(--warn);opacity:.85}
+
 /* week selector */
 .weeksel{display:inline-flex;gap:6px;padding:5px;border-radius:13px;background:rgba(255,255,255,.04);
   box-shadow:0 0 0 1px var(--line) inset}

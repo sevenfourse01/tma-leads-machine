@@ -29,9 +29,10 @@
   <div class="wrap">
     <div class="sect-head rv" style="align-items:flex-start">
       <span class="eyebrow"><span class="tick"></span>Demo 01 · Predict</span>
-      <h2>Seven questions.<br>Then we show you what we see.</h2>
+      <h2>Seven questions.<br>Then we run four thousand simulations.</h2>
       <p class="lead">Rough answers are fine — the engine works in ranges, not false precision.
-      The full version runs ~90 questions on a diagnosis call; this is the taster.</p>
+      This runs the same maths as our production forecaster, in your browser: Beta-PERT inputs,
+      4,000 Monte Carlo draws, and a result that is allowed to come out negative.</p>
     </div>
 
     <div class="persona-bar rv">
@@ -54,7 +55,11 @@
         <input type="number" id="qClose" min="1" max="95" step="1">
       </div>
       <div class="q">
-        <div class="qlabel"><span class="qnum">4</span>How fast does a new enquiry usually get a reply?</div>
+        <div class="qlabel"><span class="qnum">4</span>What do you spend on marketing each month?</div>
+        <div class="prefix"><span>£</span><input type="number" id="qSpend" min="0" step="100"></div>
+      </div>
+      <div class="q">
+        <div class="qlabel"><span class="qnum">5</span>How fast does a new enquiry usually get a reply?</div>
         <div class="seg" id="qResp">
           <button data-v="u5">Under 5 min</button>
           <button data-v="hour">Within an hour</button>
@@ -63,34 +68,25 @@
         </div>
       </div>
       <div class="q">
-        <div class="qlabel"><span class="qnum">5</span>How many times do you chase an enquiry that goes quiet?</div>
+        <div class="qlabel"><span class="qnum">6</span>How many times do you chase an enquiry that goes quiet?</div>
         <div class="seg" id="qFu">
           <button data-v="f01" class="on">0–1 times</button>
           <button data-v="f23">2–3 times</button>
           <button data-v="f4">4+ times</button>
         </div>
       </div>
-      <div class="q">
-        <div class="qlabel"><span class="qnum">6</span>Do you ever re-contact old enquiries that went cold?</div>
-        <div class="seg" id="qReact">
-          <button data-v="no" class="on">No</button>
-          <button data-v="some">Occasionally</button>
-          <button data-v="yes">Yes, systematically</button>
-        </div>
-      </div>
       <div class="q" style="grid-column:1/-1">
-        <div class="qlabel"><span class="qnum">7</span>Where do you want to be in 12 months?</div>
-        <div class="seg" id="qGoal">
-          <button data-v="25">+25% revenue</button>
-          <button data-v="50" class="on">+50% revenue</button>
-          <button data-v="100">Double it</button>
-          <button data-v="0">Not sure yet</button>
+        <div class="qlabel"><span class="qnum">7</span>After the first sale, do customers keep paying you?</div>
+        <div class="seg" id="qRepeat">
+          <button data-v="oneoff" class="on">One-off, mostly</button>
+          <button data-v="repeat">They come back now and then</button>
+          <button data-v="retainer">Ongoing / monthly</button>
         </div>
       </div>
     </div>
 
     <div class="rv" style="margin-top:26px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
-      <button class="btn primary big" id="runBtn">Run the analysis →</button>
+      <button class="btn primary big" id="runBtn">Run 4,000 simulations →</button>
       <span class="dim" style="font-size:13.5px">Runs in your browser · nothing is sent anywhere</span>
     </div>
   </div>
@@ -126,21 +122,42 @@
       <p class="lead" id="repSummary"></p>
     </div>
 
-    <div style="margin-top:14px">
-      <h3 style="margin-bottom:16px">Key opportunities</h3>
-      <div class="cards3" id="repOps"></div>
+    <!-- distribution of every simulated outcome -->
+    <div class="panel edge pad" style="margin-top:8px">
+      <div style="display:flex;gap:14px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px">
+        <h3>Every outcome we simulated</h3>
+        <span class="dim" style="font-size:13.5px">4,000 twelve-month runs · red is where you lose money</span>
+      </div>
+      <div id="repDist"></div>
     </div>
 
-    <div class="aha edge-violet edge" style="margin-top:34px" id="repAha"></div>
+    <div class="kpis" id="repProbs" style="margin-top:16px"></div>
 
-    <div style="margin-top:34px">
-      <h3 style="margin-bottom:16px">Risks worth pricing in</h3>
-      <div class="cards3" id="repRisks"></div>
+    <div class="aha edge-violet edge hide" style="margin-top:24px" id="repWarn"></div>
+
+    <div class="split" style="margin-top:34px">
+      <div>
+        <h3 style="margin-bottom:14px">What's actually driving your answer</h3>
+        <div class="panel pad" id="repDrivers"></div>
+        <p class="dim" style="font-size:13px;margin-top:10px">Rank correlation of each input against
+        the outcome, across all 4,000 runs. A number we assumed sitting at the top of this list is a
+        warning, not a result.</p>
+      </div>
+      <div>
+        <h3 style="margin-bottom:14px">Whose number is whose</h3>
+        <div class="drawer" id="repProv"></div>
+      </div>
     </div>
 
     <div style="margin-top:34px">
-      <h3 style="margin-bottom:16px">Recommended next steps</h3>
-      <div class="steps" id="repSteps"></div>
+      <h3 style="margin-bottom:16px">What each fix is worth, re-simulated</h3>
+      <div class="steps" id="repLevers"></div>
+    </div>
+
+    <div class="panel pad" style="margin-top:28px">
+      <h4 style="margin-bottom:10px">What this model can't do</h4>
+      <ul class="notes" id="repNotes"></ul>
+      <p class="dim mono" style="font-size:12px;margin-top:12px;line-height:1.6" id="repMethod"></p>
     </div>
 
     <div class="panel edge pad" style="margin-top:40px;display:flex;gap:18px;align-items:center;flex-wrap:wrap">
@@ -150,12 +167,33 @@
         your actual funnel, spend and capacity — on a call, before you pay anything.</p>
       </div>
       <a href="#" data-book class="btn primary big">Book the diagnosis call</a>
-      <button class="btn ghost" id="rerunBtn">Change my answers</button>
+      <button class="btn ghost" data-rerun>Change my answers</button>
     </div>
 
     <div style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap">
       <a class="btn ghost" href="build.html">Next demo: see your Build →</a>
       <a class="btn ghost" href="grow.html">Or jump to Grow →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REFUSAL ============ -->
+<section id="refuseStage" class="hide" style="padding-top:64px">
+  <div class="wrap">
+    <div class="sect-head" style="align-items:flex-start">
+      <span class="eyebrow"><span class="tick"></span>No forecast</span>
+      <h2>We're not going to give you a number.</h2>
+      <p class="lead">The engine refused this one. That is a feature: on these inputs there is no
+      honest distribution to report, and inventing a confident figure would be the easiest — and
+      worst — thing we could do.</p>
+    </div>
+    <div class="panel edge pad">
+      <h4 style="margin-bottom:10px">Why it refused</h4>
+      <ul class="notes" id="refuseWhy"></ul>
+    </div>
+    <div style="margin-top:26px;display:flex;gap:14px;flex-wrap:wrap">
+      <button class="btn primary" data-rerun>Change my answers</button>
+      <a href="#" data-book class="btn ghost">Talk it through instead</a>
     </div>
   </div>
 </section>
@@ -166,6 +204,7 @@
 </div></footer>
 
 <script src="shared.js"></script>
+<script src="engine.js"></script>
 <script src="predict.js"></script>
 </body>
 </html>
