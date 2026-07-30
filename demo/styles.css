@@ -26,6 +26,7 @@
   --r-lg:28px;
   --maxw:1180px;
   --ease:cubic-bezier(.22,.61,.36,1);
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -72,13 +73,17 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.02em}
 p{margin:0}
 .lead{color:var(--muted);font-size:clamp(16px,1.35vw,19px);line-height:1.62;max-width:62ch}
 .dim{color:var(--dim)}
-.mono{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
+.mono{font-family:var(--mono);
   font-size:12.5px;letter-spacing:0}
 
-.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;font-weight:600;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
-.eyebrow .tick{width:5px;height:5px;border-radius:50%;background:var(--blue);
-  box-shadow:0 0 0 4px rgba(77,163,255,.16)}
+/* the site's instrument label, matched exactly (../styles.css) */
+.eyebrow{display:flex;align-items:center;gap:11px;font-family:var(--mono);
+  font-size:10.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--dim)}
+.eyebrow .tick{width:5px;height:5px;border-radius:1px;background:var(--blue);flex:none;
+  box-shadow:0 0 0 4px rgba(77,163,255,.14)}
+.eyebrow::after{content:"";flex:1;height:1px;min-width:24px;
+  background:linear-gradient(90deg,var(--line),transparent)}
 
 /* ---------- nav -------------------------------------------------------- */
 .nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
@@ -284,7 +289,7 @@ p{margin:0}
 /* execution log */
 .exec-log{background:#05070a;border-radius:var(--r);box-shadow:0 0 0 1px var(--line) inset;
   padding:16px 18px;min-height:280px;max-height:430px;overflow-y:auto}
-.exec-log .lg{display:flex;gap:10px;padding:5px 0;font-family:ui-monospace,Menlo,Consolas,monospace;
+.exec-log .lg{display:flex;gap:10px;padding:5px 0;font-family:var(--mono);
   font-size:12px;line-height:1.5;color:var(--muted);opacity:0;transform:translateY(4px);
   animation:login .3s var(--ease) forwards}
 .exec-log .lg .t{color:var(--dim);flex:none}   /* was .7 alpha = 3.9:1 */
@@ -310,8 +315,8 @@ p{margin:0}
 .codebox{background:#05070a;border-radius:var(--r);box-shadow:0 0 0 1px var(--line) inset;overflow:hidden}
 .codebox .cb-head{display:flex;align-items:center;gap:8px;padding:11px 16px;border-bottom:1px solid var(--line-soft)}
 .codebox .cb-head .cdot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.14)}
-.codebox .cb-head .cname{font-size:12px;color:var(--dim);font-family:ui-monospace,Menlo,monospace;margin-left:6px}
-.codebox pre{margin:0;padding:18px;overflow-x:auto;font-family:ui-monospace,Menlo,Consolas,monospace;
+.codebox .cb-head .cname{font-size:12px;color:var(--dim);font-family:var(--mono);margin-left:6px}
+.codebox pre{margin:0;padding:18px;overflow-x:auto;font-family:var(--mono);
   font-size:12.5px;line-height:1.65;color:#c9d4e0}
 .codebox .c-kw{color:#8ec2ff}.codebox .c-fn{color:#dfb2ff}.codebox .c-str{color:#9fd6b8}
 .codebox .c-cm{color:var(--dim);font-style:italic}.codebox .c-num{color:#ffd9a0}
@@ -346,7 +351,7 @@ p{margin:0}
 .drv .dbar{flex:0 0 116px;height:7px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
 .drv .dbar i{display:block;height:100%;border-radius:99px}
 .drv .dval{flex:none;width:48px;text-align:right;font-weight:600;
-  font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;color:#fff}
+  font-family:var(--mono);font-size:12.5px;color:#fff}
 
 ul.notes{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
 ul.notes li{position:relative;padding-left:18px;font-size:13.5px;line-height:1.6;color:var(--muted)}

@@ -27,6 +27,7 @@
   --r-lg:28px;
   --maxw:1180px;
   --ease:cubic-bezier(.22,.61,.36,1);
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
 }
 
 *,*::before,*::after{box-sizing:border-box}
@@ -73,13 +74,24 @@ h4{font-size:17px;font-weight:600;letter-spacing:-.02em}
 p{margin:0}
 .lead{color:var(--muted);font-size:clamp(16px,1.35vw,19px);line-height:1.62;max-width:62ch}
 .dim{color:var(--dim)}
-.mono{font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,"Liberation Mono",monospace;
-  font-size:12.5px;letter-spacing:0}
+/* A real mono, not the system fallback. Every label, numeral, stat and console
+   line on this page is instrumentation — it should read the same on every
+   machine, and it should look measured rather than typed. */
+.mono{font-family:var(--mono);font-size:12.5px;letter-spacing:0}
 
-.eyebrow{display:inline-flex;align-items:center;gap:9px;font-size:11.5px;font-weight:600;
-  letter-spacing:.16em;text-transform:uppercase;color:var(--dim)}
-.eyebrow .tick{width:5px;height:5px;border-radius:50%;background:var(--blue);
-  box-shadow:0 0 0 4px rgba(77,163,255,.16)}
+/* ---------- the instrument label ---------------------------------------
+   Signature device: a tracked mono label, optionally numbered, with a hairline
+   running out to the edge. Used identically on section heads, pillars and
+   process steps — the numbering encodes the order the service actually runs
+   in, so it carries meaning rather than decorating. */
+.eyebrow{display:flex;align-items:center;gap:11px;font-family:var(--mono);
+  font-size:10.5px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--dim)}
+.eyebrow .tick{width:5px;height:5px;border-radius:1px;background:var(--blue);flex:none;
+  box-shadow:0 0 0 4px rgba(77,163,255,.14)}
+.eyebrow::after{content:"";flex:1;height:1px;min-width:24px;
+  background:linear-gradient(90deg,var(--line),transparent)}
+.sec-head .eyebrow{margin-bottom:4px}
 
 .sec-head{max-width:760px;margin-bottom:52px}
 .sec-head h2{margin:16px 0 18px}
@@ -229,7 +241,7 @@ header.nav.stuck{background:rgba(0,0,0,.72);backdrop-filter:blur(18px) saturate(
 .grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
 @media(max-width:900px){.grid-3{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}}
 
-.num{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11.5px;font-weight:700;
+.num{font-family:var(--mono);font-size:11.5px;font-weight:700;
   color:var(--blue);letter-spacing:.12em;margin-bottom:14px;display:block}
 
 /* ---------- stages (interactive) --------------------------------------- */
@@ -241,7 +253,7 @@ header.nav.stuck{background:rgba(0,0,0,.72);backdrop-filter:blur(18px) saturate(
 .stage-btn:hover{background:rgba(255,255,255,.035)}
 .stage-btn.on{background:var(--panel);border-color:var(--line);
   box-shadow:0 12px 40px -22px rgba(77,163,255,.9)}
-.stage-btn .idx{font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:700;color:var(--dim);
+.stage-btn .idx{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--dim);
   padding-top:3px;flex:none;transition:color .28s}
 .stage-btn.on .idx{color:var(--blue)}
 .stage-btn .ttl{font-size:15px;font-weight:600;letter-spacing:-.02em}
@@ -315,19 +327,25 @@ header.nav.stuck{background:rgba(0,0,0,.72);backdrop-filter:blur(18px) saturate(
 .check b{color:#fff;font-weight:600}
 
 /* ---------- pillars ---------------------------------------------------- */
-.pillar{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);padding:28px;
+/* Same words as before — the numeral and the rule do the work that a heavier
+   headline would have done, so the one-word titles can sit large and quiet. */
+.pillar{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);padding:30px 28px 28px;
   position:relative;overflow:hidden;transition:border-color .3s,transform .3s var(--ease)}
 .pillar:hover{transform:translateY(-3px)}
+a.pillar:not(.active):hover{border-color:rgba(255,255,255,.22)}
 .pillar.active{border-color:transparent;background:
   linear-gradient(var(--panel-solid),var(--panel-solid)) padding-box,
   linear-gradient(141deg,var(--blue) 12%,rgba(50,86,112,0) 38%,rgba(70,84,132,.17) 64%,var(--pink) 87%) border-box;
   border:1px solid transparent}
-.pillar .rn{font-family:ui-monospace,Menlo,monospace;font-size:11px;font-weight:700;letter-spacing:.14em;color:var(--dim)}
-.pillar h3{margin:16px 0 10px;font-size:24px}
+.pillar .rn{display:flex;align-items:center;gap:11px;font-family:var(--mono);font-size:10.5px;
+  font-weight:500;letter-spacing:.22em;color:var(--dim)}
+.pillar .rn::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+.pillar.active .rn{padding-right:88px}   /* clear the Flagship badge */
+.pillar h3{margin:20px 0 12px;font-size:31px;font-weight:600;letter-spacing:-.04em;line-height:1}
 .pillar p{color:var(--dim);font-size:14.5px;line-height:1.58}
-.pillar .tagnow{position:absolute;top:24px;right:24px;font-size:10px;font-weight:700;letter-spacing:.12em;
-  text-transform:uppercase;padding:5px 10px;border-radius:999px;color:#fff;
-  background:linear-gradient(141deg,var(--blue),var(--violet))}
+.pillar .tagnow{position:absolute;top:26px;right:28px;font-family:var(--mono);font-size:9.5px;
+  font-weight:500;letter-spacing:.18em;text-transform:uppercase;padding:5px 10px;border-radius:5px;
+  color:#fff;background:linear-gradient(141deg,var(--blue),var(--violet))}
 
 .pillar-go{display:inline-block;margin-top:18px;font-size:13.5px;font-weight:600;color:var(--blue);
   letter-spacing:-.015em;transition:transform .25s var(--ease)}
@@ -474,6 +492,21 @@ a.pillar:hover .pillar-go{transform:translateX(4px)}
 .demo-strip .dtag{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;
   letter-spacing:.12em;text-transform:uppercase;color:#e2c6ff;margin-bottom:11px}
 .demo-strip .dtag::before{content:"";width:6px;height:6px;border-radius:2px;background:#DF7AFE}
+
+/* ---------- benefits ---------------------------------------------------
+   Numbered, ruled, no icons. Six near-identical cards are exactly where a
+   generic page reaches for six generic glyphs; the numerals carry the reading
+   order instead, and the type does the rest. */
+.bengrid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line-soft);
+  border:1px solid var(--line-soft);border-radius:var(--r);overflow:hidden}
+@media(max-width:940px){.bengrid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:640px){.bengrid{grid-template-columns:1fr}}
+.ben{background:#04060a;padding:30px 26px 28px;transition:background .3s var(--ease)}
+.ben:hover{background:#080c12}
+.ben .bn{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.2em;color:var(--blue);
+  display:block;margin-bottom:16px}
+.ben h4{font-size:18px;line-height:1.28;letter-spacing:-.025em;margin-bottom:9px}
+.ben p{color:var(--dim);font-size:14.5px;line-height:1.6}
 
 /* ---------- pricing ---------------------------------------------------- */
 /* start, not stretch: Entry has far less content than the other two, and
