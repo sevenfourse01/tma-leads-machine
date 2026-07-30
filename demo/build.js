@@ -1,0 +1,377 @@
+/* =========================================================================
+   DEMO 02 · BUILD — workflow canvas, test-run simulation, dashboard, code.
+   Everything here is an example build with example data — the real system is
+   mapped onto the prospect's channels, tools and rules on the diagnosis call.
+   ========================================================================= */
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+const NODE_W = 170, NODE_H = 64;
+
+/* ---------- nodes --------------------------------------------------------- */
+function nodeDefs(cfg) {
+  const b = cfg.build;
+  return [
+    { id: 1,  x: 30,  y: 60,  ic: "⚡", name: b.trigger,              sub: b.triggerSub },
+    { id: 2,  x: 240, y: 60,  ic: "🧹", name: "Capture & clean",       sub: "Dedupe · validate · normalise" },
+    { id: 3,  x: 450, y: 60,  ic: "🔎", name: "Enrich contact",        sub: "Phone · company · source" },
+    { id: 4,  x: 660, y: 60,  ic: "🤖", name: "AI qualify & score",    sub: "Intent · urgency · fit → 0–100" },
+    { id: 5,  x: 870, y: 60,  ic: "🔀", name: "Route by score",        sub: "Hot ≥70 · Warm 40–69 · Cold <40" },
+    { id: 6,  x: 240, y: 210, ic: "✉️", name: "Instant reply <60s",    sub: "SMS + email · your voice" },
+    { id: 7,  x: 450, y: 210, ic: "📅", name: b.book,                  sub: b.bookSub },
+    { id: 8,  x: 660, y: 210, ic: "🔔", name: "Hot-lead alert to you", sub: "Straight to your phone" },
+    { id: 9,  x: 240, y: 330, ic: "💬", name: b.nurture,               sub: b.nurtureSub },
+    { id: 10, x: 450, y: 330, ic: "👤", name: "Your approval gate",    sub: "One tap · approve / edit / skip", human: true },
+    { id: 11, x: 660, y: 330, ic: "📤", name: "Send + schedule",       sub: "Best send-time · stops on reply" },
+    { id: 12, x: 240, y: 450, ic: "🗂️", name: "Long-term list",        sub: "Quarterly value emails" },
+    { id: 13, x: 450, y: 450, ic: "♻️", name: "Reactivation campaign", sub: "Dormant leads · 90-day cycle" },
+    { id: 14, x: 880, y: 270, ic: "🗄️", name: b.crm,                   sub: "Every touch logged automatically" },
+    { id: 15, x: 880, y: 410, ic: "📊", name: "Weekly report to you",  sub: "Monday 08:00 · plain English" }
+  ];
+}
+
+/* edge key, path kind (h horizontal / dl down-left / v vertical), lane badge */
+const EDGES = [
+  ["1-2", "h"], ["2-3", "h"], ["3-4", "h"], ["4-5", "h"],
+  ["5-6", "dl", "HOT", "#ffd9a0"], ["5-9", "dl", "WARM", "#a9d3ff"], ["5-12", "dl", "COLD", "#b7c0cc"],
+  ["6-7", "h"], ["7-8", "h"], ["8-14", "h"],
+  ["9-10", "h"], ["10-11", "h"], ["11-14", "h"],
+  ["12-13", "h"], ["13-14", "h"], ["14-15", "v"]
+];
+
+function edgePath(kind, f, t) {
+  if (kind === "h") {
+    const fx = f.x + NODE_W, fy = f.y + NODE_H / 2, tx = t.x, ty = t.y + NODE_H / 2;
+    const dx = Math.min(80, Math.max(24, (tx - fx) / 2));
+    return `M ${fx} ${fy} C ${fx + dx} ${fy}, ${tx - dx} ${ty}, ${tx} ${ty}`;
+  }
+  if (kind === "dl") {
+    const fx = f.x + NODE_W / 2, fy = f.y + NODE_H, tx = t.x, ty = t.y + NODE_H / 2;
+    return `M ${fx} ${fy} C ${fx} ${fy + 70}, ${tx - 90} ${ty}, ${tx} ${ty}`;
+  }
+  const fx = f.x + NODE_W / 2, fy = f.y + NODE_H, tx = t.x + NODE_W / 2, ty = t.y;
+  return `M ${fx} ${fy} C ${fx} ${fy + 30}, ${tx} ${ty - 30}, ${tx} ${ty}`;
+}
+
+/* ---------- svg helpers --------------------------------------------------- */
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+function svgText(x, y, cls, str) {
+  const t = document.createElementNS(SVG_NS, "text");
+  t.setAttribute("x", x); t.setAttribute("y", y);
+  t.setAttribute("class", cls);
+  t.textContent = str;
+  return t;
+}
+
+/* split a "a · b · c" sub-label onto ≤2 lines that fit the node width */
+function subLines(sub) {
+  if (sub.length <= 26) return [sub];
+  const parts = sub.split(" · ");
+  if (parts.length === 1) return [sub];
+  let l1 = parts[0], i = 1;
+  while (i < parts.length && (l1 + " · " + parts[i]).length <= 26) { l1 += " · " + parts[i]; i++; }
+  const l2 = parts.slice(i).join(" · ");
+  return l2 ? [l1, l2] : [l1];
+}
+
+/* ---------- canvas -------------------------------------------------------- */
+let nodeEls = {}, edgeEls = {}, flowEls = [];
+
+function renderCanvas() {
+  const cfg = PRESETS[getProfile().industry];
+  const svg = $("#wfSvg");
+  svg.innerHTML = "";
+  nodeEls = {}; edgeEls = {}; flowEls = [];
+  const defs = nodeDefs(cfg);
+  const byId = {}; defs.forEach(n => { byId[n.id] = n; });
+
+  EDGES.forEach(([key, kind, badge, color]) => {
+    const [a, b] = key.split("-").map(Number);
+    const p = document.createElementNS(SVG_NS, "path");
+    p.setAttribute("d", edgePath(kind, byId[a], byId[b]));
+    p.setAttribute("class", "wf-edge");
+    svg.appendChild(p);
+    edgeEls[key] = p;
+    if (badge) {
+      const t = svgText(byId[b].x - 14, byId[b].y + NODE_H / 2 - 8, "wf-badge", badge);
+      t.setAttribute("text-anchor", "end");
+      t.setAttribute("fill", color);
+      svg.appendChild(t);
+    }
+  });
+
+  defs.forEach(n => {
+    const g = document.createElementNS(SVG_NS, "g");
+    g.setAttribute("class", "wf-node" + (n.human ? " human" : ""));
+    g.setAttribute("data-id", n.id);
+    const r = document.createElementNS(SVG_NS, "rect");
+    r.setAttribute("x", n.x); r.setAttribute("y", n.y);
+    r.setAttribute("width", NODE_W); r.setAttribute("height", NODE_H);
+    r.setAttribute("rx", 13);
+    g.appendChild(r);
+    g.appendChild(svgText(n.x + 14, n.y + 25, "nname", n.name));
+    subLines(n.sub).forEach((ln, i) => g.appendChild(svgText(n.x + 14, n.y + 41 + i * 13, "nsub", ln)));
+    const ic = svgText(n.x + NODE_W - 12, n.y + 44, "nicon", n.ic);
+    ic.setAttribute("text-anchor", "end");
+    g.appendChild(ic);
+    g.addEventListener("click", () => openDrawer(n));
+    svg.appendChild(g);
+    nodeEls[n.id] = g;
+  });
+}
+
+/* ---------- node config drawer -------------------------------------------- */
+function drawerRows(n, cfg) {
+  const b = cfg.build;
+  switch (n.id) {
+    case 1:  return [["Sources", b.triggerSub], ["Capture window", "24/7 — nothing missed"], ["Missed-call catch", "Auto-SMS within 30s"], ["Field mapping", "Name · phone · message"]];
+    case 2:  return [["Dedupe key", "Phone + email"], ["Validation", "Phone format · spam filter"], ["Normalise", "Names, numbers, casing"]];
+    case 3:  return [["Lookups", "Phone type · area · source"], ["On failure", "Continues without blocking"], ["Data", "Held in your own accounts"]];
+    case 4:  return [["Model", "AI scorer tuned to " + cfg.plural], ["Signals", "Intent · urgency · fit"], ["Output", "Score 0–100 + plain-English reason"], ["Latency", "Under 2 seconds"]];
+    case 5:  return [["Hot lane", "Score ≥ 70 → instant reply"], ["Warm lane", "40–69 → approved nurture"], ["Cold lane", "Below 40 → long-term list"]];
+    case 6:  return [["Channels", "SMS + email"], ["Voice", "Trained on your tone — you approve it once"], ["Speed", "Under 60 seconds, 24/7"], ["Contains", "Answer + booking link"]];
+    case 7:  return [["Calendar", b.bookSub], ["Slots", "Live availability only"], ["Reminders", "24h + 2h before"]];
+    case 8:  return [["Channel", "WhatsApp / SMS"], ["Contains", "Name, score, why it's hot"], ["When", "Within seconds, any hour"]];
+    case 9:  return [["Sequence", b.nurtureSub], ["Timing", "Day 0 · 2 · 5 · 9 · 14"], ["Stops", "Instantly on any reply"]];
+    case 10: return [["You see", "Drafted message + full context"], ["Choices", "Approve · edit · skip"], ["Time cost", "About 10 seconds per message"], ["Where", "Your phone or inbox"]];
+    case 11: return [["Send time", "Optimised per recipient"], ["Auto-stop", "On reply or booking"], ["Record", "Every send logged"]];
+    case 12: return [["Cadence", "One useful email a quarter"], ["Tone", "Value, never pressure"], ["Exit", "Any reply → warm lane"]];
+    case 13: return [["Trigger", "90 days dormant"], ["Typical result", "2–5% re-engage (modelled)"], ["Tone", "Respectful, easy opt-out"]];
+    case 14: return [["Writes", "Contact · activity · outcome"], ["Dedupe", "Updates, never duplicates"], ["Retyping for you", "None — ever"]];
+    case 15: return [["When", "Monday 08:00"], ["Format", "Plain English + the numbers"], ["Includes", "Wins · issues · next steps"]];
+  }
+  return [];
+}
+
+function openDrawer(n) {
+  const cfg = PRESETS[getProfile().industry];
+  const rows = drawerRows(n, cfg)
+    .map(r => `<div class="cfg-row"><span class="k">${esc(r[0])}</span><span class="v">${esc(r[1])}</span></div>`)
+    .join("");
+  $("#nodeDrawer").innerHTML = `
+    <div class="dhead${n.human ? " human" : ""}"><span class="dic">${n.ic}</span>
+      <div><h4>${esc(n.name)}</h4><p class="dim" style="font-size:13px">${esc(n.sub)}</p></div>
+    </div>
+    ${rows}
+    <div class="cfg-row"><span class="k">Owner</span><span class="v">${n.human ? "You — one click" : "TMA builds & runs it"}</span></div>`;
+}
+
+/* ---------- test-run simulation ------------------------------------------- */
+const SCENARIOS = ["hot", "warm", "cold"];
+let runCount = 0, running = false, pendingRender = false, clockSec = 0;
+
+const fmtClock = s => {
+  const h = Math.floor(s / 3600) % 24, m = Math.floor(s / 60) % 60, x = s % 60;
+  return [h, m, x].map(v => String(v).padStart(2, "0")).join(":");
+};
+
+function appendLog(cls, msg) {
+  const log = $("#execLog");
+  const d = document.createElement("div");
+  d.className = "lg" + (cls ? " " + cls : "");
+  d.innerHTML = `<span class="t">${fmtClock(clockSec)}</span><span class="m">${esc(msg)}</span>`;
+  log.appendChild(d);
+  log.scrollTop = log.scrollHeight;
+}
+
+function buildRun(kind, cfg) {
+  const idx = kind === "hot" ? 0 : kind === "warm" ? 2 : 4;
+  const lead = cfg.leadNames[idx], svc = cfg.services[idx], ch = cfg.channels[0];
+  const steps = [
+    { node: 1, logs: [[null, `Trigger — ${lead}: "${svc}" via ${ch}`]] },
+    { edge: "1-2", node: 2, logs: [["ok", "Captured & cleaned — valid phone, no duplicate"]] },
+    { edge: "2-3", node: 3, logs: [["ok", `Enriched — mobile confirmed · source: ${ch}`]] },
+    { edge: "3-4", node: 4, logs: [
+      kind === "hot"  ? ["hot", `AI score 87/100 — high intent ("${svc}", wants this week)`] :
+      kind === "warm" ? [null, "AI score 54/100 — interested, no urgency signals yet"] :
+                        [null, "AI score 21/100 — early research, price-only question"]] },
+    { edge: "4-5", node: 5, logs: [[kind === "hot" ? "hot" : null,
+      kind === "hot" ? "Routed → HOT lane" : kind === "warm" ? "Routed → WARM lane" : "Routed → COLD lane"]] }
+  ];
+
+  if (kind === "hot") steps.push(
+    { edge: "5-6",  node: 6,  logs: [["ok", "Instant reply sent in 41s — SMS + email, in your voice"]] },
+    { edge: "6-7",  node: 7,  logs: [["ok", `${cfg.build.book} — link opened · slot held Tue 14:30`]] },
+    { edge: "7-8",  node: 8,  logs: [["hot", "Hot-lead alert sent to your phone"]] },
+    { edge: "8-14", node: 14, logs: [["ok", `${cfg.build.crm} — full history logged, nothing retyped`]] },
+    { edge: "14-15", node: 15, logs: [["ok", "Queued for Monday's report"]] }
+  );
+  else if (kind === "warm") steps.push(
+    { edge: "5-9",  node: 9,  logs: [["ok", `${cfg.build.nurture} — draft 1 of 5 written in your voice`]] },
+    { edge: "9-10", node: 10, pause: true, logs: [
+      ["human", "Waiting for you — one-tap approve on your phone…"],
+      ["human", "You approved (edited one line) — 9 seconds"]] },
+    { edge: "10-11", node: 11, logs: [["ok", "Sent + 4 follow-ups scheduled — auto-stops on reply"]] },
+    { edge: "11-14", node: 14, logs: [["ok", `${cfg.build.crm} — full history logged, nothing retyped`]] },
+    { edge: "14-15", node: 15, logs: [["ok", "Queued for Monday's report"]] }
+  );
+  else steps.push(
+    { edge: "5-12", node: 12, logs: [["ok", "Added to long-term list — quarterly value emails"]] },
+    { edge: "12-13", node: 13, logs: [["ok", "Queued for the next reactivation cycle — 14 days"]] },
+    { edge: "13-14", node: 14, logs: [["ok", `${cfg.build.crm} — logged with source and score`]] },
+    { edge: "14-15", node: 15, logs: [["ok", "Counted in Monday's report"]] }
+  );
+
+  const status =
+    kind === "hot"  ? "Enquiry handled in <b>47s</b> — booked in, and you were alerted" :
+    kind === "warm" ? "Enquiry handled in <b>52s</b> — <b>1 message approved by you</b>" :
+                      "Filed in <b>12s</b> — nothing lost, nothing pushy";
+  return { steps, status };
+}
+
+function lightEdge(key) {
+  const e = edgeEls[key];
+  if (!e) return;
+  e.classList.add("lit");
+  const f = document.createElementNS(SVG_NS, "path");
+  f.setAttribute("d", e.getAttribute("d"));
+  f.setAttribute("class", "wf-flow");
+  e.parentNode.appendChild(f);
+  flowEls.push(f);
+}
+
+function resetCanvas() {
+  Object.values(nodeEls).forEach(g => g.classList.remove("running", "donept"));
+  Object.values(edgeEls).forEach(p => p.classList.remove("lit"));
+  flowEls.forEach(f => f.remove());
+  flowEls = [];
+}
+
+async function runSim() {
+  if (running) return;
+  running = true;
+  const btn = $("#runWf");
+  btn.disabled = true;
+  const cfg = PRESETS[getProfile().industry];
+  const kind = SCENARIOS[runCount % 3];
+  runCount++;
+  resetCanvas();
+
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const sleep = ms => new Promise(r => setTimeout(r, reduced ? 0 : ms));
+
+  clockSec = 9 * 3600 + 41 * 60 + 2 + runCount * 137;
+  $("#execLog").innerHTML = "";
+  appendLog(null, `— Test run ${runCount}: ${kind.toUpperCase()} scenario (example data) —`);
+  $("#runStat").textContent = `Running a ${kind} enquiry…`;
+
+  const { steps, status } = buildRun(kind, cfg);
+  for (const st of steps) {
+    if (st.edge) { lightEdge(st.edge); await sleep(220); }
+    const g = nodeEls[st.node];
+    g.classList.add("running");
+    clockSec += 1 + (st.node % 3);
+    appendLog(st.logs[0][0], st.logs[0][1]);
+    await sleep(st.pause ? 1400 : 600);
+    if (st.logs[1]) { clockSec += 9; appendLog(st.logs[1][0], st.logs[1][1]); await sleep(500); }
+    g.classList.remove("running");
+    g.classList.add("donept");
+  }
+
+  $("#runStat").innerHTML = status;
+  btn.disabled = false;
+  btn.textContent = `▶ Run another (next: ${SCENARIOS[runCount % 3]} lead)`;
+  running = false;
+  if (pendingRender) { pendingRender = false; renderAll(); }
+}
+
+/* ---------- sample dashboard ---------------------------------------------- */
+const kpiTile = (label, val, cls, delta) => `
+  <div class="kpi"><div class="klabel">${label}</div>
+    <div class="kval">${val}<span class="kdelta ${cls}">${delta}</span></div></div>`;
+
+function renderDash() {
+  const cfg = PRESETS[getProfile().industry];
+  const wk = Math.max(3, Math.round(cfg.monthlyLeads / 4));
+  const booked = Math.max(1, Math.round(wk * cfg.closeRate / 100 * 1.2));
+
+  /* deltas derive from the figures above, so a small preset never claims an
+     impossible week (e.g. "1 booked, +2 WoW" implies last week was −1) */
+  const dEnq = Math.max(1, Math.min(3, Math.round(wk * 0.2)));
+  const dBk  = Math.min(2, Math.round(booked * 0.25));
+
+  $("#dashKpis").innerHTML = [
+    kpiTile("Enquiries this week", wk, "up", `+${dEnq} WoW`),
+    kpiTile("Median first response", "38s", "up", "was 4.2h pre-build"),
+    kpiTile("Booked this week", booked, dBk ? "up" : "flat", dBk ? `+${dBk} WoW` : "level WoW"),
+    kpiTile("Waiting on you", 1, "flat", "one approval · ~10s")
+  ].join("");
+
+  const rows = [
+    { i: 0, score: 87, pill: ["hot", "Hot — replied 41s"],  next: "Slot held Tue 14:30" },
+    { i: 1, score: 91, pill: ["booked", "Booked"],          next: "Reminder 24h before" },
+    { i: 2, score: 54, pill: ["review", "Your approval"],   next: "You: one tap (~10s)" },
+    { i: 3, score: 58, pill: ["nurture", "Nurture 2/5"],    next: "Follow-up tomorrow 09:30" },
+    { i: 4, score: 21, pill: ["nurture", "Long-term"],      next: "Reactivation in 14 days" }
+  ];
+  $("#dashTable").innerHTML =
+    `<thead><tr><th>Lead</th><th>Enquiry</th><th>AI score</th><th>Status</th><th>Next action</th></tr></thead><tbody>` +
+    rows.map(r => `<tr>
+      <td>${esc(cfg.leadNames[r.i])}</td><td>${esc(cfg.services[r.i])}</td><td>${r.score}</td>
+      <td><span class="pill ${r.pill[0]}">${r.pill[1]}</span></td><td>${r.next}</td></tr>`).join("") +
+    `</tbody>`;
+}
+
+/* ---------- code excerpt + how it works ------------------------------------ */
+function renderCode() {
+  $("#codePre").innerHTML =
+`<span class="c-cm"># lead_scorer.py — how every enquiry is scored in &lt;2s (excerpt)</span>
+<span class="c-kw">from</span> engine <span class="c-kw">import</span> ai, rules, alerts
+
+WEIGHTS = {<span class="c-str">"intent"</span>: <span class="c-num">0.45</span>, <span class="c-str">"urgency"</span>: <span class="c-num">0.30</span>, <span class="c-str">"fit"</span>: <span class="c-num">0.25</span>}
+HOT, WARM = <span class="c-num">70</span>, <span class="c-num">40</span>
+
+<span class="c-kw">def</span> <span class="c-fn">score_lead</span>(enquiry):
+    <span class="c-str">"""Blend AI signals with your business rules — then route."""</span>
+    sig = ai.<span class="c-fn">extract_signals</span>(enquiry.message)  <span class="c-cm"># intent, urgency</span>
+    fit = rules.<span class="c-fn">fit_score</span>(enquiry)            <span class="c-cm"># service, area, value</span>
+
+    score = <span class="c-fn">round</span>(<span class="c-num">100</span> * (WEIGHTS[<span class="c-str">"intent"</span>]  * sig.intent
+                      + WEIGHTS[<span class="c-str">"urgency"</span>] * sig.urgency
+                      + WEIGHTS[<span class="c-str">"fit"</span>]     * fit))
+
+    lane = <span class="c-str">"hot"</span> <span class="c-kw">if</span> score >= HOT <span class="c-kw">else</span> <span class="c-str">"warm"</span> <span class="c-kw">if</span> score >= WARM <span class="c-kw">else</span> <span class="c-str">"cold"</span>
+    <span class="c-kw">if</span> lane == <span class="c-str">"hot"</span>:
+        alerts.<span class="c-fn">notify_owner</span>(enquiry, score)     <span class="c-cm"># your phone, in seconds</span>
+    <span class="c-kw">return</span> score, lane`;
+}
+
+function renderHow() {
+  const steps = [
+    ["An enquiry arrives", "Webform, ad, DM or missed call — the system catches every channel, 24/7, so nothing depends on who's at the desk."],
+    ["Cleaned, enriched, scored", "Within seconds it's deduplicated, enriched and scored 0–100 by AI tuned to your business — with a plain-English reason."],
+    ["Hot leads: instant reply + your phone buzzes", "A personal reply in under 60 seconds with a live booking link — and you get an alert so you can call while they're still looking."],
+    ["Warm leads: follow-up you approve", "A polite sequence drafted in your voice. Every message waits at the purple gate for your one-tap approve, edit or skip."],
+    ["Everything logs itself", "Every touch lands in the CRM automatically — no retyping, no lost history, no \"who was that again?\""],
+    ["Monday 08:00 — your report", "A plain-English summary of what happened and what we're tuning next. We run the machine; you steer it."]
+  ];
+  $("#howSteps").innerHTML = steps.map((s, i) => `
+    <div class="step-row">
+      <span class="snum">${i + 1}</span>
+      <div><h4>${s[0]}</h4><p>${s[1]}</p></div>
+    </div>`).join("");
+}
+
+/* ---------- init ----------------------------------------------------------- */
+function renderAll() {
+  if (running) { pendingRender = true; return; }
+  $("#wfTitle").textContent = companyName() + " — lead engine";
+  renderCanvas();
+  renderDash();
+  renderCode();
+  renderHow();
+  $("#execLog").innerHTML =
+    `<div class="lg"><span class="t">--:--:--</span><span class="m">Waiting for a run…</span></div>`;
+  $("#runStat").textContent = "Idle — click run to simulate a live enquiry.";
+  $("#nodeDrawer").innerHTML = `
+    <div class="dhead"><span class="dic">⚙</span>
+      <div><h4>Select a node on the canvas</h4><p class="dim" style="font-size:13px">Every node opens like this in the real build — settings, mappings, owner.</p></div>
+    </div>`;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  renderPicker($("#industryPick"), renderAll);
+  wireNameInput($("#bizname"), () => { $("#wfTitle").textContent = companyName() + " — lead engine"; });
+  renderAll();
+  $("#runWf").addEventListener("click", runSim);
+});

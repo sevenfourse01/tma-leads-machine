@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Predict — One-Click Demo · The Mission Automation</title>
+<meta name="description" content="Answer seven questions, get a modelled prediction report: opportunities, risks, next steps, confidence ratings.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="aura"></div><div class="grid-fade"></div>
+
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="../index.html"><span class="dot"></span>THE MISSION AUTOMATION <small>one-click demos</small></a>
+  <div class="navlinks">
+    <a href="index.html">All demos</a>
+    <a href="predict.html" class="active">Predict</a>
+    <a href="build.html">Build</a>
+    <a href="grow.html">Grow</a>
+    <a href="#" data-book class="btn ghost" style="padding:8px 15px;font-size:13.5px">Book a call</a>
+  </div>
+</div></nav>
+
+<!-- ============ STEP 1 · FORM ============ -->
+<section id="formStage" style="padding-top:64px">
+  <div class="wrap">
+    <div class="sect-head rv" style="align-items:flex-start">
+      <span class="eyebrow"><span class="tick"></span>Demo 01 · Predict</span>
+      <h2>Seven questions.<br>Then we show you what we see.</h2>
+      <p class="lead">Rough answers are fine — the engine works in ranges, not false precision.
+      The full version runs ~90 questions on a diagnosis call; this is the taster.</p>
+    </div>
+
+    <div class="persona-bar rv">
+      <label>Your business</label>
+      <input type="text" id="bizname" placeholder="Business name (optional)">
+      <div class="picker" id="industryPick"></div>
+    </div>
+
+    <div class="qgrid rv">
+      <div class="q">
+        <div class="qlabel"><span class="qnum">1</span>Average value of one customer (first sale)</div>
+        <div class="prefix"><span>£</span><input type="number" id="qValue" min="1" step="50"></div>
+      </div>
+      <div class="q">
+        <div class="qlabel"><span class="qnum">2</span>New enquiries per month</div>
+        <input type="number" id="qLeads" min="1" step="1">
+      </div>
+      <div class="q">
+        <div class="qlabel"><span class="qnum">3</span>Roughly what % of enquiries become customers?</div>
+        <input type="number" id="qClose" min="1" max="95" step="1">
+      </div>
+      <div class="q">
+        <div class="qlabel"><span class="qnum">4</span>How fast does a new enquiry usually get a reply?</div>
+        <div class="seg" id="qResp">
+          <button data-v="u5">Under 5 min</button>
+          <button data-v="hour">Within an hour</button>
+          <button data-v="sameday" class="on">Same day</button>
+          <button data-v="nextday">Next day or later</button>
+        </div>
+      </div>
+      <div class="q">
+        <div class="qlabel"><span class="qnum">5</span>How many times do you chase an enquiry that goes quiet?</div>
+        <div class="seg" id="qFu">
+          <button data-v="f01" class="on">0–1 times</button>
+          <button data-v="f23">2–3 times</button>
+          <button data-v="f4">4+ times</button>
+        </div>
+      </div>
+      <div class="q">
+        <div class="qlabel"><span class="qnum">6</span>Do you ever re-contact old enquiries that went cold?</div>
+        <div class="seg" id="qReact">
+          <button data-v="no" class="on">No</button>
+          <button data-v="some">Occasionally</button>
+          <button data-v="yes">Yes, systematically</button>
+        </div>
+      </div>
+      <div class="q" style="grid-column:1/-1">
+        <div class="qlabel"><span class="qnum">7</span>Where do you want to be in 12 months?</div>
+        <div class="seg" id="qGoal">
+          <button data-v="25">+25% revenue</button>
+          <button data-v="50" class="on">+50% revenue</button>
+          <button data-v="100">Double it</button>
+          <button data-v="0">Not sure yet</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:26px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <button class="btn primary big" id="runBtn">Run the analysis →</button>
+      <span class="dim" style="font-size:13.5px">Runs in your browser · nothing is sent anywhere</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STEP 2 · ANALYSIS ============ -->
+<section id="analyseStage" class="hide" style="padding-top:110px;padding-bottom:110px">
+  <div class="wrap">
+    <div class="stagebox panel edge pad">
+      <span class="eyebrow" style="margin-bottom:14px"><span class="tick"></span>Analysing</span>
+      <h3 id="analyseTitle" style="margin-bottom:14px">Reading your funnel…</h3>
+      <div id="stageSteps"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STEP 3 · REPORT ============ -->
+<section id="reportStage" class="hide" style="padding-top:64px">
+  <div class="wrap">
+
+    <div class="sect-head" style="align-items:flex-start">
+      <span class="eyebrow"><span class="tick"></span>Prediction report · <span id="repCompany"></span></span>
+      <h2 id="repHeadline">Modelled additional revenue</h2>
+      <div>
+        <span class="headline-num" id="repBig">£0</span>
+        <div class="range-row">
+          <div class="rr"><b id="repLow">£0</b><span>Conservative</span></div>
+          <div class="rr"><b id="repMid">£0</b><span>Central</span></div>
+          <div class="rr"><b id="repHigh">£0</b><span>Upside</span></div>
+        </div>
+        <p class="modeltag" style="margin-top:14px">Modelled 12-month projection — not a promise. Ranges, not certainties.</p>
+      </div>
+      <p class="lead" id="repSummary"></p>
+    </div>
+
+    <div style="margin-top:14px">
+      <h3 style="margin-bottom:16px">Key opportunities</h3>
+      <div class="cards3" id="repOps"></div>
+    </div>
+
+    <div class="aha edge-violet edge" style="margin-top:34px" id="repAha"></div>
+
+    <div style="margin-top:34px">
+      <h3 style="margin-bottom:16px">Risks worth pricing in</h3>
+      <div class="cards3" id="repRisks"></div>
+    </div>
+
+    <div style="margin-top:34px">
+      <h3 style="margin-bottom:16px">Recommended next steps</h3>
+      <div class="steps" id="repSteps"></div>
+    </div>
+
+    <div class="panel edge pad" style="margin-top:40px;display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px">
+        <h3>Want this run on your real numbers?</h3>
+        <p class="dim" style="margin-top:6px;font-size:14.5px">The full engine goes ~90 questions deep and models
+        your actual funnel, spend and capacity — on a call, before you pay anything.</p>
+      </div>
+      <a href="#" data-book class="btn primary big">Book the diagnosis call</a>
+      <button class="btn ghost" id="rerunBtn">Change my answers</button>
+    </div>
+
+    <div style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap">
+      <a class="btn ghost" href="build.html">Next demo: see your Build →</a>
+      <a class="btn ghost" href="grow.html">Or jump to Grow →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="wrap">
+  <span>© The Mission Automation — modelled figures are projections, never promises.</span>
+  <a href="#" data-book>Book a diagnosis call</a>
+</div></footer>
+
+<script src="shared.js"></script>
+<script src="predict.js"></script>
+</body>
+</html>

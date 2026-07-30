@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Build — One-Click Demo · The Mission Automation</title>
+<meta name="description" content="See your future system: a live workflow canvas, sample dashboard, real code excerpt, and how it all works end to end.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="aura"></div><div class="grid-fade"></div>
+
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="../index.html"><span class="dot"></span>THE MISSION AUTOMATION <small>one-click demos</small></a>
+  <div class="navlinks">
+    <a href="index.html">All demos</a>
+    <a href="predict.html">Predict</a>
+    <a href="build.html" class="active">Build</a>
+    <a href="grow.html">Grow</a>
+    <a href="#" data-book class="btn ghost" style="padding:8px 15px;font-size:13.5px">Book a call</a>
+  </div>
+</div></nav>
+
+<section style="padding-top:64px;padding-bottom:40px">
+  <div class="wrap">
+    <div class="sect-head rv" style="align-items:flex-start">
+      <span class="eyebrow"><span class="tick"></span>Demo 02 · Build</span>
+      <h2>This is what we'd build for you.<br>Watch it run.</h2>
+      <p class="lead">A preview of the build we'd design for you — the lead engine we build and run on your behalf.
+      Click any node to see how it's configured. Push a test enquiry through and watch the log.</p>
+    </div>
+
+    <div class="persona-bar rv">
+      <label>Tailor it</label>
+      <input type="text" id="bizname" placeholder="Business name (optional)">
+      <div class="picker" id="industryPick"></div>
+    </div>
+
+    <!-- ============ WORKFLOW CANVAS ============ -->
+    <div class="canvas-shell edge rv">
+      <div class="canvas-grid"></div>
+      <div class="canvas-head">
+        <span class="wtitle" id="wfTitle">Lead engine</span>
+        <span class="wsub" id="wfSub">15 nodes · designed, built &amp; run by TMA · you approve</span>
+        <span class="spacer"></span>
+        <span class="chip violet">Purple nodes = your part</span>
+        <span class="chip blue">Preview build</span>
+      </div>
+      <svg id="wfSvg" class="wf-svg" viewBox="0 0 1200 560" role="img" aria-label="Automation workflow diagram"></svg>
+      <div class="runbar">
+        <button class="btn primary" id="runWf">▶ Run a test enquiry</button>
+        <span class="rstat" id="runStat">Idle — click run to simulate a live enquiry.</span>
+      </div>
+    </div>
+
+    <!-- ============ LOG + NODE CONFIG ============ -->
+    <div class="split" style="margin-top:18px">
+      <div class="rv">
+        <h4 style="margin-bottom:10px" class="dim">EXECUTION LOG</h4>
+        <div class="exec-log" id="execLog">
+          <div class="lg"><span class="t">--:--:--</span><span class="m">Waiting for a run…</span></div>
+        </div>
+      </div>
+      <div class="rv">
+        <h4 style="margin-bottom:10px" class="dim">NODE CONFIG — click a node</h4>
+        <div class="drawer" id="nodeDrawer">
+          <div class="dhead"><span class="dic">⚙</span>
+            <div><h4>Select a node on the canvas</h4><p class="dim" style="font-size:13px">Every node opens like this in the real build — settings, mappings, owner.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SAMPLE DASHBOARD ============ -->
+<section style="padding-top:30px;padding-bottom:40px">
+  <div class="wrap">
+    <div class="sect-head rv" style="align-items:flex-start">
+      <h3>The dashboard you'd log into</h3>
+      <p class="lead" style="font-size:16px">You don't operate the system — we do. This is your window into it.
+      <span class="modeltag" style="margin-left:10px">Example data</span></p>
+    </div>
+    <div class="kpis rv" id="dashKpis"></div>
+    <div class="panel rv" style="margin-top:16px;overflow-x:auto">
+      <table class="ltable" id="dashTable"></table>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CODE + HOW IT WORKS ============ -->
+<section style="padding-top:20px">
+  <div class="wrap">
+    <div class="split">
+      <div class="rv">
+        <h3 style="margin-bottom:14px">Under the hood — a working excerpt</h3>
+        <div class="codebox">
+          <div class="cb-head"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span>
+            <span class="cname">lead_scorer.py — excerpt from a representative build</span></div>
+          <pre id="codePre"></pre>
+        </div>
+      </div>
+      <div class="rv">
+        <h3 style="margin-bottom:14px">How it works, start to finish</h3>
+        <div class="steps" id="howSteps"></div>
+      </div>
+    </div>
+
+    <div class="panel edge pad rv" style="margin-top:44px;display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px">
+        <h3>Your version would differ in the details, not the idea</h3>
+        <p class="dim" style="margin-top:6px;font-size:14.5px">On the diagnosis call we map your exact channels, tools
+        and rules onto this skeleton. Entry builds land inside a week; the full machine in about three.</p>
+      </div>
+      <a href="#" data-book class="btn primary big">Book the diagnosis call</a>
+    </div>
+
+    <div style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap" class="rv">
+      <a class="btn ghost" href="predict.html">← Demo 01: Predict</a>
+      <a class="btn ghost" href="grow.html">Next demo: Grow →</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="wrap">
+  <span>© The Mission Automation — preview build with example data; your build is tailored on the call.</span>
+  <a href="#" data-book>Book a diagnosis call</a>
+</div></footer>
+
+<script src="shared.js"></script>
+<script src="build.js"></script>
+</body>
+</html>

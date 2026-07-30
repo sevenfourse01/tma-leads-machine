@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Grow — One-Click Demo · The Mission Automation</title>
+<meta name="description" content="A week in the life once you're live: growth dashboard, AI recommendations you approve, the questions we answer every week, and 24/7 cover.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="aura"></div><div class="grid-fade"></div>
+
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="../index.html"><span class="dot"></span>THE MISSION AUTOMATION <small>one-click demos</small></a>
+  <div class="navlinks">
+    <a href="index.html">All demos</a>
+    <a href="predict.html">Predict</a>
+    <a href="build.html">Build</a>
+    <a href="grow.html" class="active">Grow</a>
+    <a href="#" data-book class="btn ghost" style="padding:8px 15px;font-size:13.5px">Book a call</a>
+  </div>
+</div></nav>
+
+<section style="padding-top:64px;padding-bottom:34px">
+  <div class="wrap">
+    <div class="sect-head rv" style="align-items:flex-start">
+      <span class="eyebrow"><span class="tick"></span>Demo 03 · Grow</span>
+      <h2>A week in the life,<br>once the machine is running.</h2>
+      <p class="lead">Building it is the easy part. This is the bit you're actually buying: someone watching the
+      numbers every day, bringing you decisions instead of dashboards, and reachable at 2am. Click through
+      four example weeks — including the one that went backwards.</p>
+    </div>
+
+    <div class="persona-bar rv">
+      <label>Tailor it</label>
+      <input type="text" id="bizname" placeholder="Business name (optional)">
+      <div class="picker" id="industryPick"></div>
+    </div>
+
+    <!-- ============ WEEKLY DASHBOARD ============ -->
+    <div class="rv" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px">
+      <h3 id="growTitle">Weekly growth</h3>
+      <span class="modeltag">Example data</span>
+      <div class="weeksel" id="weekSel" style="margin-left:auto"></div>
+    </div>
+
+    <div class="kpis rv" id="growKpis"></div>
+
+    <div class="panel edge pad rv" id="weekNote" style="margin-top:16px"></div>
+  </div>
+</section>
+
+<!-- ============ AI RECOMMENDATIONS ============ -->
+<section style="padding-top:16px;padding-bottom:34px">
+  <div class="wrap">
+    <div class="sect-head rv" style="align-items:flex-start">
+      <h3>What we recommend this week</h3>
+      <p class="lead" style="font-size:16px">Our system watches your data and drafts the next moves. We don't
+      ship a single one without your say-so — one tap, about ten seconds.
+      <span class="modeltag" style="margin-left:10px">Example recommendations</span></p>
+    </div>
+    <div class="cards3 rv" id="recs"></div>
+  </div>
+</section>
+
+<!-- ============ THE FOUR STANDING QUESTIONS ============ -->
+<section style="padding-top:16px;padding-bottom:34px">
+  <div class="wrap">
+    <div class="sect-head rv" style="align-items:flex-start">
+      <h3>The four questions we answer every single week</h3>
+      <p class="lead" style="font-size:16px">You never have to ask. These land in Monday's report, answered
+      from that week's numbers — the selected week is answered below.</p>
+    </div>
+    <div class="qa rv" id="qaGrid"></div>
+  </div>
+</section>
+
+<!-- ============ RHYTHM ============ -->
+<section style="padding-top:16px;padding-bottom:34px">
+  <div class="wrap">
+    <div class="sect-head rv" style="align-items:flex-start">
+      <h3>The rhythm — you spend about ten minutes a week</h3>
+      <p class="lead" style="font-size:16px">We come to you. No chasing, no logging in to find out something
+      broke on Tuesday.</p>
+    </div>
+    <div class="rhythm rv" id="rhythm"></div>
+  </div>
+</section>
+
+<!-- ============ 24/7 CHAT ============ -->
+<section style="padding-top:16px">
+  <div class="wrap">
+    <div class="split">
+      <div class="rv">
+        <h3 style="margin-bottom:6px">2:14am on a Wednesday</h3>
+        <p class="dim" style="font-size:14.5px;margin-bottom:14px">Enquiries don't keep office hours, so neither
+        does the system. <span class="modeltag" style="margin-left:8px">Example conversation</span></p>
+        <div class="chatbox" id="chatBox"></div>
+      </div>
+      <div class="rv">
+        <h3 style="margin-bottom:14px">What you're actually buying</h3>
+        <div class="steps" id="buyingSteps"></div>
+      </div>
+    </div>
+
+    <div class="panel edge pad rv" style="margin-top:44px;display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px">
+        <h3>This is the retainer, in one screen</h3>
+        <p class="dim" style="margin-top:6px;font-size:14.5px">Entry builds land inside a week so you can see it
+        work before committing to the full machine. The weekly rhythm above is what the retainer buys —
+        we run it, you steer it.</p>
+      </div>
+      <a href="#" data-book class="btn primary big">Book the diagnosis call</a>
+    </div>
+
+    <div style="margin-top:28px;display:flex;gap:14px;flex-wrap:wrap" class="rv">
+      <a class="btn ghost" href="predict.html">← Demo 01: Predict</a>
+      <a class="btn ghost" href="build.html">← Demo 02: Build</a>
+      <a class="btn ghost" href="index.html">All three demos</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="wrap">
+  <span>© The Mission Automation — example weeks with example data; your reporting is built from your own numbers.</span>
+  <a href="#" data-book>Book a diagnosis call</a>
+</div></footer>
+
+<script src="shared.js"></script>
+<script src="grow.js"></script>
+</body>
+</html>

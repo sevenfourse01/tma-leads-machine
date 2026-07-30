@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>One-Click Demos — The Mission Automation</title>
+<meta name="description" content="Three one-click demos: Predict your growth, see your Build, experience Grow. The Mission Automation.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="aura"></div><div class="grid-fade"></div>
+
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="../index.html"><span class="dot"></span>THE MISSION AUTOMATION <small>one-click demos</small></a>
+  <div class="navlinks">
+    <a href="predict.html">Predict</a>
+    <a href="build.html">Build</a>
+    <a href="grow.html">Grow</a>
+    <a href="#" data-book class="btn ghost" style="padding:8px 15px;font-size:13.5px">Book a call</a>
+  </div>
+</div></nav>
+
+<section style="padding-top:88px">
+  <div class="wrap">
+    <div class="sect-head rv" style="align-items:flex-start">
+      <span class="eyebrow"><span class="tick"></span>Stage-2 technical demo · pick one, one click</span>
+      <h1>See the whole service<br>before you spend a penny.</h1>
+      <p class="lead">Three small, working previews of what we actually do. Each one takes under two minutes,
+      uses your numbers where you give them, and is honest about what's modelled versus promised.</p>
+    </div>
+
+    <div class="persona-bar rv">
+      <label>Make it yours</label>
+      <input type="text" id="bizname" placeholder="Your business name (optional)">
+      <div class="picker" id="industryPick"></div>
+    </div>
+
+    <div class="demo-cards">
+      <a class="demo-card rv" href="predict.html">
+        <span class="dnum">DEMO 01 · PREDICT</span>
+        <h3>Predict your growth</h3>
+        <p>Answer seven questions. Our engine models your funnel and hands you a prediction report.</p>
+        <ul>
+          <li>Key opportunities, ranked by impact</li>
+          <li>Risks you may not have priced in</li>
+          <li>Next steps with confidence ratings</li>
+          <li>The one thing most people miss</li>
+        </ul>
+        <span class="go btn primary">Run my prediction →</span>
+      </a>
+
+      <a class="demo-card rv" href="build.html">
+        <span class="dnum">DEMO 02 · BUILD</span>
+        <h3>See your future system</h3>
+        <p>A live workflow canvas — the automation we'd run for you, drawn like a real build.</p>
+        <ul>
+          <li>Full process flowchart, node by node</li>
+          <li>Push a test enquiry through it, live</li>
+          <li>Sample dashboard + real code excerpt</li>
+          <li>Your approval gate, designed in</li>
+        </ul>
+        <span class="go btn primary">Open the canvas →</span>
+      </a>
+
+      <a class="demo-card rv" href="grow.html">
+        <span class="dnum">DEMO 03 · GROW</span>
+        <h3>Feel the partnership</h3>
+        <p>A week in the life once you're live — the dashboard, the recommendations, the rhythm.</p>
+        <ul>
+          <li>Weekly growth dashboard + KPIs</li>
+          <li>AI recommendations you approve</li>
+          <li>The questions we ask every week</li>
+          <li>Proactive check-ins, 24/7 reachable</li>
+        </ul>
+        <span class="go btn primary">See a week →</span>
+      </a>
+    </div>
+
+    <p class="dim rv" style="margin-top:26px;font-size:13.5px;max-width:70ch">
+      These demos run entirely in your browser. Figures are modelled projections or clearly-labelled example
+      data — never promises. The full engine goes deeper on a diagnosis call, using your real numbers.
+    </p>
+  </div>
+</section>
+
+<footer class="footer"><div class="wrap">
+  <span>© The Mission Automation — done-for-you lead generation, run by our team.</span>
+  <a href="#" data-book>Book a diagnosis call</a>
+</div></footer>
+
+<script src="shared.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  renderPicker(document.getElementById("industryPick"));
+  wireNameInput(document.getElementById("bizname"));
+});
+</script>
+</body>
+</html>
