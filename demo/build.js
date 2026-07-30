@@ -15,7 +15,7 @@ function nodeDefs(cfg) {
     { id: 2,  x: 240, y: 60,  ic: "🧹", name: "Capture & clean",       sub: "Dedupe · validate · normalise" },
     { id: 3,  x: 450, y: 60,  ic: "🔎", name: "Enrich contact",        sub: "Phone · company · source" },
     { id: 4,  x: 660, y: 60,  ic: "🤖", name: "AI qualify & score",    sub: "Intent · urgency · fit → 0–100" },
-    { id: 5,  x: 870, y: 60,  ic: "🔀", name: "Route by score",        sub: "Hot ≥70 · Warm 40–69 · Cold <40" },
+    { id: 5,  x: 880, y: 60,  ic: "🔀", name: "Route by score",        sub: "Hot ≥70 · Warm 40–69 · Cold <40" },
     { id: 6,  x: 240, y: 210, ic: "✉️", name: "Instant reply <60s",    sub: "SMS + email · your voice" },
     { id: 7,  x: 450, y: 210, ic: "📅", name: b.book,                  sub: b.bookSub },
     { id: 8,  x: 660, y: 210, ic: "🔔", name: "Hot-lead alert to you", sub: "Straight to your phone" },
@@ -257,12 +257,14 @@ async function runSim() {
 
   const { steps, status } = buildRun(kind, cfg);
   for (const st of steps) {
-    if (st.edge) { lightEdge(st.edge); await sleep(220); }
+    if (st.edge) { lightEdge(st.edge); await sleep(170); }
     const g = nodeEls[st.node];
     g.classList.add("running");
     clockSec += 1 + (st.node % 3);
     appendLog(st.logs[0][0], st.logs[0][1]);
-    await sleep(st.pause ? 1400 : 600);
+    /* machine steps quicker (~6s a run, was ~8s), the human approval pause
+       LONGER — the one stage that needs the prospect should stand out */
+    await sleep(st.pause ? 1500 : 430);
     if (st.logs[1]) { clockSec += 9; appendLog(st.logs[1][0], st.logs[1][1]); await sleep(500); }
     g.classList.remove("running");
     g.classList.add("donept");

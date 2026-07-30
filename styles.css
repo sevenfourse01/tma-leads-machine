@@ -64,7 +64,10 @@ section{position:relative;z-index:1;padding:104px 0}
 /* ---------- type ------------------------------------------------------- */
 h1,h2,h3,h4{margin:0;letter-spacing:-.042em;line-height:1.03;font-weight:600}
 h1{font-size:clamp(44px,7.4vw,78px);letter-spacing:-.045em}
-h2{font-size:clamp(31px,4.5vw,52px);font-weight:500;letter-spacing:-.04em;line-height:1.06}
+h2{font-size:clamp(28px,4.5vw,52px);font-weight:500;letter-spacing:-.04em;line-height:1.06}
+/* below 620px the clamp has bottomed out and the hard <br>s in the headings
+   collide with natural wrapping, stranding single words on their own line */
+@media(max-width:620px){.sec-head h2 br,.finale h2 br{display:none}}
 h3{font-size:clamp(21px,2.3vw,29px);font-weight:500;letter-spacing:-.035em}
 h4{font-size:17px;font-weight:600;letter-spacing:-.02em}
 p{margin:0}
@@ -90,7 +93,9 @@ p{margin:0}
   transition:transform .18s var(--ease),box-shadow .25s var(--ease),background .25s var(--ease),border-color .25s var(--ease);
   will-change:transform}
 .btn:hover{transform:translateY(-2px)}
-.btn:active{transform:translateY(0)}
+/* cancelling the hover lift gives no feedback on touch or keyboard Enter,
+   where there is no hover state to cancel — press needs its own signal */
+.btn:active{transform:translateY(0) scale(.975);transition-duration:.07s}
 .btn-primary{color:#fff;background:linear-gradient(180deg,#3d688a 0%,var(--steel) 100%);
   box-shadow:0 1px 1px -.6px rgba(0,0,0,.15),0 3.6px 3.6px -1.2px rgba(0,0,0,.14),
              0 10px 22px -8px rgba(77,163,255,.55),inset 0 1px 0 rgba(255,255,255,.14)}
@@ -181,7 +186,9 @@ header.nav.stuck{background:rgba(0,0,0,.72);backdrop-filter:blur(18px) saturate(
 @keyframes rowin{to{opacity:1;transform:none}}
 .console .ts{color:rgba(142,154,168,.55);flex:none}
 .console .tag{flex:none;font-weight:700;letter-spacing:.04em}
-.console .tag.a{color:var(--blue)}.console .tag.b{color:var(--violet)}
+/* --violet as 12.5px bold label text is 3.6:1; #a672ea is 6.0:1 in the same
+   hue. --violet itself is untouched for gradients and the brand mark. */
+.console .tag.a{color:var(--blue)}.console .tag.b{color:#a672ea}
 .console .tag.c{color:var(--ok)}.console .tag.d{color:var(--warn)}
 .console .msg{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
@@ -272,7 +279,8 @@ header.nav.stuck{background:rgba(0,0,0,.72);backdrop-filter:blur(18px) saturate(
   border-color:rgba(255,107,107,.32)}
 
 /* ---------- lead output card ------------------------------------------ */
-.lead-out{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--panel);overflow:hidden}
+.lead-out{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--panel);overflow:hidden;
+  display:flex;flex-direction:column}
 .lead-out .top{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line-soft)}
 .lead-out .avatar{width:36px;height:36px;border-radius:10px;flex:none;display:grid;place-items:center;
   font-size:13px;font-weight:700;letter-spacing:-.02em;
@@ -285,7 +293,7 @@ header.nav.stuck{background:rgba(0,0,0,.72);backdrop-filter:blur(18px) saturate(
 .signals{display:flex;flex-wrap:wrap;gap:7px;padding:16px 20px 0}
 .signals i{font-style:normal;font-size:11.5px;padding:5px 10px;border-radius:7px;
   border:1px solid rgba(77,163,255,.28);background:rgba(77,163,255,.07);color:#bcd8ff}
-.draft{padding:16px 20px 20px;color:var(--muted);font-size:14.5px;line-height:1.68;white-space:pre-line}
+.draft{padding:16px 20px 20px;flex:1;color:var(--muted);font-size:14.5px;line-height:1.68;white-space:pre-line}
 .lead-out .foot{display:flex;gap:9px;padding:0 20px 20px;flex-wrap:wrap}
 .lead-out .foot .note{margin-left:auto;font-size:11.5px;color:var(--dim);align-self:center}
 
@@ -447,20 +455,30 @@ a.pillar:hover .pillar-go{transform:translateX(4px)}
 .build-foot .btn{flex:none}
 .build-foot .lead{font-size:15px}
 
-/* ---------- one-click demo strips (one per pillar) --------------------- */
-.demo-strip{display:flex;align-items:center;justify-content:space-between;gap:26px;flex-wrap:wrap;
-  margin-top:26px;padding:24px 28px;border:1px solid var(--line);border-radius:var(--r-lg);
+/* ---------- one-click demo strips (one per pillar) ---------------------
+   Padding, headline size and body copy match .build-foot above, so the two
+   panels read as one component family rather than two stitched together. */
+.demo-strip{display:flex;align-items:center;justify-content:space-between;gap:28px;flex-wrap:wrap;
+  margin-top:26px;padding:28px 30px;border:1px solid var(--line);border-radius:var(--r-lg);
   background:radial-gradient(80% 140% at 0% 0%,rgba(129,74,200,.2),var(--panel) 62%)}
 .demo-strip > div{flex:1;min-width:260px}
 .demo-strip .btn{flex:none}
-.demo-strip h4{margin-bottom:8px;font-size:19px}
-.demo-strip p{color:var(--dim);font-size:14.5px;line-height:1.58;max-width:64ch}
+.demo-strip h4{margin-bottom:9px;font-size:22px;letter-spacing:-.03em;line-height:1.18}
+.demo-strip p{color:var(--muted);font-size:15px;line-height:1.6;max-width:70ch}
+.build-foot h3{font-size:22px;letter-spacing:-.03em}
+/* violet-tinted ghost: the demos are a secondary action, and steel-blue on a
+   violet panel fought the panel. Keeps .btn-primary for the booking CTAs. */
+.demo-strip .btn-ghost{border-color:rgba(223,122,254,.38);background:rgba(129,74,200,.16);
+  box-shadow:0 10px 26px -14px rgba(129,74,200,.85)}
+.demo-strip .btn-ghost:hover{border-color:rgba(223,122,254,.66);background:rgba(129,74,200,.28)}
 .demo-strip .dtag{display:inline-flex;align-items:center;gap:7px;font-size:10.5px;font-weight:700;
   letter-spacing:.12em;text-transform:uppercase;color:#e2c6ff;margin-bottom:11px}
 .demo-strip .dtag::before{content:"";width:6px;height:6px;border-radius:2px;background:#DF7AFE}
 
 /* ---------- pricing ---------------------------------------------------- */
-.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+/* start, not stretch: Entry has far less content than the other two, and
+   stretching it left ~270px of empty panel under its CTA */
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
 @media(max-width:940px){.tiers{grid-template-columns:1fr}}
 .tier{border:1px solid var(--line);border-radius:var(--r-lg);background:var(--panel);padding:30px;
   display:flex;flex-direction:column;transition:transform .3s var(--ease),border-color .3s}
@@ -485,7 +503,7 @@ a.pillar:hover .pillar-go{transform:translateX(4px)}
 .tier-note{margin-top:16px;padding:13px 15px;border-radius:12px;font-size:13px;line-height:1.55;
   color:#cfe3ff;border:1px solid rgba(77,163,255,.3);background:rgba(77,163,255,.08)}
 .tier-note b{color:#fff;font-weight:600;display:block;margin-bottom:4px}
-.tier-fine{margin-top:14px;font-size:12px;line-height:1.55;color:rgba(142,154,168,.72);text-align:center}
+.tier-fine{margin-top:14px;font-size:12px;line-height:1.55;color:var(--dim);text-align:center}
 .tier li b{color:#fff;font-weight:600}
 
 .tier ul{list-style:none;margin:24px 0 26px;padding:0;display:flex;flex-direction:column;gap:11px}
@@ -526,7 +544,9 @@ footer{border-top:1px solid var(--line-soft);padding:44px 0 56px;position:relati
   display:grid;place-items:center;transition:border-color .25s,background .25s}
 .foot .socials a:hover{border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.05)}
 .foot .socials svg{width:15px;height:15px;fill:var(--muted)}
-.disclaimer{margin-top:26px;font-size:12px;color:rgba(142,154,168,.65);line-height:1.6;max-width:88ch}
+/* the "every figure here is modelled" line was the dimmest prose on the site
+   (3.5:1) — the one paragraph that must be readable. --dim gives 6.1:1. */
+.disclaimer{margin-top:26px;font-size:12px;color:var(--dim);line-height:1.6;max-width:88ch}
 
 /* ---------- reveal ----------------------------------------------------- */
 .rv{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}

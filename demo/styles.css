@@ -62,10 +62,12 @@ section{position:relative;z-index:1;padding:72px 0}
 @media(max-width:760px){section{padding:52px 0}}
 
 /* ---------- type ------------------------------------------------------- */
-h1,h2,h3,h4{margin:0;letter-spacing:-.042em;line-height:1.05;font-weight:600}
-h1{font-size:clamp(38px,6.2vw,66px);letter-spacing:-.045em}
-h2{font-size:clamp(28px,4vw,44px);font-weight:500;letter-spacing:-.04em;line-height:1.08}
-h3{font-size:clamp(20px,2.2vw,27px);font-weight:500;letter-spacing:-.035em}
+/* type scale is deliberately IDENTICAL to the site's (../styles.css:65-68) —
+   headings 15% smaller here made the demos read as a lower-grade sub-site */
+h1,h2,h3,h4{margin:0;letter-spacing:-.042em;line-height:1.03;font-weight:600}
+h1{font-size:clamp(44px,7.4vw,78px);letter-spacing:-.045em}
+h2{font-size:clamp(28px,4.5vw,52px);font-weight:500;letter-spacing:-.04em;line-height:1.06}
+h3{font-size:clamp(21px,2.3vw,29px);font-weight:500;letter-spacing:-.035em}
 h4{font-size:17px;font-weight:600;letter-spacing:-.02em}
 p{margin:0}
 .lead{color:var(--muted);font-size:clamp(16px,1.35vw,19px);line-height:1.62;max-width:62ch}
@@ -82,9 +84,14 @@ p{margin:0}
 .nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
   background:rgba(0,0,0,.72);border-bottom:1px solid var(--line-soft)}
 .nav .wrap{display:flex;align-items:center;gap:22px;height:62px}
-.brand{display:flex;align-items:center;gap:10px;font-weight:600;letter-spacing:-.02em;font-size:15px}
-.brand .dot{width:9px;height:9px;border-radius:50%;
-  background:linear-gradient(135deg,var(--blue),var(--violet))}
+.brand{display:flex;align-items:center;gap:11px;font-weight:600;letter-spacing:-.03em;font-size:15.5px}
+/* the site's logo mark, copied exactly (../styles.css:109-113) — a 9px dot
+   here vs a 29px gradient tile there read as two different brands */
+.brand .dot{width:29px;height:29px;border-radius:8px;flex:none;position:relative;
+  background:conic-gradient(from 350deg,#000 130deg,var(--steel) 320deg,#000 320deg);
+  border:1px solid var(--line);display:grid;place-items:center}
+.brand .dot::after{content:"";width:9px;height:9px;border-radius:2px;
+  background:linear-gradient(141deg,var(--blue),var(--pink))}
 .brand small{color:var(--dim);font-weight:500;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
 .navlinks{display:flex;gap:4px;margin-left:auto}
 .navlinks a{padding:8px 13px;border-radius:10px;font-size:14px;color:var(--muted);transition:.2s var(--ease)}
@@ -92,18 +99,24 @@ p{margin:0}
 .navlinks a.active{color:#fff;background:rgba(77,163,255,.14)}
 @media(max-width:640px){.navlinks a{padding:8px 9px;font-size:13px}.brand small{display:none}}
 
-/* ---------- buttons ---------------------------------------------------- */
+/* ---------- buttons -----------------------------------------------------
+   Deliberately IDENTICAL to the site's .btn/.btn-primary/.btn-ghost (see
+   ../styles.css). These demos are reached from the pillar sections, so a
+   different button treatment would read as a bolted-on microsite. */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;
-  padding:13px 24px;border-radius:13px;font-weight:600;font-size:15px;letter-spacing:-.01em;
-  transition:transform .2s var(--ease),box-shadow .2s var(--ease),background .2s var(--ease);
-  cursor:pointer;white-space:nowrap}
-.btn.primary{background:var(--steel);color:#fff;
-  box-shadow:0 0 0 1px rgba(255,255,255,.14) inset,0 10px 30px rgba(38,88,116,.35)}
-.btn.primary:hover{transform:translateY(-1px);background:var(--steel-deep);
-  box-shadow:0 0 0 1px rgba(255,255,255,.2) inset,0 14px 34px rgba(38,88,116,.5)}
-.btn.ghost{background:rgba(255,255,255,.05);box-shadow:0 0 0 1px var(--line) inset;color:var(--muted)}
-.btn.ghost:hover{color:#fff;background:rgba(255,255,255,.09)}
-.btn.big{padding:16px 30px;font-size:16px;border-radius:15px}
+  padding:13px 22px;border-radius:10px;font-weight:600;font-size:15px;letter-spacing:-.02em;
+  transition:transform .18s var(--ease),box-shadow .25s var(--ease),background .25s var(--ease),
+             border-color .25s var(--ease);
+  cursor:pointer;white-space:nowrap;will-change:transform}
+.btn:hover{transform:translateY(-2px)}
+.btn:active{transform:translateY(0) scale(.975);transition-duration:.07s}
+.btn.primary{color:#fff;background:linear-gradient(180deg,#3d688a 0%,var(--steel) 100%);
+  box-shadow:0 1px 1px -.6px rgba(0,0,0,.15),0 3.6px 3.6px -1.2px rgba(0,0,0,.14),
+             0 10px 22px -8px rgba(77,163,255,.55),inset 0 1px 0 rgba(255,255,255,.14)}
+.btn.primary:hover{box-shadow:0 14px 34px -10px rgba(77,163,255,.75),inset 0 1px 0 rgba(255,255,255,.2)}
+.btn.ghost{color:#fff;border:1px solid var(--line);background:rgba(255,255,255,.03)}
+.btn.ghost:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.07)}
+.btn.big{padding:16px 30px;font-size:16px;border-radius:12px}
 .btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
 
 /* ---------- panels & cards --------------------------------------------- */
@@ -184,11 +197,17 @@ p{margin:0}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ---------- report ------------------------------------------------------ */
-.headline-num{font-size:clamp(40px,6vw,64px);font-weight:600;letter-spacing:-.045em;line-height:1;
+/* the payload of the whole demo — at 64px it barely cleared the 52px h2
+   above it. 88px makes it read as the answer, not another heading. */
+.headline-num{font-size:clamp(46px,8vw,88px);font-weight:600;letter-spacing:-.048em;line-height:.95;
   background:linear-gradient(135deg,#fff 30%,#a9d3ff);-webkit-background-clip:text;background-clip:text;
   -webkit-text-fill-color:transparent}
-.range-row{display:flex;gap:26px;flex-wrap:wrap;margin-top:18px}
-.range-row .rr{min-width:120px}
+/* hairline + dividers turn three floating numbers into a deliberate stat strip */
+.range-row{display:flex;gap:0;flex-wrap:wrap;margin-top:22px;padding-top:16px;
+  border-top:1px solid var(--line)}
+.range-row .rr{min-width:150px;padding-right:26px;margin-right:26px;
+  border-right:1px solid var(--line-soft)}
+.range-row .rr:last-child{border-right:0;margin-right:0;padding-right:0}
 .range-row .rr b{display:block;font-size:22px;letter-spacing:-.03em}
 .range-row .rr span{font-size:12px;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
 
@@ -235,14 +254,18 @@ p{margin:0}
   .wf-svg{min-width:820px}
 }
 
-.wf-node rect{fill:rgba(13,18,24,.95);stroke:rgba(255,255,255,.14);stroke-width:1;rx:13}
+/* stroke was .14 = 1.4:1 on the canvas — the node outlines were barely there.
+   .36 = 3.2:1, which clears the 3:1 floor for non-text UI. */
+.wf-node rect{fill:rgba(22,29,38,.98);stroke:rgba(255,255,255,.36);stroke-width:1;rx:13}
 .wf-node text{fill:#fff;font-family:Figtree,sans-serif}
 .wf-node .nname{font-size:12.5px;font-weight:600;letter-spacing:-.01em}
 .wf-node .nsub{font-size:10px;fill:rgba(183,192,204,.85)}
 .wf-node .nicon{font-size:15px}
 .wf-node{cursor:pointer}
 .wf-node:hover rect{stroke:rgba(77,163,255,.6)}
-.wf-node.human rect{stroke:rgba(129,74,200,.55);fill:rgba(24,15,34,.95)}
+/* the human-in-the-loop nodes are the whole point of this demo, and at .55
+   alpha they were the FAINTEST state on the canvas (1.8:1). Solid = 3.6:1. */
+.wf-node.human rect{stroke:var(--violet);fill:rgba(30,20,44,.98)}
 .wf-node.human:hover rect{stroke:#df7afe}
 .wf-node.running rect{stroke:#4da3ff;filter:drop-shadow(0 0 9px rgba(77,163,255,.55))}
 .wf-node.donept rect{stroke:rgba(89,212,155,.6)}
@@ -260,11 +283,11 @@ p{margin:0}
 
 /* execution log */
 .exec-log{background:#05070a;border-radius:var(--r);box-shadow:0 0 0 1px var(--line) inset;
-  padding:16px 18px;height:100%;min-height:280px;max-height:430px;overflow-y:auto}
+  padding:16px 18px;min-height:280px;max-height:430px;overflow-y:auto}
 .exec-log .lg{display:flex;gap:10px;padding:5px 0;font-family:ui-monospace,Menlo,Consolas,monospace;
   font-size:12px;line-height:1.5;color:var(--muted);opacity:0;transform:translateY(4px);
   animation:login .3s var(--ease) forwards}
-.exec-log .lg .t{color:rgba(142,154,168,.7);flex:none}
+.exec-log .lg .t{color:var(--dim);flex:none}   /* was .7 alpha = 3.9:1 */
 .exec-log .lg.ok .m{color:#9fd6b8}
 .exec-log .lg.hot .m{color:#ffd9a0}
 .exec-log .lg.human .m{color:#e2c6ff}
@@ -291,7 +314,7 @@ p{margin:0}
 .codebox pre{margin:0;padding:18px;overflow-x:auto;font-family:ui-monospace,Menlo,Consolas,monospace;
   font-size:12.5px;line-height:1.65;color:#c9d4e0}
 .codebox .c-kw{color:#8ec2ff}.codebox .c-fn{color:#dfb2ff}.codebox .c-str{color:#9fd6b8}
-.codebox .c-cm{color:rgba(142,154,168,.75);font-style:italic}.codebox .c-num{color:#ffd9a0}
+.codebox .c-cm{color:var(--dim);font-style:italic}.codebox .c-num{color:#ffd9a0}
 
 /* ---------- KPI tiles & dashboards (Grow + Build mock) ------------------ */
 .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
@@ -379,7 +402,11 @@ p{margin:0}
 
 /* ---------- misc -------------------------------------------------------- */
 .sect-head{margin-bottom:30px;display:flex;flex-direction:column;gap:12px}
+/* each column is a heading + a panel; let the panel absorb the slack so the
+   two halves end level instead of one trailing 130-190px of empty space */
 .split{display:grid;grid-template-columns:1.4fr 1fr;gap:18px;align-items:stretch}
+.split > .rv{display:flex;flex-direction:column;min-width:0}
+.split > .rv > :last-child{flex:1 1 auto}
 @media(max-width:900px){.split{grid-template-columns:1fr}}
 .footer{border-top:1px solid var(--line-soft);padding:36px 0 46px;color:var(--dim);font-size:13px}
 .footer .wrap{display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:space-between}
@@ -391,6 +418,12 @@ p{margin:0}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
 .hide{display:none !important}
+
+/* Predict swaps form → analysis → report by toggling display, so its three
+   biggest moments were hard cuts. The report should arrive, not materialise. */
+@keyframes stageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+#formStage:not(.hide),#analyseStage:not(.hide),#reportStage:not(.hide){
+  animation:stageIn .45s var(--ease) both}
 
 /* reveal on scroll — with the tma-site blank-page trap fixed: JS backstop reveals */
 .rv{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease),transform .6s var(--ease)}

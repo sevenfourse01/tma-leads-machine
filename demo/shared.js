@@ -161,9 +161,16 @@ function initReveal() {
   const els = $$(".rv");
   const show = el => el.classList.add("in");
   if (!("IntersectionObserver" in window)) { els.forEach(show); return; }
+  /* stagger what enters together by 70ms, same as the site — revealing a
+     three-card grid all at once pops as one block instead of composing */
   const io = new IntersectionObserver(entries => {
-    entries.forEach(en => { if (en.isIntersecting) { show(en.target); io.unobserve(en.target); } });
-  }, { rootMargin: "0px 0px -8% 0px" });
+    let k = 0;
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      en.target.style.transitionDelay = Math.min(k++, 5) * 70 + "ms";
+      show(en.target); io.unobserve(en.target);
+    });
+  }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" });
   els.forEach(el => io.observe(el));
   /* backstop: never leave the page blank if IO doesn't fire (hidden tab etc.) */
   setTimeout(() => els.forEach(show), 2600);
