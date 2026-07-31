@@ -367,10 +367,10 @@ function companyName() {
    actually get right rather than an edge case. */
 const fmtGBP = n => (n < 0 ? "−£" : "£") + Math.round(Math.abs(n)).toLocaleString("en-GB");
 const fmtGBPk = n => {
-  const a = Math.abs(n);
-  return a >= 1000
-    ? (n < 0 ? "−£" : "£") + (a / 1000).toFixed(a >= 10000 ? 0 : 1) + "k"
-    : fmtGBP(n);
+  const a = Math.abs(n), sign = n < 0 ? "−£" : "£";
+  if (a >= 1e6) return sign + (a / 1e6).toFixed(a >= 1e7 ? 0 : 1) + "m";   /* not "£1330k" */
+  if (a >= 1000) return sign + (a / 1000).toFixed(a >= 10000 ? 0 : 1) + "k";
+  return fmtGBP(n);
 };
 const fmtPct = n => Math.round(n) + "%";
 
@@ -422,6 +422,20 @@ function initReveal() {
 }
 
 /* ---------- industry picker (rendered on each demo page) ----------------- */
+/* Nineteen niches as nineteen buttons is a wall of choice before a visitor has
+   done anything. As a select it is one control, and the list still says "we do
+   yours" the moment it opens. */
+function renderPickerSelect(sel, onChange) {
+  const p = getProfile();
+  sel.innerHTML = Object.entries(PRESETS)
+    .map(([id, cfg]) => `<option value="${id}"${id === p.industry ? " selected" : ""}>${cfg.label}</option>`)
+    .join("");
+  sel.addEventListener("change", () => {
+    saveProfile({ industry: sel.value });
+    onChange && onChange(sel.value);
+  });
+}
+
 function renderPicker(container, onChange) {
   const p = getProfile();
   container.innerHTML = "";

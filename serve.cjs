@@ -7,7 +7,9 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=
 
 http.createServer((req, res) => {
   let p = decodeURIComponent(req.url.split('?')[0]);
-  if (p === '/') p = '/index.html';
+  /* directory URLs serve their index, the way GitHub Pages does — without this
+     /demo/ 404s locally while working fine in production */
+  if (p.endsWith('/')) p += 'index.html';
   const file = path.join(ROOT, path.normalize(p).replace(/^([/\\])+/, ''));
   if (!file.startsWith(ROOT)) { res.writeHead(403).end('forbidden'); return; }
   fs.readFile(file, (err, buf) => {

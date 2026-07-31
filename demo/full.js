@@ -256,7 +256,7 @@ function runBuild() {
 
 /* ---------- init ---------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  renderPicker($("#industryPick"));
+  renderPickerSelect($("#industrySel"));
   wireNameInput($("#bizname"));
   renderSymptoms();
   wireSegs();
