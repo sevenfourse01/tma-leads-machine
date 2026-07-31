@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Full demo · The Mission Automation</title>
+<meta name="description" content="Answer a few questions and get a customised blueprint: which systems we would build for you, in what order, and how we would run them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="aura"></div><div class="grid-fade"></div>
+
+<nav class="nav"><div class="wrap">
+  <a class="brand" href="../index.html"><span class="dot"></span>THE MISSION AUTOMATION <small>one-click demos</small></a>
+  <div class="navlinks">
+    <a href="index.html">All demos</a>
+    <a href="predict.html">Predict</a>
+    <a href="build.html">Build</a>
+    <a href="grow.html">Grow</a>
+    <a href="#" data-book class="btn ghost" style="padding:8px 15px;font-size:13.5px">Book a call</a>
+  </div>
+</div></nav>
+
+<!-- ============ STEP 1 · THE QUESTIONS ============ -->
+<section id="askStage" style="padding-top:64px">
+  <div class="wrap">
+    <div class="sect-head rv" style="align-items:flex-start">
+      <span class="eyebrow"><span class="tick"></span>Full demo · all three pillars</span>
+      <h2>Tell us what's broken.<br>We'll show you what we'd build.</h2>
+      <p class="lead">This runs in your browser and takes about ninety seconds. You get a real blueprint:
+      which systems we'd build for you, the order we'd build them in, and how we'd run them once they're
+      live. What it can't do is diagnose you. That part needs a call, and we're explicit below about why.</p>
+    </div>
+
+    <div class="persona-bar rv">
+      <label>Your business</label>
+      <input type="text" id="bizname" placeholder="Business name (optional)">
+      <div class="picker" id="industryPick"></div>
+    </div>
+
+    <div class="rv" style="margin-top:26px">
+      <div class="qhead"><span class="qstep">01</span>
+        <div><h3>Which of these sound like you?</h3>
+          <p class="dim" style="font-size:14.5px">Pick as many as apply. Every one maps to something we build.</p></div>
+      </div>
+      <div class="symgrid" id="symptoms"></div>
+    </div>
+
+    <div class="rv" style="margin-top:34px">
+      <div class="qhead"><span class="qstep">02</span>
+        <div><h3>A little context</h3>
+          <p class="dim" style="font-size:14.5px">Rough answers are fine. Nothing here leaves your browser.</p></div>
+      </div>
+      <div class="qgrid" style="margin-top:16px">
+        <div class="q">
+          <div class="qlabel"><span class="qnum">A</span>Roughly how many enquiries a month?</div>
+          <div class="seg" id="qVol">
+            <button data-v="low">Under 20</button>
+            <button data-v="mid" class="on">20 to 100</button>
+            <button data-v="high">More than 100</button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="qlabel"><span class="qnum">B</span>Who handles a new enquiry today?</div>
+          <div class="seg" id="qWho">
+            <button data-v="me" class="on">Me, between other jobs</button>
+            <button data-v="team">A small team</button>
+            <button data-v="nobody">Honestly, nobody owns it</button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="qlabel"><span class="qnum">C</span>What happens out of hours?</div>
+          <div class="seg" id="qHours">
+            <button data-v="wait" class="on">It waits until morning</button>
+            <button data-v="some">Someone checks sometimes</button>
+            <button data-v="covered">We're covered already</button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="qlabel"><span class="qnum">D</span>Where do enquiries end up?</div>
+          <div class="seg" id="qWhere">
+            <button data-v="inbox" class="on">An inbox or a phone</button>
+            <button data-v="sheet">A spreadsheet</button>
+            <button data-v="crm">A proper CRM</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rv" style="margin-top:28px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <button class="btn primary big" id="buildBtn">Build my blueprint →</button>
+      <span class="dim" style="font-size:13.5px" id="pickCount">Pick at least one above.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STEP 2 · WORKING ============ -->
+<section id="workStage" class="hide" style="padding-top:110px;padding-bottom:110px">
+  <div class="wrap">
+    <div class="stagebox panel edge pad">
+      <span class="eyebrow" style="margin-bottom:14px"><span class="tick"></span>Drafting</span>
+      <h3 id="workTitle" style="margin-bottom:14px">Reading your answers…</h3>
+      <div id="workSteps"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STEP 3 · THE BLUEPRINT ============ -->
+<section id="planStage" class="hide" style="padding-top:64px">
+  <div class="wrap">
+
+    <div class="sect-head" style="align-items:flex-start">
+      <span class="eyebrow"><span class="tick"></span>Draft blueprint · <span id="planCompany"></span></span>
+      <h2 id="planHeadline">What we'd build for you</h2>
+      <p class="lead" id="planSummary"></p>
+    </div>
+
+    <!-- coverage: what this could and couldn't see -->
+    <div class="cover panel edge-violet edge" id="coverBox"></div>
+
+    <!-- the build sequence -->
+    <div style="margin-top:38px">
+      <h3 style="margin-bottom:6px">The order we'd build it</h3>
+      <p class="dim" style="font-size:14.5px;margin-bottom:18px">One thing at a time, each one live and
+      earning before the next starts. <span class="modeltag" style="margin-left:8px">Draft sequence, confirmed on the call</span></p>
+      <div id="planPhases"></div>
+    </div>
+
+    <!-- how it's run -->
+    <div style="margin-top:44px">
+      <h3 style="margin-bottom:6px">How it's run once it's live</h3>
+      <p class="dim" style="font-size:14.5px;margin-bottom:18px">We operate it. You approve things.
+      That's the whole division of labour.</p>
+      <div class="rhythm" id="planRhythm"></div>
+    </div>
+
+    <!-- THE GATE: what needs a call -->
+    <div class="gatebox edge edge-violet" id="gateBox" style="margin-top:44px"></div>
+
+    <div class="panel edge pad" style="margin-top:34px;display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:240px">
+        <h3>Nothing here is built until we've spoken</h3>
+        <p class="dim" style="margin-top:6px;font-size:14.5px">The call is where this blueprint becomes a
+        quote: we measure what this page had to assume, look at your actual stack, and tell you which of
+        these to build first. If the numbers don't support it, we'll say so then too.</p>
+      </div>
+      <a href="#" data-book class="btn primary big">Book the diagnosis call</a>
+    </div>
+
+    <div style="margin-top:26px;display:flex;gap:14px;flex-wrap:wrap">
+      <button class="btn ghost" id="redoBtn">← Change my answers</button>
+      <a class="btn ghost" href="predict.html">Demo 01: Predict</a>
+      <a class="btn ghost" href="build.html">Demo 02: Build</a>
+      <a class="btn ghost" href="grow.html">Demo 03: Grow</a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="wrap">
+  <span>© The Mission Automation. A draft blueprint from a short form, not a diagnosis. We scope and price on the call.</span>
+  <a href="#" data-book>Book a diagnosis call</a>
+</div></footer>
+
+<script src="shared.js"></script>
+<script src="full.js"></script>
+</body>
+</html>

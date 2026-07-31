@@ -8,6 +8,48 @@
 const BOOKING_URL = "../index.html#book";
 const CONTACT_EMAIL = "hello@themissionautomation.com";  // confirm before launch
 
+/* ---------- the build catalogue -----------------------------------------
+   The nine entry builds from the pricing page, plus the full machine. Shared
+   by the Build canvas (which colours nodes by them) and the full demo (which
+   recommends them).
+
+   `needs` is the load-bearing field: what we must see before we can integrate
+   that build. None of it is knowable from a form, which is why every route
+   through these demos ends at a call rather than a checkout. Deliberately no
+   prices — the site prices on the diagnosis call and so do we. */
+const BUILDS = {
+  SPEED: { name: "Speed-to-lead responder", days: "3 days", tier: "entry", col: "#4da3ff",
+    what: "Answers every new enquiry in under 60 seconds, day or night, with a live booking link.",
+    needs: "your web forms, the number you take enquiries on, and your calendar" },
+  RESCUE: { name: "Missed-call rescue", days: "2 days", tier: "entry", col: "#ffc46b",
+    what: "Texts back every missed call within 30 seconds, before they ring the next name on the list.",
+    needs: "your phone system and a number we can send from" },
+  TRIAGE: { name: "Inbox triage & draft replies", days: "4 days", tier: "entry", col: "#df7afe",
+    what: "Scores each enquiry and drafts the reply in your voice. You approve, edit or bin it.",
+    needs: "mailbox access and about twenty of your past replies, so we can learn how you write" },
+  QUOTE: { name: "Quote & proposal generator", days: "5 days", tier: "entry", col: "#ffd9a0",
+    what: "Turns an enquiry into a branded quote or proposal, ready to e-sign, while it still matters.",
+    needs: "your pricing rules and a recent quote we can rebuild as a template" },
+  SIGNAL: { name: "Buying-signal watcher", days: "5 days", tier: "entry", col: "#9fd6b8",
+    what: "Watches for the events that mean someone is about to buy, and tells you while it's still news.",
+    needs: "your ideal-customer definition and the sources worth watching in your market" },
+  REVIEW: { name: "Review & referral engine", days: "3 days", tier: "entry", col: "#a9d3ff",
+    what: "Asks for the review at the moment people are happiest, and routes the unhappy ones to you first.",
+    needs: "your Google or Trustpilot profile and a signal for when a job is finished" },
+  DASH: { name: "Live KPI dashboard", days: "5 days", tier: "entry", col: "#b7c0cc",
+    what: "One screen with the numbers that matter, updated live, so Monday stops being a guess.",
+    needs: "read access to wherever those numbers live today, however messy that is" },
+  CRM: { name: "Onboarding pack automation", days: "4 days", tier: "entry", col: "#8ec2ff",
+    what: "Logs every touch automatically and stops anyone retyping the same details twice.",
+    needs: "your CRM and its current fields, or a conversation about picking one" },
+  CONTENT: { name: "Content repurposer", days: "4 days", tier: "entry", col: "#dfb2ff",
+    what: "Turns one recording into a week of platform-native posts, queued for your approval.",
+    needs: "a recent recording and a sense of what you would never want posted" },
+  MACHINE: { name: "THE MACHINE: the full build", days: "about 3 weeks", tier: "core", col: "#e2c6ff",
+    what: "The whole engine, run by our team against a budget you set: sourcing, research, drafting, sending and reporting.",
+    needs: "the full diagnosis. Your economics, your stack, your deliverability and your compliance position" }
+};
+
 /* ---------- industry presets -------------------------------------------- */
 /* Illustrative sector defaults — used to prefill the Predict form and to
    personalise Build & Grow. Every number a prospect sees that comes from

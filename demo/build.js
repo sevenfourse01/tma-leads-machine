@@ -12,16 +12,11 @@ const NODE_W = 170, NODE_H = 64;
    Every node names the system that does it and the question we'd ask on the
    diagnosis call to find out whether this business actually needs that part —
    the whole point being that most people need three or four of these, not
-   fifteen, and the call is how we find out which. */
-const SYSTEMS = {
-  SPEED:   { name: "Speed-to-lead responder",     days: "3 days", tier: "entry", col: "#4da3ff" },
-  TRIAGE:  { name: "Inbox triage & draft replies", days: "4 days", tier: "entry", col: "#df7afe" },
-  RESCUE:  { name: "Missed-call rescue",          days: "2 days", tier: "entry", col: "#ffc46b" },
-  SIGNAL:  { name: "Buying-signal watcher",       days: "5 days", tier: "entry", col: "#9fd6b8" },
-  CRM:     { name: "Onboarding pack automation",  days: "4 days", tier: "entry", col: "#a9d3ff" },
-  DASH:    { name: "Live KPI dashboard",          days: "5 days", tier: "entry", col: "#b7c0cc" },
-  MACHINE: { name: "THE MACHINE: the full build", days: "~3 weeks", tier: "core", col: "#e2c6ff" }
-};
+   fifteen, and the call is how we find out which.
+
+   The catalogue itself lives in shared.js, so the canvas and the full demo
+   can never drift apart on what a build is called or how long it takes. */
+const SYSTEMS = BUILDS;
 
 /* ---------- nodes --------------------------------------------------------- */
 function nodeDefs(cfg) {

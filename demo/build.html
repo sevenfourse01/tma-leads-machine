@@ -39,7 +39,8 @@
       <div class="picker" id="industryPick"></div>
     </div>
 
-    <!-- ============ WORKFLOW CANVAS ============ -->
+    <!-- ============ WORKFLOW CANVAS + NODE CONFIG RAIL ============ -->
+    <div class="wfstage">
     <div class="canvas-shell edge rv">
       <div class="canvas-grid"></div>
       <div class="canvas-head">
@@ -57,20 +58,22 @@
       </div>
     </div>
 
-    <!-- ============ LOG + NODE CONFIG ============ -->
-    <div class="split" style="margin-top:18px">
-      <div class="rv">
-        <h4 style="margin-bottom:10px" class="dim">EXECUTION LOG</h4>
-        <div class="exec-log" id="execLog">
-          <div class="lg"><span class="t">--:--:--</span><span class="m">Waiting for a run…</span></div>
-        </div>
-      </div>
-      <div class="rv">
-        <h4 style="margin-bottom:10px" class="dim">NODE CONFIG: click a node</h4>
+      <aside class="wfrail rv">
+        <h4 class="railhead dim">NODE CONFIG: click a node</h4>
         <div class="drawer" id="nodeDrawer">
           <div class="dhead"><span class="dic">⚙</span>
             <div><h4>Select a node on the canvas</h4><p class="dim" style="font-size:13px">Every node opens like this in the real build: settings, mappings, owner.</p></div>
           </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- ============ EXECUTION LOG ============ -->
+    <div class="bleed" style="margin-top:18px">
+      <div class="rv">
+        <h4 style="margin-bottom:10px" class="dim">EXECUTION LOG</h4>
+        <div class="exec-log wide" id="execLog">
+          <div class="lg"><span class="t">--:--:--</span><span class="m">Waiting for a run…</span></div>
         </div>
       </div>
     </div>
