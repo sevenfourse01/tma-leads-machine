@@ -113,9 +113,11 @@
       <div>
         <span class="headline-num" id="repBig">£0</span>
         <div class="range-row">
-          <div class="rr"><b id="repLow">£0</b><span>Conservative</span></div>
-          <div class="rr"><b id="repMid">£0</b><span>Central</span></div>
-          <div class="rr"><b id="repHigh">£0</b><span>Upside</span></div>
+          <!-- the headline above IS the central case (p50), so a third cell
+               repeating it was both redundant and, after the engine rewrite,
+               never assigned: it rendered a literal "£0 Central". -->
+          <div class="rr"><b id="repLow">£0</b><span>Conservative · p10</span></div>
+          <div class="rr"><b id="repHigh">£0</b><span>Upside · p90</span></div>
         </div>
         <p class="modeltag" style="margin-top:14px">Modelled 12-month projection, not a promise. Ranges, not certainties.</p>
       </div>
