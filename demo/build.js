@@ -199,127 +199,6 @@ function openDrawer(n) {
     </div>`;
 }
 
-/* ---------- test-run simulation ------------------------------------------- */
-const SCENARIOS = ["hot", "warm", "cold"];
-let runCount = 0, running = false, pendingRender = false, clockSec = 0;
-
-const fmtClock = s => {
-  const h = Math.floor(s / 3600) % 24, m = Math.floor(s / 60) % 60, x = s % 60;
-  return [h, m, x].map(v => String(v).padStart(2, "0")).join(":");
-};
-
-function appendLog(cls, msg) {
-  const log = $("#execLog");
-  const d = document.createElement("div");
-  d.className = "lg" + (cls ? " " + cls : "");
-  d.innerHTML = `<span class="t">${fmtClock(clockSec)}</span><span class="m">${esc(msg)}</span>`;
-  log.appendChild(d);
-  log.scrollTop = log.scrollHeight;
-}
-
-function buildRun(kind, cfg) {
-  const idx = kind === "hot" ? 0 : kind === "warm" ? 2 : 4;
-  const lead = cfg.leadNames[idx], svc = cfg.services[idx], ch = cfg.channels[0];
-  const steps = [
-    { node: 1, logs: [[null, `Trigger · ${lead}: "${svc}" via ${ch}`]] },
-    { edge: "1-2", node: 2, logs: [["ok", "Captured & cleaned: valid phone, no duplicate"]] },
-    { edge: "2-3", node: 3, logs: [["ok", `Enriched · mobile confirmed · source: ${ch}`]] },
-    { edge: "3-4", node: 4, logs: [
-      kind === "hot"  ? ["hot", `AI score 87/100 · high intent ("${svc}", wants this week)`] :
-      kind === "warm" ? [null, "AI score 54/100 · interested, no urgency signals yet"] :
-                        [null, "AI score 21/100 · early research, price-only question"]] },
-    { edge: "4-5", node: 5, logs: [[kind === "hot" ? "hot" : null,
-      kind === "hot" ? "Routed → HOT lane" : kind === "warm" ? "Routed → WARM lane" : "Routed → COLD lane"]] }
-  ];
-
-  if (kind === "hot") steps.push(
-    { edge: "5-6",  node: 6,  logs: [["ok", "Instant reply sent in 41s · SMS + email, in your voice"]] },
-    { edge: "6-7",  node: 7,  logs: [["ok", `${cfg.build.book}: link opened, slot held Tue 14:30`]] },
-    { edge: "7-8",  node: 8,  logs: [["hot", "Hot-lead alert sent to your phone"]] },
-    { edge: "8-14", node: 14, logs: [["ok", `${cfg.build.crm}: full history logged, nothing retyped`]] },
-    { edge: "14-15", node: 15, logs: [["ok", "Queued for Monday's report"]] }
-  );
-  else if (kind === "warm") steps.push(
-    { edge: "5-9",  node: 9,  logs: [["ok", `${cfg.build.nurture}: draft 1 of 5 written in your voice`]] },
-    { edge: "9-10", node: 10, pause: true, logs: [
-      ["human", "Waiting for you: one-tap approve on your phone…"],
-      ["human", "You approved (edited one line) in 9 seconds"]] },
-    { edge: "10-11", node: 11, logs: [["ok", "Sent + 4 follow-ups scheduled · auto-stops on reply"]] },
-    { edge: "11-14", node: 14, logs: [["ok", `${cfg.build.crm}: full history logged, nothing retyped`]] },
-    { edge: "14-15", node: 15, logs: [["ok", "Queued for Monday's report"]] }
-  );
-  else steps.push(
-    { edge: "5-12", node: 12, logs: [["ok", "Added to long-term list · quarterly value emails"]] },
-    { edge: "12-13", node: 13, logs: [["ok", "Queued for the next reactivation cycle in 14 days"]] },
-    { edge: "13-14", node: 14, logs: [["ok", `${cfg.build.crm}: logged with source and score`]] },
-    { edge: "14-15", node: 15, logs: [["ok", "Counted in Monday's report"]] }
-  );
-
-  const status =
-    kind === "hot"  ? "Enquiry handled in <b>47s</b>. Booked in, and you got the alert" :
-    kind === "warm" ? "Enquiry handled in <b>52s</b>. <b>You approved 1 message</b>" :
-                      "Filed in <b>12s</b>. Nothing lost, nothing pushy";
-  return { steps, status };
-}
-
-function lightEdge(key) {
-  const e = edgeEls[key];
-  if (!e) return;
-  e.classList.add("lit");
-  const f = document.createElementNS(SVG_NS, "path");
-  f.setAttribute("d", e.getAttribute("d"));
-  f.setAttribute("class", "wf-flow");
-  e.parentNode.appendChild(f);
-  flowEls.push(f);
-}
-
-function resetCanvas() {
-  Object.values(nodeEls).forEach(g => g.classList.remove("running", "donept"));
-  Object.values(edgeEls).forEach(p => p.classList.remove("lit"));
-  flowEls.forEach(f => f.remove());
-  flowEls = [];
-}
-
-async function runSim() {
-  if (running) return;
-  running = true;
-  const btn = $("#runWf");
-  btn.disabled = true;
-  const cfg = PRESETS[getProfile().industry];
-  const kind = SCENARIOS[runCount % 3];
-  runCount++;
-  resetCanvas();
-
-  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const sleep = ms => new Promise(r => setTimeout(r, reduced ? 0 : ms));
-
-  clockSec = 9 * 3600 + 41 * 60 + 2 + runCount * 137;
-  $("#execLog").innerHTML = "";
-  appendLog(null, `Test run ${runCount}: ${kind.toUpperCase()} scenario (example data)`);
-  $("#runStat").textContent = `Running a ${kind} enquiry…`;
-
-  const { steps, status } = buildRun(kind, cfg);
-  for (const st of steps) {
-    if (st.edge) { lightEdge(st.edge); await sleep(170); }
-    const g = nodeEls[st.node];
-    g.classList.add("running");
-    clockSec += 1 + (st.node % 3);
-    appendLog(st.logs[0][0], st.logs[0][1]);
-    /* machine steps quicker (~6s a run, was ~8s), the human approval pause
-       LONGER — the one stage that needs the prospect should stand out */
-    await sleep(st.pause ? 1500 : 430);
-    if (st.logs[1]) { clockSec += 9; appendLog(st.logs[1][0], st.logs[1][1]); await sleep(500); }
-    g.classList.remove("running");
-    g.classList.add("donept");
-  }
-
-  $("#runStat").innerHTML = status;
-  btn.disabled = false;
-  btn.textContent = `▶ Run another (next: ${SCENARIOS[runCount % 3]} lead)`;
-  running = false;
-  if (pendingRender) { pendingRender = false; renderAll(); }
-}
-
 /* ---------- sample dashboard ---------------------------------------------- */
 const kpiTile = (label, val, cls, delta) => `
   <div class="kpi"><div class="klabel">${label}</div>
@@ -432,16 +311,12 @@ function toggleSystems() {
 }
 
 function renderAll() {
-  if (running) { pendingRender = true; return; }
   $("#wfTitle").textContent = companyName() + ": lead engine";
   renderCanvas();
   renderSysLegend();
   renderDash();
   renderCode();
   renderHow();
-  $("#execLog").innerHTML =
-    `<div class="lg"><span class="t">--:--:--</span><span class="m">Waiting for a run…</span></div>`;
-  $("#runStat").textContent = "Idle. Click run to simulate a live enquiry.";
   $("#nodeDrawer").innerHTML = `
     <div class="dhead"><span class="dic">⚙</span>
       <div><h4>Select a node on the canvas</h4><p class="dim" style="font-size:13px">Every node opens like this in the real build: settings, mappings, owner.</p></div>
@@ -452,7 +327,6 @@ document.addEventListener("DOMContentLoaded", () => {
   renderPicker($("#industryPick"), renderAll);
   wireNameInput($("#bizname"), () => { $("#wfTitle").textContent = companyName() + ": lead engine"; });
   renderAll();
-  $("#runWf").addEventListener("click", runSim);
   const sb = $("#sysBtn");
   if (sb) sb.addEventListener("click", toggleSystems);
 });
