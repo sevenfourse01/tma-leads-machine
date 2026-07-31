@@ -338,7 +338,7 @@ function report(profile, sim) {
       .map(k => profile[k].label || k),
     upliftDraws: uf,
     method: "Beta-PERT three-point inputs, " + sim.n + " Monte Carlo draws (seed " + sim.seed +
-      "). NOT a trained model — a structural funnel simulated under stated uncertainty, " +
+      "). NOT a trained model: a structural funnel simulated under stated uncertainty, " +
       "conditional on the inputs given. Inputs are drawn INDEPENDENTLY; real funnels are " +
       "correlated, which would narrow this band."
   };

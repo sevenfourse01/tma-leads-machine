@@ -15,7 +15,7 @@ document.querySelectorAll('.js-book').forEach(a => {
 });
 document.querySelectorAll('.js-mail').forEach(a => {
   a.href = 'mailto:' + CONTACT_EMAIL + '?subject=' +
-    encodeURIComponent('THE MACHINE — diagnosis call');
+    encodeURIComponent('THE MACHINE: diagnosis call');
 });
 
 /* ---- sticky nav ------------------------------------------------------- */
@@ -82,67 +82,67 @@ document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
    ========================================================================= */
 const STAGES = [
   {
-    kicker: 'Stage 01 — intake',
+    kicker: 'Stage 01 · intake',
     ttl: 'You brief us',
     hint: 'The deep profile',
-    body: `On the diagnosis call you tell us what you know: what you do, who you sell to, ticket size, margin, what a customer is worth over their lifetime, your monthly budget, your website and platforms, and whatever funnel numbers you actually have.
+    body: `On the diagnosis call you tell us what you know: what you do, who you sell to, ticket size, margin, what a customer is worth over their lifetime, your monthly budget, your website and platforms, and whatever funnel numbers you have.
 
-We store every metric with its provenance — measured by you, inferred by us, or flatly unknown. That tag follows the number through every decision we make downstream, so nothing we recommend later can quietly rest on a guess you never gave us.`,
+We store every metric with its provenance: measured by you, inferred by us, or unknown. That tag follows the number through every decision we make downstream, so nothing we recommend later rests on a guess you never gave us.`,
     out: 'Captured',
     kv: ['<b>Ticket</b> £4,400', '<b>Margin</b> 62%', '<b>LTV</b> ×3.4', '<b>Budget</b> £2,000/mo',
          '<b>Cost per lead</b> unknown', '<b>Call→close</b> inferred']
   },
   {
-    kicker: 'Stage 02 — website research',
+    kicker: 'Stage 02 · website research',
     ttl: 'We read your business',
     hint: 'Site, socials, voice',
-    body: `Before we write a word on your behalf, our system reads your website and your public profiles for us. It pulls out three things: what you genuinely offer, what proof you can genuinely point to, and how you actually sound in writing.
+    body: `Before we write a word on your behalf, we read your website and your public profiles. We pull out three things: what you offer, what proof you can point to, and how you sound in writing.
 
-This is the constraint that keeps everything we send honest. Every draft we produce later is built only from claims your own material already supports — which is why we can't invent a client, a case study, or a statistic that doesn't exist.`,
+This constraint keeps everything we send honest. We build every later draft from claims your own material already supports, so we can't invent a client, a case study, or a statistic that doesn't exist.`,
     out: 'Extracted',
     kv: ['<b>Offer</b> parsed', '<b>Real proof</b> 4 items', '<b>Tone</b> direct, plain-English',
          '<b>Fabricated claims</b> impossible']
   },
   {
-    kicker: 'Stage 03 — market intel',
+    kicker: 'Stage 03 · market intel',
     ttl: 'We sweep your market',
     hint: 'Live, every run',
-    body: `Then we go outward — sweeping news, community discussion and video across your niche to establish which channels are currently working, who you're genuinely competing against, where your ideal customers actually congregate, and which live events are worth referencing in an opening line.
+    body: `Then we sweep news, community discussion and video across your niche to establish which channels are working, who you compete against, where your ideal customers gather, and which live events are worth referencing in an opening line.
 
-We refresh this on every run rather than baking it in once at setup, because a signal that's three months old isn't a signal — it's trivia.`,
+We refresh this on every run rather than baking it in once at setup, because a three-month-old signal tells you nothing about who is buying this week.`,
     out: 'Surfaced',
     kv: ['<b>Channels</b> ranked by strength', '<b>Competitors</b> identified', '<b>Watering holes</b> mapped',
          '<b>Trending signals</b> live']
   },
   {
-    kicker: 'Stage 04 — strategy',
+    kicker: 'Stage 04 · strategy',
     ttl: 'We pick the play',
     hint: 'Gated on your maths',
-    body: `Now we decide: channel mix, budget split across those channels, and the messaging angle for each — chosen against your real economics rather than against what's fashionable.
+    body: `Now we decide the channel mix, the budget split across those channels, and the messaging angle for each. We choose against your real economics rather than against what's fashionable.
 
-Paid channels are hard-gated on a 3:1 lifetime-value-to-acquisition-cost ratio. If the numbers don't clear it, we reject the channel outright and write the refusal down with the arithmetic beside it. We also list the parts that need a person — the human tasks — instead of pretending they don't exist.`,
+We hard-gate paid channels on a 3:1 lifetime-value-to-acquisition-cost ratio. If the numbers don't clear it, we reject the channel and write the refusal down with the arithmetic beside it. We also name the human tasks: the parts a person handles.`,
     out: 'Decided',
     kv: ['<b>Email</b> 50%', '<b>LinkedIn</b> 30%', '<b>Content</b> 20%',
          '<b style="color:#ff6b6b">Paid ads</b> refused', '<b>Human tasks</b> listed']
   },
   {
-    kicker: 'Stage 05 — execution',
+    kicker: 'Stage 05 · execution',
     ttl: 'We run it for you',
     hint: 'Metered to the penny',
-    body: `Per channel, on a loop we manage for you: source prospects showing a real buying signal, research each one properly, draft a first touch in your voice referencing that specific signal, deduplicate against everyone already contacted, and queue it.
+    body: `Per channel, on a loop we manage for you: we source prospects showing a real buying signal, research each one, draft a first touch in your voice referencing that signal, deduplicate against everyone already contacted, and queue it.
 
-Every action draws against a wallet funded by your budget. When the budget is exhausted, we stop — we don't overspend and inform you afterwards, which is a failure mode we've seen enough times to design against explicitly.`,
+Every action draws against a wallet funded by your budget. When the budget runs out, we stop. We built the wallet to rule out a failure mode we have seen too often: spending past the number, then explaining it afterwards.`,
     out: 'Metered',
     kv: ['<b>Source</b> → research → draft → queue', '<b>Dedupe</b> against all prior contact',
          '<b>Wallet</b> drawn per action', '<b>On exhaustion</b> halt']
   },
   {
-    kicker: 'Stage 06 — the gate',
-    ttl: 'Your call — approve or bin',
+    kicker: 'Stage 06 · the gate',
+    ttl: 'Your call: approve or bin',
     hint: 'The one human stage',
-    body: `Everything we produce lands in an approval queue: the prospect, the signal it was sourced from, and the message already written. You approve, edit, or bin it — or hand that job back to us to run on your behalf.
+    body: `Everything we produce lands in an approval queue: the prospect, the signal we sourced it from, and the message already written. You approve, edit, or bin each one, or hand that job back to us to run on your behalf.
 
-Either way a person is always in the loop. Nothing can carry an approved or sent status without a recorded approver and a timestamp — that's enforced in the system itself, not left to good intentions. Regulated claims demand a second explicit sign-off, and opt-outs go to a suppression list we can't route around.`,
+Either way a person signs off. The system enforces it: nothing carries an approved or sent status without a recorded approver and a timestamp. Regulated claims demand a second sign-off, and opt-outs go to a suppression list we can't route around.`,
     out: 'Enforced',
     kv: ['<b>Send-gate</b> human-approved', '<b>Approver</b> + timestamp stamped',
          '<b>Regulated claims</b> second sign-off', '<b>Suppression</b> permanent']
@@ -197,18 +197,18 @@ const nodes = [...document.querySelectorAll('#rail .node')];
 const consoleEl = document.getElementById('console');
 
 const LOG = [
-  ['a', 'intake',    'profile loaded — 4 metrics measured, 2 inferred, 1 unknown'],
-  ['a', 'intake',    'wallet funded £2,000.00 — ledger opened'],
+  ['a', 'intake',    'profile loaded · 4 metrics measured, 2 inferred, 1 unknown'],
+  ['a', 'intake',    'wallet funded £2,000.00 · ledger opened'],
   ['b', 'website',   'fetched primary domain + 3 social profiles'],
   ['b', 'website',   'voice profile extracted · 4 verifiable proof points found'],
-  ['b', 'intel',     'sweeping niche — news, communities, video'],
+  ['b', 'intel',     'sweeping niche · news, communities, video'],
   ['b', 'intel',     '7 UK companies surfaced with live buying signals'],
   ['a', 'strategy',  'pricing channels against LTV:CAC floor of 3.0'],
-  ['d', 'strategy',  'paid_ads REJECTED — CAC £4,286 > affordable £1,320'],
+  ['d', 'strategy',  'paid_ads REJECTED · CAC £4,286 > affordable £1,320'],
   ['c', 'strategy',  'allocated email 50% · linkedin 30% · content 20%'],
   ['a', 'execute',   'sourcing → researching → drafting in client voice'],
-  ['a', 'execute',   'dedupe pass — 2 already contacted, skipped'],
-  ['d', 'execute',   'regulated claim detected — extra confirmation required'],
+  ['a', 'execute',   'dedupe pass · 2 already contacted, skipped'],
+  ['d', 'execute',   'regulated claim detected · second sign-off required'],
   ['c', 'queue',     '4 leads queued · status in_review · awaiting approval'],
   ['c', 'wallet',    '£184.20 drawn · £1,815.80 remaining · within budget'],
 ];

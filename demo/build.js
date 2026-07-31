@@ -20,7 +20,7 @@ const SYSTEMS = {
   SIGNAL:  { name: "Buying-signal watcher",       days: "5 days", tier: "entry", col: "#9fd6b8" },
   CRM:     { name: "Onboarding pack automation",  days: "4 days", tier: "entry", col: "#a9d3ff" },
   DASH:    { name: "Live KPI dashboard",          days: "5 days", tier: "entry", col: "#b7c0cc" },
-  MACHINE: { name: "THE MACHINE — the full build", days: "~3 weeks", tier: "core", col: "#e2c6ff" }
+  MACHINE: { name: "THE MACHINE: the full build", days: "~3 weeks", tier: "core", col: "#e2c6ff" }
 };
 
 /* ---------- nodes --------------------------------------------------------- */
@@ -28,7 +28,7 @@ function nodeDefs(cfg) {
   const b = cfg.build;
   return [
     { id: 1,  x: 30,  y: 60,  ic: "⚡", name: b.trigger,              sub: b.triggerSub, sys: "RESCUE",
-      dx: "How many of your enquiries arrive as a missed call or a DM — and what happens to those today?" },
+      dx: "How many of your enquiries arrive as a missed call or a DM, and what happens to those today?" },
     { id: 2,  x: 240, y: 60,  ic: "🧹", name: "Capture & clean",       sub: "Dedupe · validate · normalise", sys: "SPEED",
       dx: "How many separate places do you have to check to be sure you've seen every enquiry?" },
     { id: 3,  x: 450, y: 60,  ic: "🔎", name: "Enrich contact",        sub: "Phone · company · source", sys: "SIGNAL",
@@ -36,7 +36,7 @@ function nodeDefs(cfg) {
     { id: 4,  x: 660, y: 60,  ic: "🤖", name: "AI qualify & score",    sub: "Intent · urgency · fit → 0–100", sys: "TRIAGE",
       dx: "Who decides which enquiry gets called first, and on what basis?" },
     { id: 5,  x: 880, y: 60,  ic: "🔀", name: "Route by score",        sub: "Hot ≥70 · Warm 40–69 · Cold <40", sys: "MACHINE",
-      dx: "Roughly what share of your enquiries are actually worth a call?" },
+      dx: "Roughly what share of your enquiries are worth a call?" },
     { id: 6,  x: 240, y: 210, ic: "✉️", name: "Instant reply <60s",    sub: "SMS + email · your voice", sys: "SPEED",
       dx: "Time your last ten enquiries from arrival to first human reply. What's the median?" },
     { id: 7,  x: 450, y: 210, ic: "📅", name: b.book,                  sub: b.bookSub, sys: "SPEED",
@@ -44,15 +44,15 @@ function nodeDefs(cfg) {
     { id: 8,  x: 660, y: 210, ic: "🔔", name: "Hot-lead alert to you", sub: "Straight to your phone", sys: "RESCUE",
       dx: "If your best-fit lead all year came in at 7pm on a Friday, when would you find out?" },
     { id: 9,  x: 240, y: 330, ic: "💬", name: b.nurture,               sub: b.nurtureSub, sys: "MACHINE",
-      dx: "How many times does someone chase a quiet enquiry before they quietly give up?" },
+      dx: "How many times does someone chase a quiet enquiry before they give up?" },
     { id: 10, x: 450, y: 330, ic: "👤", name: "Your approval gate",    sub: "One tap · approve / edit / skip", human: true, sys: "TRIAGE",
       dx: "Which messages would you insist on seeing before they go out in your name?" },
     { id: 11, x: 660, y: 330, ic: "📤", name: "Send + schedule",       sub: "Best send-time · stops on reply", sys: "MACHINE",
-      dx: "Today, what actually stops a follow-up sequence when someone replies?" },
+      dx: "Today, what stops a follow-up sequence when someone replies?" },
     { id: 12, x: 240, y: 450, ic: "🗂️", name: "Long-term list",        sub: "Quarterly value emails", sys: "MACHINE",
       dx: "How many enquiries from last year are sitting in a spreadsheet doing nothing?" },
     { id: 13, x: 450, y: 450, ic: "♻️", name: "Reactivation campaign", sub: "Dormant leads · 90-day cycle", sys: "SIGNAL",
-      dx: "When did you last deliberately contact someone who enquired six months ago?" },
+      dx: "When did you last go back to someone who enquired six months ago?" },
     { id: 14, x: 880, y: 270, ic: "🗄️", name: b.crm,                   sub: "Every touch logged automatically", sys: "CRM",
       dx: "How much of the week goes on retyping the same details into a second system?" },
     { id: 15, x: 880, y: 410, ic: "📊", name: "Weekly report to you",  sub: "Monday 08:00 · plain English", sys: "DASH",
@@ -161,12 +161,12 @@ function renderCanvas() {
 function drawerRows(n, cfg) {
   const b = cfg.build;
   switch (n.id) {
-    case 1:  return [["Sources", b.triggerSub], ["Capture window", "24/7 — nothing missed"], ["Missed-call catch", "Auto-SMS within 30s"], ["Field mapping", "Name · phone · message"]];
+    case 1:  return [["Sources", b.triggerSub], ["Capture window", "24/7, nothing missed"], ["Missed-call catch", "Auto-SMS within 30s"], ["Field mapping", "Name · phone · message"]];
     case 2:  return [["Dedupe key", "Phone + email"], ["Validation", "Phone format · spam filter"], ["Normalise", "Names, numbers, casing"]];
     case 3:  return [["Lookups", "Phone type · area · source"], ["On failure", "Continues without blocking"], ["Data", "Held in your own accounts"]];
     case 4:  return [["Model", "AI scorer tuned to " + cfg.plural], ["Signals", "Intent · urgency · fit"], ["Output", "Score 0–100 + plain-English reason"], ["Latency", "Under 2 seconds"]];
     case 5:  return [["Hot lane", "Score ≥ 70 → instant reply"], ["Warm lane", "40–69 → approved nurture"], ["Cold lane", "Below 40 → long-term list"]];
-    case 6:  return [["Channels", "SMS + email"], ["Voice", "Trained on your tone — you approve it once"], ["Speed", "Under 60 seconds, 24/7"], ["Contains", "Answer + booking link"]];
+    case 6:  return [["Channels", "SMS + email"], ["Voice", "Trained on your tone; you approve it once"], ["Speed", "Under 60 seconds, 24/7"], ["Contains", "Answer + booking link"]];
     case 7:  return [["Calendar", b.bookSub], ["Slots", "Live availability only"], ["Reminders", "24h + 2h before"]];
     case 8:  return [["Channel", "WhatsApp / SMS"], ["Contains", "Name, score, why it's hot"], ["When", "Within seconds, any hour"]];
     case 9:  return [["Sequence", b.nurtureSub], ["Timing", "Day 0 · 2 · 5 · 9 · 14"], ["Stops", "Instantly on any reply"]];
@@ -174,7 +174,7 @@ function drawerRows(n, cfg) {
     case 11: return [["Send time", "Optimised per recipient"], ["Auto-stop", "On reply or booking"], ["Record", "Every send logged"]];
     case 12: return [["Cadence", "One useful email a quarter"], ["Tone", "Value, never pressure"], ["Exit", "Any reply → warm lane"]];
     case 13: return [["Trigger", "90 days dormant"], ["Typical result", "2–5% re-engage (modelled)"], ["Tone", "Respectful, easy opt-out"]];
-    case 14: return [["Writes", "Contact · activity · outcome"], ["Dedupe", "Updates, never duplicates"], ["Retyping for you", "None — ever"]];
+    case 14: return [["Writes", "Contact · activity · outcome"], ["Dedupe", "Updates, never duplicates"], ["Retyping for you", "None, ever"]];
     case 15: return [["When", "Monday 08:00"], ["Format", "Plain English + the numbers"], ["Includes", "Wins · issues · next steps"]];
   }
   return [];
@@ -191,7 +191,7 @@ function openDrawer(n) {
       <div><h4>${esc(n.name)}</h4><p class="dim" style="font-size:13px">${esc(n.sub)}</p></div>
     </div>
     ${rows}
-    <div class="cfg-row"><span class="k">Owner</span><span class="v">${n.human ? "You — one click" : "TMA builds & runs it"}</span></div>
+    <div class="cfg-row"><span class="k">Owner</span><span class="v">${n.human ? "You · one click" : "TMA builds & runs it"}</span></div>
     <div class="sysbox">
       <div class="syshead">
         <span class="sysdot" style="background:${sys.col}"></span>
@@ -226,44 +226,44 @@ function buildRun(kind, cfg) {
   const idx = kind === "hot" ? 0 : kind === "warm" ? 2 : 4;
   const lead = cfg.leadNames[idx], svc = cfg.services[idx], ch = cfg.channels[0];
   const steps = [
-    { node: 1, logs: [[null, `Trigger — ${lead}: "${svc}" via ${ch}`]] },
-    { edge: "1-2", node: 2, logs: [["ok", "Captured & cleaned — valid phone, no duplicate"]] },
-    { edge: "2-3", node: 3, logs: [["ok", `Enriched — mobile confirmed · source: ${ch}`]] },
+    { node: 1, logs: [[null, `Trigger · ${lead}: "${svc}" via ${ch}`]] },
+    { edge: "1-2", node: 2, logs: [["ok", "Captured & cleaned: valid phone, no duplicate"]] },
+    { edge: "2-3", node: 3, logs: [["ok", `Enriched · mobile confirmed · source: ${ch}`]] },
     { edge: "3-4", node: 4, logs: [
-      kind === "hot"  ? ["hot", `AI score 87/100 — high intent ("${svc}", wants this week)`] :
-      kind === "warm" ? [null, "AI score 54/100 — interested, no urgency signals yet"] :
-                        [null, "AI score 21/100 — early research, price-only question"]] },
+      kind === "hot"  ? ["hot", `AI score 87/100 · high intent ("${svc}", wants this week)`] :
+      kind === "warm" ? [null, "AI score 54/100 · interested, no urgency signals yet"] :
+                        [null, "AI score 21/100 · early research, price-only question"]] },
     { edge: "4-5", node: 5, logs: [[kind === "hot" ? "hot" : null,
       kind === "hot" ? "Routed → HOT lane" : kind === "warm" ? "Routed → WARM lane" : "Routed → COLD lane"]] }
   ];
 
   if (kind === "hot") steps.push(
-    { edge: "5-6",  node: 6,  logs: [["ok", "Instant reply sent in 41s — SMS + email, in your voice"]] },
-    { edge: "6-7",  node: 7,  logs: [["ok", `${cfg.build.book} — link opened · slot held Tue 14:30`]] },
+    { edge: "5-6",  node: 6,  logs: [["ok", "Instant reply sent in 41s · SMS + email, in your voice"]] },
+    { edge: "6-7",  node: 7,  logs: [["ok", `${cfg.build.book}: link opened, slot held Tue 14:30`]] },
     { edge: "7-8",  node: 8,  logs: [["hot", "Hot-lead alert sent to your phone"]] },
-    { edge: "8-14", node: 14, logs: [["ok", `${cfg.build.crm} — full history logged, nothing retyped`]] },
+    { edge: "8-14", node: 14, logs: [["ok", `${cfg.build.crm}: full history logged, nothing retyped`]] },
     { edge: "14-15", node: 15, logs: [["ok", "Queued for Monday's report"]] }
   );
   else if (kind === "warm") steps.push(
-    { edge: "5-9",  node: 9,  logs: [["ok", `${cfg.build.nurture} — draft 1 of 5 written in your voice`]] },
+    { edge: "5-9",  node: 9,  logs: [["ok", `${cfg.build.nurture}: draft 1 of 5 written in your voice`]] },
     { edge: "9-10", node: 10, pause: true, logs: [
-      ["human", "Waiting for you — one-tap approve on your phone…"],
-      ["human", "You approved (edited one line) — 9 seconds"]] },
-    { edge: "10-11", node: 11, logs: [["ok", "Sent + 4 follow-ups scheduled — auto-stops on reply"]] },
-    { edge: "11-14", node: 14, logs: [["ok", `${cfg.build.crm} — full history logged, nothing retyped`]] },
+      ["human", "Waiting for you: one-tap approve on your phone…"],
+      ["human", "You approved (edited one line) in 9 seconds"]] },
+    { edge: "10-11", node: 11, logs: [["ok", "Sent + 4 follow-ups scheduled · auto-stops on reply"]] },
+    { edge: "11-14", node: 14, logs: [["ok", `${cfg.build.crm}: full history logged, nothing retyped`]] },
     { edge: "14-15", node: 15, logs: [["ok", "Queued for Monday's report"]] }
   );
   else steps.push(
-    { edge: "5-12", node: 12, logs: [["ok", "Added to long-term list — quarterly value emails"]] },
-    { edge: "12-13", node: 13, logs: [["ok", "Queued for the next reactivation cycle — 14 days"]] },
-    { edge: "13-14", node: 14, logs: [["ok", `${cfg.build.crm} — logged with source and score`]] },
+    { edge: "5-12", node: 12, logs: [["ok", "Added to long-term list · quarterly value emails"]] },
+    { edge: "12-13", node: 13, logs: [["ok", "Queued for the next reactivation cycle in 14 days"]] },
+    { edge: "13-14", node: 14, logs: [["ok", `${cfg.build.crm}: logged with source and score`]] },
     { edge: "14-15", node: 15, logs: [["ok", "Counted in Monday's report"]] }
   );
 
   const status =
-    kind === "hot"  ? "Enquiry handled in <b>47s</b> — booked in, and you were alerted" :
-    kind === "warm" ? "Enquiry handled in <b>52s</b> — <b>1 message approved by you</b>" :
-                      "Filed in <b>12s</b> — nothing lost, nothing pushy";
+    kind === "hot"  ? "Enquiry handled in <b>47s</b>. Booked in, and you got the alert" :
+    kind === "warm" ? "Enquiry handled in <b>52s</b>. <b>You approved 1 message</b>" :
+                      "Filed in <b>12s</b>. Nothing lost, nothing pushy";
   return { steps, status };
 }
 
@@ -300,7 +300,7 @@ async function runSim() {
 
   clockSec = 9 * 3600 + 41 * 60 + 2 + runCount * 137;
   $("#execLog").innerHTML = "";
-  appendLog(null, `— Test run ${runCount}: ${kind.toUpperCase()} scenario (example data) —`);
+  appendLog(null, `Test run ${runCount}: ${kind.toUpperCase()} scenario (example data)`);
   $("#runStat").textContent = `Running a ${kind} enquiry…`;
 
   const { steps, status } = buildRun(kind, cfg);
@@ -348,7 +348,7 @@ function renderDash() {
   ].join("");
 
   const rows = [
-    { i: 0, score: 87, pill: ["hot", "Hot — replied 41s"],  next: "Slot held Tue 14:30" },
+    { i: 0, score: 87, pill: ["hot", "Hot · replied 41s"],  next: "Slot held Tue 14:30" },
     { i: 1, score: 91, pill: ["booked", "Booked"],          next: "Reminder 24h before" },
     { i: 2, score: 54, pill: ["review", "Your approval"],   next: "You: one tap (~10s)" },
     { i: 3, score: 58, pill: ["nurture", "Nurture 2/5"],    next: "Follow-up tomorrow 09:30" },
@@ -365,14 +365,14 @@ function renderDash() {
 /* ---------- code excerpt + how it works ------------------------------------ */
 function renderCode() {
   $("#codePre").innerHTML =
-`<span class="c-cm"># lead_scorer.py — how every enquiry is scored in &lt;2s (excerpt)</span>
+`<span class="c-cm"># lead_scorer.py: how every enquiry is scored in &lt;2s (excerpt)</span>
 <span class="c-kw">from</span> engine <span class="c-kw">import</span> ai, rules, alerts
 
 WEIGHTS = {<span class="c-str">"intent"</span>: <span class="c-num">0.45</span>, <span class="c-str">"urgency"</span>: <span class="c-num">0.30</span>, <span class="c-str">"fit"</span>: <span class="c-num">0.25</span>}
 HOT, WARM = <span class="c-num">70</span>, <span class="c-num">40</span>
 
 <span class="c-kw">def</span> <span class="c-fn">score_lead</span>(enquiry):
-    <span class="c-str">"""Blend AI signals with your business rules — then route."""</span>
+    <span class="c-str">"""Blend AI signals with your business rules, then route."""</span>
     sig = ai.<span class="c-fn">extract_signals</span>(enquiry.message)  <span class="c-cm"># intent, urgency</span>
     fit = rules.<span class="c-fn">fit_score</span>(enquiry)            <span class="c-cm"># service, area, value</span>
 
@@ -388,12 +388,12 @@ HOT, WARM = <span class="c-num">70</span>, <span class="c-num">40</span>
 
 function renderHow() {
   const steps = [
-    ["An enquiry arrives", "Webform, ad, DM or missed call — the system catches every channel, 24/7, so nothing depends on who's at the desk."],
-    ["Cleaned, enriched, scored", "Within seconds it's deduplicated, enriched and scored 0–100 by AI tuned to your business — with a plain-English reason."],
-    ["Hot leads: instant reply + your phone buzzes", "A personal reply in under 60 seconds with a live booking link — and you get an alert so you can call while they're still looking."],
+    ["An enquiry arrives", "Webform, ad, DM or missed call. The system catches every channel, 24/7, so nothing depends on who's at the desk."],
+    ["Cleaned, enriched, scored", "Within seconds the system dedupes it, enriches it and scores it 0–100 using AI tuned to your business, with the reason written in plain English."],
+    ["Hot leads: instant reply + your phone buzzes", "A personal reply in under 60 seconds with a live booking link. You get an alert too, so you can call while they're still looking."],
     ["Warm leads: follow-up you approve", "A polite sequence drafted in your voice. Every message waits at the purple gate for your one-tap approve, edit or skip."],
-    ["Everything logs itself", "Every touch lands in the CRM automatically — no retyping, no lost history, no \"who was that again?\""],
-    ["Monday 08:00 — your report", "A plain-English summary of what happened and what we're tuning next. We run the machine; you steer it."]
+    ["Everything logs itself", "Every touch lands in the CRM automatically. No retyping, and no \"who was that again?\""],
+    ["Your Monday 08:00 report", "A plain-English summary of what happened and what we're tuning next. We run the machine; you steer it."]
   ];
   $("#howSteps").innerHTML = steps.map((s, i) => `
     <div class="step-row">
@@ -438,7 +438,7 @@ function toggleSystems() {
 
 function renderAll() {
   if (running) { pendingRender = true; return; }
-  $("#wfTitle").textContent = companyName() + " — lead engine";
+  $("#wfTitle").textContent = companyName() + ": lead engine";
   renderCanvas();
   renderSysLegend();
   renderDash();
@@ -446,16 +446,16 @@ function renderAll() {
   renderHow();
   $("#execLog").innerHTML =
     `<div class="lg"><span class="t">--:--:--</span><span class="m">Waiting for a run…</span></div>`;
-  $("#runStat").textContent = "Idle — click run to simulate a live enquiry.";
+  $("#runStat").textContent = "Idle. Click run to simulate a live enquiry.";
   $("#nodeDrawer").innerHTML = `
     <div class="dhead"><span class="dic">⚙</span>
-      <div><h4>Select a node on the canvas</h4><p class="dim" style="font-size:13px">Every node opens like this in the real build — settings, mappings, owner.</p></div>
+      <div><h4>Select a node on the canvas</h4><p class="dim" style="font-size:13px">Every node opens like this in the real build: settings, mappings, owner.</p></div>
     </div>`;
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   renderPicker($("#industryPick"), renderAll);
-  wireNameInput($("#bizname"), () => { $("#wfTitle").textContent = companyName() + " — lead engine"; });
+  wireNameInput($("#bizname"), () => { $("#wfTitle").textContent = companyName() + ": lead engine"; });
   renderAll();
   $("#runWf").addEventListener("click", runSim);
   const sb = $("#sysBtn");

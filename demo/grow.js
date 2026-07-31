@@ -105,19 +105,19 @@ function renderNote(cfg, weeks, i) {
   const val = `<b>${fmtGBP(w.value)}</b>`;
   const notes = [
     `<b>First full week live.</b> Baseline set: every one of the ${w.enq} ${esc(cfg.enquiry)} answered,
-     ${w.booked} converted to a ${esc(cfg.deal)} — ${val} of work in the diary. We deliberately changed
+     ${w.booked} converted to a ${esc(cfg.deal)}: ${val} of work in the diary. We changed
      nothing else this week; you can't read a change you made on top of five others.`,
     `<b>Response time cut by a third.</b> The instant-reply order went live on Tuesday and median first
      response dropped ${pv.resp}s → ${w.resp}s. ${w.booked} booked, ${val} in the diary, and cost per
      ${esc(singular(cfg.enquiry))} eased to ${fmtGBP(w.cpl)}.`,
-    `<b>A week that went backwards — and you heard it from us on Tuesday.</b> Cost per
+    `<b>A week that went backwards. You heard it from us on Tuesday.</b> Cost per
      ${esc(singular(cfg.enquiry))} rose ${fmtGBP(pv.cpl)} → <b>${fmtGBP(w.cpl)}</b>: an auction spike over a
      short week, plus one source over-delivering low-intent traffic. Bookings ${bookedPhrase(w, p)}
      (${val}). We had the keyword-group pause drafted and in front of you the same day, tightened the
      score threshold, and told you before you had to ask. This is what a bad week looks like when
      someone is watching it.`,
     `<b>Best week so far.</b> The spend rebalance landed: cost per ${esc(singular(cfg.enquiry))}
-     ${fmtGBP(pv.cpl)} → <b>${fmtGBP(w.cpl)}</b>, ${w.enq} ${esc(cfg.enquiry)} in and ${w.booked} booked —
+     ${fmtGBP(pv.cpl)} → <b>${fmtGBP(w.cpl)}</b>, ${w.enq} ${esc(cfg.enquiry)} in and ${w.booked} booked, worth
      ${val}. Median first response now ${w.resp}s, day or night.`
   ];
   $("#weekNote").innerHTML =
@@ -125,7 +125,7 @@ function renderNote(cfg, weeks, i) {
      <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
        <span class="chip blue">${w.label} · ${esc(cfg.label)} example</span>
        <span class="chip violet">${w.wait} ${w.wait === 1 ? "message" : "messages"} waiting on you</span>
-       <span class="modeltag">Example data — not a promise</span>
+       <span class="modeltag">Example data, not a promise</span>
      </div>`;
 }
 
@@ -146,9 +146,9 @@ function recsFor(cfg, weeks, i) {
                better order. Live since Tuesday.`,
         impact: `Median first response ${w.resp}s and falling` },
       { st: "done", conf: 91, title: `Fast-lane urgent ${esc(cfg.enquiry)} on keyword match`,
-        body: `"emergency", "today" and "urgent" now skip straight past scoring and alert you directly,
+        body: `"emergency", "today" and "urgent" now skip straight past scoring and alert you,
                instead of waiting their turn.`,
-        impact: "Shipped Thursday — 3 alerts fired, all answered" }
+        impact: "Shipped Thursday. 3 alerts fired, all answered" }
     ],
     [
       { st: "pending", conf: 81, title: `Lean into ${esc(ch[0])}, throttle the weakest source`,
@@ -163,7 +163,7 @@ function recsFor(cfg, weeks, i) {
       { st: "done", conf: 88, title: "Weekend and evening cover on the hot lane",
         body: `Hot ${esc(cfg.enquiry)} arriving out of hours now get the full instant reply and hold a
                provisional slot, instead of queuing until Monday.`,
-        impact: "Shipped last Friday — 4 out-of-hours replies sent" }
+        impact: "Shipped last Friday. 4 out-of-hours replies sent" }
     ],
     [
       { st: "pending", conf: 88, title: "Pause the keyword group behind the cost spike",
@@ -171,18 +171,18 @@ function recsFor(cfg, weeks, i) {
                and review in 14 days rather than deleting the history.`,
         impact: `Cost per ${esc(one)} back toward ${fmtGBP(p ? p.cpl : w.cpl)} (modelled)` },
       { st: "running", conf: 72, title: "Raise the hot-lane score threshold 70 → 74",
-        body: `Low-intent traffic is reaching your phone. A slightly stricter threshold means fewer alerts
-               and better ones — you can put it back in one tap if it feels wrong.`,
-        impact: "Fewer, better alerts — measured over 10 days" },
+        body: `Low-intent traffic is reaching your phone. A stricter threshold means fewer alerts
+               and better ones. You can put it back in one tap if it feels wrong.`,
+        impact: "Fewer, better alerts, measured over 10 days" },
       { st: "done", conf: 84, title: "Short-week message variant",
         body: `Follow-ups sent over the short week now reference the closure dates instead of promising
                a call-back that couldn't happen.`,
-        impact: "Shipped Wednesday — no missed call-backs" }
+        impact: "Shipped Wednesday. No missed call-backs" }
     ],
     [
       { st: "pending", conf: 69, title: `Reactivation wave to the dormant list`,
         body: `Everyone who enquired, never booked and has gone quiet for 90+ days gets one respectful,
-               genuinely useful message. Low expectations, high margin — these ${esc(cfg.noun)} cost
+               useful message. Low expectations, high margin: these ${esc(cfg.noun)} cost
                nothing to reach.`,
         impact: `+1–3 ${esc(cfg.deal)}s from existing data (modelled, conservative)` },
       { st: "running", conf: 76, title: `Ask for the review 7 days after the ${esc(cfg.deal)}`,
@@ -191,7 +191,7 @@ function recsFor(cfg, weeks, i) {
         impact: "Running on this week's completions" },
       { st: "done", conf: 90, title: "Spend rebalance shipped Monday",
         body: `The pause and reallocation you approved last week went live Monday morning. Cost per
-               ${esc(one)} is down and volume is up — both, which is rarer than it sounds.`,
+               ${esc(one)} is down and volume is up: both at once, which is rarer than it sounds.`,
         impact: `Cost per ${esc(one)} ${fmtGBP(w.cpl)}, ${w.enq} in` }
     ]
   ];
@@ -208,14 +208,14 @@ function renderRecs(cfg, weeks, i) {
   const recs = recsFor(cfg, weeks, i);
   $("#recs").innerHTML = recs.map((r, k) => {
     const isApproved = approved.has(i + ":" + k);
-    const st = isApproved ? ["hi", "Approved — we build it this week"] : REC_STATUS[r.st];
+    const st = isApproved ? ["hi", "Approved. We build it this week"] : REC_STATUS[r.st];
     const btn = r.st !== "pending" ? "" : isApproved
       ? `<button class="approve donebtn" disabled>Approved ✓</button>`
       : `<button class="approve" data-k="${k}">Approve</button>`;
     return `<div class="rec">
       <div class="rhead"><h4>${r.title}</h4><span class="chip ${st[0]}">${st[1]}</span></div>
       <p>${r.body}</p>
-      <p><b style="color:#9fd6b8">Expected impact</b> — ${r.impact}</p>
+      <p><b style="color:#9fd6b8">Expected impact:</b> ${r.impact}</p>
       <div class="rfoot">
         <span class="chip blue">Confidence ${r.conf}%</span>
         <span class="modeltag">Modelled projection</span>
@@ -229,7 +229,7 @@ function renderRecs(cfg, weeks, i) {
       approved.add(i + ":" + btn.dataset.k);
       renderRecs(cfg, weeks, i);
       renderQa(cfg, weeks, i);
-      toast("Approved — it goes on this week's build list. That's your whole job.");
+      toast("Approved. It goes on this week's build list. That's your whole job.");
     });
   });
 }
@@ -245,37 +245,37 @@ function renderQa(cfg, weeks, i) {
   const goals = [
     `Speed first, volume second. ${w.enq} ${esc(cfg.enquiry)} in, all answered inside ${w.resp}s median,
      ${w.booked} booked (${fmtGBP(w.value)}). We're not touching volume until response time is boring.`,
-    `Still speed — and it worked: ${pv.resp}s → ${w.resp}s. Bookings ${bookedPhrase(w, p)}
+    `Still speed, and it worked: ${pv.resp}s → ${w.resp}s. Bookings ${bookedPhrase(w, p)}
      (${fmtGBP(w.value)}). Volume is the next lever, one at a time so we can attribute it.`,
-    `Yes, and this week tested it: cost drifted up and bookings ${bookedPhrase(w, p)}. The goal was never
-     "more leads" — it was more ${esc(cfg.deal)}s per pound. Defending that is the same job as growing it.`,
+    `Yes, and this week tested it: cost drifted up and bookings ${bookedPhrase(w, p)}. The goal is
+     more ${esc(cfg.deal)}s per pound. Defending that is the same job as growing it.`,
     `Now, yes. Speed is solved (${w.resp}s), cost is down (${fmtGBP(w.cpl)} per ${esc(one)}) and volume is
-     rising (${w.enq} in). The next goal is capacity — making sure you can serve ${w.booked}+ a week.`
+     rising (${w.enq} in). The next goal is capacity: making sure you can serve ${w.booked}+ a week.`
   ];
   const best = [
-    `${esc(ch[0])} — most of this week's high scores. ${esc(ch[1])} is steady but slower to reply to.
+    `${esc(ch[0])}, with most of this week's high scores. ${esc(ch[1])} is steady but slower to reply to.
      ${esc(ch[2])} is small and converts best, so we're leaving it alone rather than "optimising" it.`,
     `${esc(ch[0])} again, and the instant reply itself: answers now arrive in ${w.resp}s instead of hours,
      and booked value moved ${fmtGBP(pv.value)} → ${fmtGBP(w.value)}.`,
-    `${esc(ch[2])} — quietly the best week of the three sources while the paid ones misbehaved. Your
+    `${esc(ch[2])} ran the best week of the three sources while the paid ones misbehaved. Your
      approval gate also performed: two drafts you edited landed better than the originals.`,
-    `${esc(ch[0])} after the rebalance — ${fmtGBP(w.cpl)} per ${esc(one)}, the lowest yet. The later
+    `${esc(ch[0])} after the rebalance: ${fmtGBP(w.cpl)} per ${esc(one)}, the lowest yet. The later
      follow-up touches are now the single biggest source of late bookings.`
   ];
   const blocks = [
     `Two things. ${w.wait} drafts are waiting on you (about 10 seconds each), and roughly a third of
-     ${esc(cfg.enquiry)} still arrive with no phone number — we're fixing that at the form, not by nagging you.`,
+     ${esc(cfg.enquiry)} still arrive with no phone number. We're fixing that at the form, not by nagging you.`,
     `No-shows. You're booking well; about one in six doesn't turn up. That's the two-stage confirmation
      currently running.`,
     `Cost, not capacity: ${fmtGBP(w.cpl)} per ${esc(one)} against ${fmtGBP(pv.cpl)} last week, driven by one
-     keyword group. ${w.wait} approvals also sat over the short week — the queue waits for you, nothing expires.`,
-    `You. Genuinely: ${w.booked} booked this week and the diary is the constraint now, not the enquiries.
-     Next Monday we'll bring options for that.`
+     keyword group. ${w.wait} approvals also sat over the short week; the queue waits for you and nothing expires.`,
+    `You are the bottleneck now: ${w.booked} booked this week, and the diary is the constraint
+     rather than the flow of enquiries. Next Monday we'll bring you options for that.`
   ];
   const next = isApproved
-    ? `Already moving: you approved <b>${pending.title.toLowerCase()}</b> — it's on this week's build list,
+    ? `Already moving: you approved <b>${pending.title.toLowerCase()}</b>. It's on this week's build list,
        and next Monday's report will show whether it worked.`
-    : `<b>${pending.title}</b> — ${pending.impact}. It's drafted and waiting for your one tap above;
+    : `<b>${pending.title}</b>: ${pending.impact}. It's drafted and waiting for your one tap above;
        we don't ship anything in your name without it.`;
 
   const cards = [
@@ -294,9 +294,9 @@ function renderQa(cfg, weeks, i) {
 /* ---------- rhythm + chat + "what you're buying" -------------------------- */
 function renderRhythm(cfg) {
   const rows = [
-    ["Mon", "Your report, 08:00", `What came in, what got booked, what we changed, what we're doing next —
-      plain English, with the four questions already answered.`],
-    ["Tue", "We build what you approved", `Your taps from Monday become live changes the same day.
+    ["Mon", "Your report, 08:00", `What came in, what got booked, what we changed, what we're doing next.
+      Plain English, with the four questions already answered.`],
+    ["Tue", "We build what you approved", `We put your Monday approvals live the same day.
       Nothing sits in a backlog waiting for a sprint.`],
     ["Wed", "Mid-week watch", `Automated checks on cost, response time and volume. If something drifts,
       you hear it from us before you notice it.`],
@@ -311,13 +311,13 @@ function renderRhythm(cfg) {
 function renderChat(cfg) {
   const svc = cfg.services[1] || cfg.services[0];
   const msgs = [
-    ["them", "TMA · 02:14", `Heads up — three ${esc(cfg.enquiry)} came in overnight. All three answered:
+    ["them", "TMA · 02:14", `Heads up: three ${esc(cfg.enquiry)} came in overnight. All three answered:
       38s, 41s and 52s. Nothing waiting.`],
     ["us", "You · 02:14", "Still up. Anything worth me looking at?"],
-    ["them", "TMA · 02:15", `One is scored 91 — logged as "${esc(svc)}", and they want it this week.
-      Tuesday 14:30 is held provisionally and there's a draft reply ready for you.`],
+    ["them", "TMA · 02:15", `One is scored 91, logged as "${esc(svc)}", and they want it this week.
+      We're holding Tuesday 14:30 provisionally, and there's a draft reply ready for you.`],
     ["us", "You · 02:16", "Approved. Send it."],
-    ["them", "TMA · 02:16", `Sent, and the slot is confirmed. Go to sleep — it'll all be in Monday's
+    ["them", "TMA · 02:16", `Sent, and the slot is confirmed. Go to sleep. It'll all be in Monday's
       report either way.`]
   ];
   $("#chatBox").innerHTML = msgs.map(m => `
@@ -326,9 +326,9 @@ function renderChat(cfg) {
 
 function renderBuying() {
   const steps = [
-    ["Someone watching daily", "Not a dashboard you have to remember to open. We look, every working day, and we come to you."],
-    ["Decisions, not data", "Every recommendation arrives with a confidence rating, an expected impact and a modelled range — so you can say no cheaply."],
-    ["One-tap control", "Nothing goes out in your name without your approval. That's a design choice, not a limitation — your judgement is the part that can't be automated."],
+    ["Someone watching daily", "We look, every working day, and we come to you. There's no dashboard you have to remember to open."],
+    ["Decisions, not data", "We send every recommendation with a confidence rating, an expected impact and a modelled range, so you can say no cheaply."],
+    ["One-tap control", "Nothing goes out in your name without your approval. We designed it that way: your judgement is the part we won't automate."],
     ["Cover at 2am", "The system answers instantly around the clock, and a human picks up anything it shouldn't decide alone."]
   ];
   $("#buyingSteps").innerHTML = steps.map((s, i) => `
@@ -368,7 +368,7 @@ function renderWeekSel() {
   });
 }
 
-function setTitle() { $("#growTitle").textContent = companyName() + " — weekly growth"; }
+function setTitle() { $("#growTitle").textContent = companyName() + ": weekly growth"; }
 
 function renderAll() {
   const cfg = PRESETS[getProfile().industry];

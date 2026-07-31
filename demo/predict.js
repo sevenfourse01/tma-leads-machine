@@ -106,7 +106,7 @@ function buildProfile(a, tier) {
   if (!Number.isFinite(spend) || spend <= 0) {
     spend = econ.spend;
     flags.push("You didn't give a marketing budget, so we modelled " + fmtGBP(spend) +
-      " a month — a typical starting spend for this sector. At £0 there is nothing " +
+      " a month, a typical starting spend for this sector. At £0 there is nothing " +
       "for the model to scale.");
   }
 
@@ -284,7 +284,7 @@ const isExtreme = p => Math.round(p * 100) >= 100 || Math.round(p * 100) <= 0;
 
 const NICE_INPUT = {
   cost_per_lead: "What an enquiry costs you", lead_to_call: "Enquiry → conversation",
-  call_show: "They actually turn up", show_to_close: "Conversation → sale",
+  call_show: "They turn up", show_to_close: "Conversation → sale",
   deal_value: "What a customer is worth", monthly_recurring: "Repeat revenue",
   retention_months: "How long they stay", gross_margin: "Your gross margin",
   baseline_deals_per_month: "What you close today"
@@ -300,7 +300,7 @@ function renderReport(R) {
   $("#repHigh").textContent = money(u.p90);
   $("#repHeadline").textContent = u.p50 >= 0
     ? "Modelled 12-month profit, after everything"
-    : "Modelled 12-month result — and it is negative";
+    : "Modelled 12-month result: negative";
 
   $("#repSummary").innerHTML =
     `The median of <b>${rep.nSims.toLocaleString("en-GB")}</b> simulated years, after ` +
@@ -308,7 +308,7 @@ function renderReport(R) {
     `(modelled as <b>${tier.label}</b>). The band either side is the middle 80% of outcomes: ` +
     `1 year in 10 lands below ${money(u.p10)}, 1 in 10 above ${money(u.p90)}. ` +
     `That is <b>${rep.dealsPerMonth.p50.toFixed(1)} new sales a month</b> against the ` +
-    `<b>${built.baselineDeals.toFixed(1)}</b> you already close — worth sense-checking against ` +
+    `<b>${built.baselineDeals.toFixed(1)}</b> you already close. Sense-check that against ` +
     `your own capacity before you believe it. Monte Carlo error on the median is about ` +
     `${fmtGBP(rep.upliftMcStdError || 0)}.`;
 
@@ -338,7 +338,7 @@ function renderReport(R) {
     warn.innerHTML = `<h3>We modelled the full machine first. It didn't clear its own fee.</h3>
       <p>On your numbers, ${fmtGBP(TIERS.core.build)} plus ${fmtGBP(TIERS.core.monthly)} a month came out
       ahead in only <b>${pctSafe(downgraded)}</b> of simulated years. So the forecast above is for an
-      <b>entry build</b> instead — one scoped job at ${fmtGBP(TIERS.entry.build)}, no retainer.
+      <b>entry build</b> instead: one scoped job at ${fmtGBP(TIERS.entry.build)}, no retainer.
       We would rather sell you the small thing that works than the big thing that doesn't.</p>`;
   } else warn.classList.add("hide");
 
@@ -380,10 +380,10 @@ function renderReport(R) {
   const FU_TXT = { f01: "0–1 times", f23: "2–3 times", f4: "4 or more times" };
   const leverRows = [];
   if (levers.resp > 0) leverRows.push(["Answer every enquiry inside 5 minutes",
-    "You currently reply " + RESP_TXT[a.resp] + ". We re-ran the entire simulation with that one " +
-    "thing fixed and nothing else touched — this is the difference in the median.", levers.resp]);
+    "Today you reply " + RESP_TXT[a.resp] + ". We re-ran the entire simulation with that one " +
+    "thing fixed and nothing else touched. This is the difference in the median.", levers.resp]);
   if (levers.fu > 0) leverRows.push(["Chase every quiet enquiry 4+ times",
-    "You currently chase " + FU_TXT[a.fu] + ". Same 4,000 draws, same inputs, only the " +
+    "Today you chase " + FU_TXT[a.fu] + ". Same 4,000 draws, same inputs, only the " +
     "follow-up count changed.", levers.fu]);
   $("#repLevers").innerHTML = leverRows.length
     ? leverRows.map((l, i) => `<div class="step-row">
@@ -393,20 +393,20 @@ function renderReport(R) {
     : `<div class="step-row"><span class="snum">✓</span><div>
         <h4>Your response time and follow-up are already where we'd put them</h4>
         <p>The two levers we usually pull are already pulled, so this forecast assumes no
-        improvement to either. Any gain would have to come from somewhere else — which is
-        exactly what the full diagnosis goes looking for.</p></div></div>`;
+        improvement to either. Any gain would have to come from somewhere else. That is
+        what the full diagnosis goes looking for.</p></div></div>`;
 
   const notes = built.flags.slice();
   if (isExtreme(rep.pBeatOurFee) || isExtreme(rep.pLoseMoney))
-    notes.push("One of the probabilities above rounded to a certainty. It isn't one — it means every " +
+    notes.push("One of the probabilities above rounded to a certainty. It isn't one: every " +
       "one of 4,000 draws fell the same side of the line, under assumptions we chose. We cap the " +
       "display rather than print 100%.");
   notes.push("The cost of a bought enquiry is a sector benchmark, not your ad account. It is the " +
-    "single input most likely to move this answer — see the drivers list.");
-  notes.push("Inputs are drawn independently. Real funnels are correlated, which would narrow this band.");
-  notes.push("Nothing here models your capacity to actually serve the extra work.");
+    "single input most likely to move this answer. See the drivers list.");
+  notes.push("We draw each input independently. Real funnels are correlated, which would narrow this band.");
+  notes.push("Nothing here models your capacity to serve the extra work.");
   if (rep.discardedNonFiniteShare > 0)
-    notes.push(pct(rep.discardedNonFiniteShare) + " of draws were discarded as non-finite.");
+    notes.push(pct(rep.discardedNonFiniteShare) + " of draws came out non-finite; we dropped them.");
   $("#repNotes").innerHTML = notes.map(n => `<li>${n}</li>`).join("");
   $("#repMethod").textContent = rep.method;
 }
