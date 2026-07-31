@@ -29,10 +29,10 @@
   <div class="wrap">
     <div class="sect-head rv" style="align-items:flex-start">
       <span class="eyebrow"><span class="tick"></span>Demo 01 · Predict</span>
-      <h2>Seven questions.<br>Then we run four thousand simulations.</h2>
-      <p class="lead">Rough answers are fine. The engine works in ranges.
-      This runs the same maths as our production forecaster, in your browser: Beta-PERT inputs,
-      4,000 Monte Carlo draws, and a result that is allowed to come out negative.</p>
+      <h2>Move three sliders.<br>Watch the forecast move.</h2>
+      <p class="lead">Every drag re-runs the real engine in your browser. Rough answers are fine:
+      it works in ranges, and it is allowed to come out negative. When you want the honest version,
+      four more questions below turn this into a full forecast.</p>
     </div>
 
     <div class="persona-bar rv">
@@ -40,6 +40,33 @@
       <input type="text" id="bizname" placeholder="Business name (optional)">
       <div class="picker" id="industryPick"></div>
     </div>
+
+    <!-- ============ THE LIVE MINI FORECAST ============ -->
+    <div class="mini panel edge rv">
+      <div class="mctrl">
+        <div class="msl">
+          <label for="mValue">Average value of one customer <b id="mValueOut">£0</b></label>
+          <input type="range" id="mValue" min="100" max="25000" step="50">
+        </div>
+        <div class="msl">
+          <label for="mSpend">Monthly marketing budget <b id="mSpendOut">£0</b></label>
+          <input type="range" id="mSpend" min="200" max="10000" step="100">
+        </div>
+        <div class="msl">
+          <label>How fast do you reply today?</label>
+          <div class="seg" id="mResp">
+            <button data-v="u5">Under 5 min</button>
+            <button data-v="hour">Within an hour</button>
+            <button data-v="sameday" class="on">Same day</button>
+            <button data-v="nextday">Next day or later</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="mout" id="mOut"></div>
+    </div>
+
+    <div class="orline" style="margin:34px 0 22px"><span>the full version: four more questions</span></div>
 
     <div class="qgrid rv">
       <div class="q">

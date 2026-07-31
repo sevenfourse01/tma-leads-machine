@@ -362,8 +362,16 @@ function companyName() {
 }
 
 /* ---------- formatting --------------------------------------------------- */
-const fmtGBP = n => "£" + Math.round(n).toLocaleString("en-GB");
-const fmtGBPk = n => n >= 1000 ? "£" + (n / 1000).toFixed(n >= 10000 ? 0 : 1) + "k" : fmtGBP(n);
+/* The sign goes before the currency symbol, not after it. This engine is
+   allowed to return a loss, so "£-108,000" is a shape these functions must
+   actually get right rather than an edge case. */
+const fmtGBP = n => (n < 0 ? "−£" : "£") + Math.round(Math.abs(n)).toLocaleString("en-GB");
+const fmtGBPk = n => {
+  const a = Math.abs(n);
+  return a >= 1000
+    ? (n < 0 ? "−£" : "£") + (a / 1000).toFixed(a >= 10000 ? 0 : 1) + "k"
+    : fmtGBP(n);
+};
 const fmtPct = n => Math.round(n) + "%";
 
 /* ---------- tiny DOM helpers --------------------------------------------- */

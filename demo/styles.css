@@ -465,6 +465,53 @@ ul.notes li::before{content:"";position:absolute;left:0;top:8px;width:6px;height
 .msg.them{align-self:flex-start;background:rgba(255,255,255,.06);box-shadow:0 0 0 1px var(--line-soft) inset}
 .msg.us{align-self:flex-end;background:rgba(51,87,113,.45);box-shadow:0 0 0 1px rgba(77,163,255,.25) inset}
 
+/* ---------- the live mini forecast --------------------------------------
+   Controls left, result right, nothing between them. The whole point is that
+   a prospect can see the number move while their hand is still on the slider,
+   so the two halves must be visible at once on a laptop. */
+.mini{display:grid;grid-template-columns:1fr 400px;gap:0;overflow:hidden}
+@media(max-width:900px){.mini{grid-template-columns:1fr}}
+.mctrl{padding:28px 30px;display:flex;flex-direction:column;gap:24px;justify-content:center}
+.msl label{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+  font-size:14px;font-weight:500;color:var(--muted);margin-bottom:12px}
+.msl label b{font-family:var(--mono);font-size:17px;font-weight:700;color:#fff;letter-spacing:-.01em}
+.msl input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:5px;border-radius:99px;
+  background:linear-gradient(90deg,rgba(77,163,255,.5),rgba(255,255,255,.1));outline:none;cursor:grab}
+.msl input[type=range]:active{cursor:grabbing}
+.msl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;
+  width:20px;height:20px;border-radius:50%;background:#fff;cursor:grab;
+  box-shadow:0 2px 10px rgba(0,0,0,.5),0 0 0 1px rgba(0,0,0,.3)}
+.msl input[type=range]::-moz-range-thumb{width:20px;height:20px;border:0;border-radius:50%;
+  background:#fff;cursor:grab;box-shadow:0 2px 10px rgba(0,0,0,.5)}
+.msl input[type=range]:focus-visible{box-shadow:0 0 0 3px rgba(77,163,255,.4)}
+
+.mout{padding:28px 30px;background:linear-gradient(160deg,rgba(51,87,113,.3),rgba(5,7,10,.9) 62%);
+  border-left:1px solid var(--line)}
+@media(max-width:900px){.mout{border-left:0;border-top:1px solid var(--line)}}
+.mlab{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:12px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--dim)}
+.mbig{font-size:clamp(38px,4.4vw,54px);font-weight:600;letter-spacing:-.045em;line-height:1.05;
+  margin-top:8px;background:linear-gradient(100deg,#fff 10%,var(--blue) 60%,var(--pink) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.mbig.neg{background:none;color:#ffb3b3}
+.mrange{display:flex;gap:26px;margin-top:12px;padding-bottom:16px;border-bottom:1px solid var(--line-soft)}
+.mrange span{display:flex;flex-direction:column;font-size:11px;letter-spacing:.09em;
+  text-transform:uppercase;color:var(--dim);font-weight:600}
+.mrange b{font-size:19px;letter-spacing:-.03em;color:#fff;font-weight:600;text-transform:none;
+  letter-spacing:-.03em;margin-bottom:2px}
+.mstats{display:flex;gap:24px;flex-wrap:wrap;margin-top:16px}
+.mstats div{display:flex;flex-direction:column}
+.mstats b{font-family:var(--mono);font-size:17px;font-weight:700;color:#fff}
+.mstats span{font-size:11px;color:var(--dim);margin-top:2px}
+.mnote{margin-top:16px;padding:11px 14px;border-radius:11px;font-size:13px;line-height:1.5;
+  color:var(--muted);background:rgba(77,163,255,.1);box-shadow:0 0 0 1px rgba(77,163,255,.25) inset}
+.mnote.warn{color:#ffd9a0;background:rgba(255,196,107,.09);
+  box-shadow:0 0 0 1px rgba(255,196,107,.3) inset}
+.mnote b{color:#fff}
+.mfoot{margin-top:14px;font-size:11.5px;line-height:1.5;color:var(--dim)}
+.mrefuse h4{font-size:18px;margin-bottom:8px;color:#ffd9a0}
+.mrefuse p{font-size:14px;color:var(--muted);line-height:1.55}
+
 /* ---------- full demo: the form ---------------------------------------- */
 .qhead{display:flex;gap:14px;align-items:flex-start}
 .qhead .qstep{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.18em;color:var(--blue);

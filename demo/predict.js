@@ -11,6 +11,8 @@
    the engine can simulate, and to render what comes back honestly.
    ========================================================================= */
 
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
 /* ---------- sector economics --------------------------------------------
    What the demo ASSUMES when the prospect hasn't told us. Every one of these
    is surfaced in the provenance grid on the report, so a prospect can see
@@ -429,6 +431,130 @@ const STAGES = [
   "Writing your report"
 ];
 
+/* ---------- the live mini forecast ---------------------------------------
+   Three inputs, no submit button, the real engine on every drag. The point is
+   that a prospect sees input move output before they have committed to
+   anything: the seven-question version below is the same maths with the
+   assumptions taken out.
+
+   Fewer draws than the full run (600 vs 4,000) because this fires on every
+   pointer move. The seed is fixed, so the number doesn't jitter when you drag
+   back to where you were. */
+const MINI_SIMS = 600;
+
+function miniAnswers() {
+  const cfg = PRESETS[getProfile().industry];
+  const on = $("#mResp button.on");
+  /* Budget, not enquiry volume, is the second slider. In this engine new deals
+     come from spend ÷ cost-per-lead, so dragging existing enquiry volume moved
+     the headline by ~1% and taught a prospect the opposite of how it works. */
+  return {
+    value: +$("#mValue").value,
+    leads: cfg.monthlyLeads,
+    close: cfg.closeRate / 100,
+    spend: +$("#mSpend").value,
+    resp: on ? on.dataset.v : "sameday",
+    fu: "f01",
+    repeat: "oneoff"
+  };
+}
+
+function miniRun(a) {
+  let built = buildProfile(a, TIERS.core);
+  let sim = simulate(built.profile, { n: MINI_SIMS, cplMultiplier: built.mult });
+  let rep = report(built.profile, sim);
+  let tier = TIERS.core, downgraded = null;
+  if (rep.pBeatOurFee < 0.5) {                 /* same honesty gate as the full run */
+    downgraded = rep.pBeatOurFee;
+    tier = TIERS.entry;
+    built = buildProfile(a, TIERS.entry);
+    sim = simulate(built.profile, { n: MINI_SIMS, cplMultiplier: built.mult });
+    rep = report(built.profile, sim);
+  }
+  return { rep, tier, downgraded };
+}
+
+function renderMini() {
+  const box = $("#mOut");
+  const a = miniAnswers();
+  $("#mValueOut").textContent = fmtGBP(a.value);
+  $("#mSpendOut").textContent = fmtGBP(a.spend) + "/mo";
+
+  let out;
+  try { out = miniRun(a); }
+  catch (e) {
+    box.innerHTML = `<div class="mrefuse">
+      <h4>On these numbers we'd tell you not to buy</h4>
+      <p>${esc(e.message)}</p>
+      <p class="dim" style="margin-top:8px;font-size:13px">The full forecast below explains why in
+      detail. A model that can't return this answer isn't a forecast, it's a brochure.</p></div>`;
+    return;
+  }
+
+  const { rep, tier, downgraded } = out;
+  const u = rep.upliftVsNoIntervention;
+
+  /* What is response time alone worth? Re-simulate with that lever ALREADY
+     perfect — so there is no headroom left in it — and subtract. Current minus
+     counterfactual, the same direction the full report's lever table uses.
+     Backwards, this silently returned a negative and the line never showed. */
+  let respWorth = null;
+  if (a.resp !== "u5") {
+    try {
+      const fixed = Object.assign({}, a, { resp: "u5" });
+      respWorth = u.p50 - miniRun(fixed).rep.upliftVsNoIntervention.p50;
+    } catch (_) { respWorth = null; }
+  }
+
+  const neg = u.p50 < 0;
+  box.innerHTML = `
+    <div class="mlab">Modelled extra revenue, 12 months <span class="modeltag">Not a promise</span></div>
+    <div class="mbig ${neg ? "neg" : ""}">${fmtGBPk(u.p50)}</div>
+    <div class="mrange">
+      <span><b>${fmtGBPk(u.p10)}</b>conservative</span>
+      <span><b>${fmtGBPk(u.p90)}</b>upside</span>
+    </div>
+    <div class="mstats">
+      <div><b>${rep.dealsPerMonth.p50.toFixed(1)}</b><span>new sales a month</span></div>
+      <div><b>${Math.round(rep.pBeatOurFee * 100)}%</b><span>of years beat our fee</span></div>
+      <div><b>${Math.round(rep.pLoseMoney * 100)}%</b><span>of years lose money</span></div>
+    </div>
+    ${downgraded !== null ? `<div class="mnote warn">The full machine cleared its own fee in only
+      ${Math.round(downgraded * 100)}% of runs on these numbers, so this is modelled as a single
+      entry build instead.</div>` : ""}
+    ${respWorth !== null && respWorth > 0 ? `<div class="mnote">Replying in under five minutes
+      instead is worth about <b>${fmtGBPk(respWorth)}</b> of that, on its own.</div>` : ""}
+    <div class="mfoot">Modelled on ${esc(PRESETS[getProfile().industry].label.toLowerCase())} defaults for
+      everything you haven't told us. ${MINI_SIMS} simulated years, ${tier === TIERS.entry ? "entry build" : "full machine"}.</div>`;
+}
+
+/* mirror the mini's three controls into the seven-question form, so the full
+   run below always inherits whatever the prospect just dragged */
+function syncMiniToForm() {
+  const a = miniAnswers();
+  $("#qValue").value = a.value;
+  $("#qSpend").value = a.spend;
+  $$("#qResp button").forEach(b => b.classList.toggle("on", b.dataset.v === a.resp));
+}
+
+function wireMini() {
+  const redraw = () => { syncMiniToForm(); renderMini(); };
+  ["mValue", "mSpend"].forEach(id => $("#" + id).addEventListener("input", redraw));
+  $$("#mResp button").forEach(b => b.addEventListener("click", () => {
+    $$("#mResp button").forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    redraw();
+  }));
+}
+
+/* the industry picker and the full form can both move the mini's inputs */
+function miniFromPreset() {
+  const cfg = PRESETS[getProfile().industry], econ = SECTOR_ECON[getProfile().industry];
+  $("#mValue").value = Math.min(25000, Math.max(100, cfg.avgValue));
+  $("#mSpend").value = Math.min(10000, Math.max(200, econ.spend));
+  renderMini();
+}
+
 function runAnalysis() {
   let R = null, failed = null;
   try { R = runEngine(); } catch (e) { failed = e; }
@@ -472,6 +598,7 @@ function prefill() {
   $("#qClose").value = cfg.closeRate;
   $("#qSpend").value = econ.spend;
   $$(".noun").forEach(el => { el.textContent = cfg.enquiry; });
+  miniFromPreset();          /* keep the sliders on the same numbers as the form */
 }
 
 function wireSegs() {
@@ -495,6 +622,7 @@ document.addEventListener("DOMContentLoaded", () => {
   wireNameInput($("#bizname"), () => {
     if (!$("#reportStage").classList.contains("hide")) $("#repCompany").textContent = companyName();
   });
+  wireMini();
   prefill();
   wireSegs();
   $("#runBtn").addEventListener("click", runAnalysis);
