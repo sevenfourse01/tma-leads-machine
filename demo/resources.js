@@ -48,13 +48,23 @@ function renderList() {
       <div class="resgrid">
         ${groups[id].map(b => `
           <article class="rescard" id="${b.code}">
-            <div class="rctop">
+            <button type="button" class="rchead" data-code="${b.code}" aria-expanded="false">
               <span class="rcdot" style="background:${b.col}"></span>
-              <h4>${esc(b.name)}</h4>
+              <span class="rcname">${esc(b.name)}</span>
               <span class="rcdays">${esc(b.days)}</span>
-            </div>
+              <span class="rccaret">▾</span>
+            </button>
             <p>${esc(b.what)}</p>
-            <div class="rcneed"><span class="needlab">What we need from you</span>${esc(b.needs)}</div>
+            <div class="rcbody" hidden>
+              <div class="rcsec"><span class="rclab">How it works</span><p>${esc(b.how)}</p></div>
+              <div class="rcsec"><span class="rclab">Typically built on</span>
+                <div class="rcstack">${b.stack.split(",").map(t => `<span class="tool">${esc(t.trim())}</span>`).join("")}</div>
+              </div>
+              <div class="rcsec"><span class="rclab">Already built, every time</span><p>${esc(b.fixed)}</p></div>
+              <div class="rcsec"><span class="rclab">Personalised for you</span><p>${esc(b.custom)}</p></div>
+              <div class="rcsec snag"><span class="rclab">The honest catch</span><p>${esc(b.snag)}</p></div>
+              <div class="rcneed"><span class="needlab">What we need from you</span>${esc(b.needs)}</div>
+            </div>
             <div class="rcfoot">
               <span class="chip ${b.tier === "core" ? "violet" : "blue"}">${b.tier === "core" ? "The full build" : "Entry build"}</span>
               <a href="full.html" class="rclink">Do I need this? →</a>
@@ -68,8 +78,21 @@ function renderList() {
     ? `${Object.keys(BUILDS).length} systems, ${BUILD_CATS.length} stages`
     : `${n} system${n === 1 ? "" : "s"} in this stage`;
 
+  wireCards();
   initReveal();
   highlightTarget();
+}
+
+/* Clicking a system opens it where it sits. It used to navigate away, which on
+   a page whose whole job is "what is this thing" was the wrong direction. */
+function wireCards() {
+  $$(".rchead").forEach(btn => btn.addEventListener("click", () => {
+    const card = btn.closest(".rescard");
+    const body = $(".rcbody", card);
+    const open = card.classList.toggle("open");
+    body.hidden = !open;
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+  }));
 }
 
 /* Arriving from the blueprint at resources.html#SPEED: open that card's
@@ -81,6 +104,9 @@ function highlightTarget() {
   const el = document.getElementById(code);
   if (!el) return;
   el.classList.add("hit");
+  /* arriving from the blueprint: open it, don't make them click again */
+  const btn = $(".rchead", el);
+  if (btn && !el.classList.contains("open")) btn.click();
   el.scrollIntoView({ block: "center", behavior: "smooth" });
 }
 

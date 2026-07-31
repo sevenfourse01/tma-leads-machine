@@ -709,11 +709,31 @@ body.embed .wrap{width:min(100% - 32px,var(--maxw))}
 .rescard:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(255,255,255,.22) inset}
 .rescard.hit{box-shadow:0 0 0 1px rgba(223,122,254,.7) inset,0 18px 44px -20px rgba(129,74,200,.9);
   background:linear-gradient(160deg,rgba(129,74,200,.16),rgba(11,15,20,.85) 60%)}
-.rctop{display:flex;align-items:flex-start;gap:10px;margin-bottom:9px}
-.rcdot{width:9px;height:9px;border-radius:3px;flex:none;margin-top:6px}
-.rctop h4{font-size:16px;line-height:1.3;flex:1}
+.rchead{display:flex;align-items:flex-start;gap:10px;margin-bottom:9px;width:100%;text-align:left;
+  cursor:pointer}
+.rcdot{width:9px;height:9px;border-radius:3px;flex:none;margin-top:7px}
+.rcname{font-size:16px;line-height:1.3;flex:1;font-weight:600;letter-spacing:-.02em}
+.rchead:hover .rcname{color:#fff}
 .rcdays{font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--dim);white-space:nowrap;padding-top:3px}
+  text-transform:uppercase;color:var(--dim);white-space:nowrap;padding-top:4px}
+.rccaret{color:var(--dim);font-size:11px;padding-top:3px;transition:transform .22s var(--ease)}
+.rescard.open .rccaret{transform:rotate(180deg);color:#a9d3ff}
+
+/* the expanded detail */
+.rcbody{margin-top:14px;padding-top:14px;border-top:1px solid var(--line);
+  animation:rcopen .28s var(--ease)}
+@keyframes rcopen{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.rcsec{margin-bottom:14px}
+.rcsec:last-child{margin-bottom:0}
+.rclab{display:block;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:#a9d3ff;margin-bottom:5px}
+.rcsec p{font-size:13.5px;color:var(--muted);line-height:1.6}
+.rcsec.snag .rclab{color:#ffd9a0}
+.rcsec.snag p{color:var(--dim)}
+.rcstack{display:flex;flex-wrap:wrap;gap:6px}
+.tool{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:6px;color:var(--muted);
+  background:rgba(255,255,255,.05);box-shadow:0 0 0 1px var(--line) inset}
+@media(prefers-reduced-motion:reduce){.rcbody{animation:none}}
 .rescard p{font-size:14px;color:var(--muted);line-height:1.55}
 .rcneed{margin-top:12px;padding-top:11px;border-top:1px solid var(--line-soft);
   font-size:13px;color:var(--dim);line-height:1.5}
