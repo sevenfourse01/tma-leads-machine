@@ -5,8 +5,12 @@
 /* These demos live inside the main site (/demo), so "Book a call" hands the
    prospect back to the site's own booking section rather than dead-ending.
    ⚠️ When the real scheduler exists, put the absolute URL here AND in app.js. */
-const BOOKING_URL = "../index.html#book";
-const CONTACT_EMAIL = "hello@themissionautomation.com";  // confirm before launch
+/* The Framer site is the main marketing site; this subdomain hosts the demo.
+   Booking goes to their contact page because there is no working scheduler yet
+   — the live site's "Book a Call" still points at the Framer template author's
+   calendar. Swap this for the real scheduler the moment one exists. */
+const BOOKING_URL = "https://themissionautomation.com/contact";
+const CONTACT_EMAIL = "adamattia@themissionautomation.com";
 
 /* ---------- the build catalogue -----------------------------------------
    The nine entry builds from the pricing page, plus the full machine. Shared

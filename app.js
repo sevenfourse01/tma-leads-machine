@@ -3,7 +3,7 @@
    ========================================================================= */
 
 /* ── ⚠️ CONFIG — REPLACE THESE TWO BEFORE GOING LIVE ──────────────────── */
-const BOOKING_URL   = '';                              // e.g. 'https://cal.com/adamattia/diagnosis'
+const BOOKING_URL   = 'https://themissionautomation.com/contact';  // no scheduler exists yet
 const CONTACT_EMAIL = 'hello@themissionautomation.com'; // confirm this inbox exists
 /* ─────────────────────────────────────────────────────────────────────── */
 
