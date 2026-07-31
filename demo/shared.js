@@ -102,6 +102,201 @@ const PRESETS = {
       nurture: "Registration nurture", nurtureSub: "5-touch · health-plan led",
       escalate: "Reception hand-off", crm: "PMS upsert"
     }
+  },
+  estate: {
+    label: "Estate agency", plural: "estate agencies",
+    company: "Example estate agency",
+    noun: "vendors and landlords", enquiry: "valuation enquiries", deal: "instruction",
+    avgValue: 3200, monthlyLeads: 45, closeRate: 24,
+    channels: ["Rightmove", "Google Ads", "Meta lead ads"],
+    leadNames: ["David P", "Aisha B", "Mark T", "Chloe W", "Raj S"],
+    services: ["Free valuation", "Viewing request", "Landlord lettings", "Property management", "Rent appraisal"],
+    build: {
+      trigger: "New valuation request", triggerSub: "Rightmove · webform · missed call",
+      book: "Book valuation", bookSub: "Branch diary · Reapit / Alto",
+      nurture: "Vendor nurture", nurtureSub: "6-touch · market update & fee offer",
+      escalate: "Senior valuer hand-off", crm: "Vendor CRM upsert"
+    }
+  },
+  law: {
+    label: "Law firm", plural: "law firms",
+    company: "Example law firm",
+    noun: "clients", enquiry: "case enquiries", deal: "matter",
+    avgValue: 1800, monthlyLeads: 60, closeRate: 28,
+    channels: ["Google Ads", "Estate agent referrals", "Reallymoving"],
+    leadNames: ["Helen C", "Michael A", "Nadia F", "Peter G", "Sophie L"],
+    services: ["Conveyancing quote", "Wills & LPA", "Probate enquiry", "Transfer of equity", "Family / divorce"],
+    build: {
+      trigger: "New matter enquiry", triggerSub: "Webform · quote tool · missed call",
+      book: "Book initial call", bookSub: "Fee earner diary · Clio / LEAP",
+      nurture: "Quote follow-up", nurtureSub: "5-touch · quote chase & timescales",
+      escalate: "Fee earner hand-off", crm: "Matter CRM upsert"
+    }
+  },
+  accounting: {
+    label: "Accountancy practice", plural: "accountancy practices",
+    company: "Example accountancy practice",
+    noun: "clients", enquiry: "client enquiries", deal: "engagement",
+    avgValue: 2400, monthlyLeads: 25, closeRate: 28,
+    channels: ["Google Ads", "Client referrals", "LinkedIn"],
+    leadNames: ["Harlow Joinery Ltd", "Nova Fitness Ltd", "Kerr Logistics", "Bright Lettings Ltd", "Trent & Co"],
+    services: ["Year-end accounts", "VAT & bookkeeping", "Payroll setup", "Company formation", "Self assessment"],
+    build: {
+      trigger: "New client enquiry", triggerSub: "Webform · Google Ads · missed call",
+      book: "Book discovery call", bookSub: "Partner diary · Karbon / IRIS",
+      nurture: "Proposal follow-up", nurtureSub: "5-touch · proposal chase & switch guide",
+      escalate: "Partner hand-off", crm: "Practice CRM upsert"
+    }
+  },
+  mortgage: {
+    label: "Mortgage broker", plural: "mortgage brokers",
+    company: "Example mortgage brokerage",
+    noun: "clients", enquiry: "mortgage enquiries", deal: "mortgage case",
+    avgValue: 1350, monthlyLeads: 45, closeRate: 26,
+    channels: ["Estate agent referrals", "Google Ads", "Unbiased"],
+    leadNames: ["Daniel W", "Aisha B", "Mark T", "Sophie L", "Ryan P"],
+    services: ["First-time buyer", "Remortgage", "Buy-to-let", "Product transfer", "Protection review"],
+    build: {
+      trigger: "New mortgage enquiry", triggerSub: "Webform · Unbiased lead · missed call",
+      book: "Book fact-find", bookSub: "Adviser diary · Acre / Smartr365",
+      nurture: "Rate & renewal nurture", nurtureSub: "6-touch · remortgage & protection",
+      escalate: "Adviser hand-off", crm: "Client CRM upsert"
+    }
+  },
+  msp: {
+    label: "IT support / MSP", plural: "managed service providers",
+    company: "Example IT support firm",
+    noun: "clients", enquiry: "new client enquiries", deal: "support contract",
+    avgValue: 12000, monthlyLeads: 12, closeRate: 20,
+    channels: ["Referral partners", "Google Ads", "LinkedIn Ads"],
+    leadNames: ["Halston Legal", "Brightside Care", "Meridian Logistics", "Kerr & Co Accounts", "Vantage Engineering"],
+    services: ["Managed IT support", "Microsoft 365 migration", "Cyber Essentials", "Server / cloud migration", "VoIP phone system"],
+    build: {
+      trigger: "New client enquiry", triggerSub: "Webform · LinkedIn · inbound call",
+      book: "Book discovery call", bookSub: "Sales diary · HubSpot / Outlook",
+      nurture: "Contract nurture", nurtureSub: "6-touch · Cyber Essentials & M365",
+      escalate: "Account director hand-off", crm: "Client CRM upsert"
+    }
+  },
+  agency: {
+    label: "Marketing agency", plural: "marketing agencies",
+    company: "Example marketing agency",
+    noun: "clients", enquiry: "new business enquiries", deal: "retainer",
+    avgValue: 7200, monthlyLeads: 22, closeRate: 15,
+    channels: ["Referrals", "LinkedIn Ads", "Google Ads"],
+    leadNames: ["Harlow Fitness", "Verity Legal", "Northgate Homes", "BrightPath SaaS", "Calder & Co"],
+    services: ["Paid social retainer", "SEO retainer", "Website rebuild", "Brand refresh", "Lead gen sprint"],
+    build: {
+      trigger: "New business enquiry", triggerSub: "Webform · LinkedIn DM · referral intro",
+      book: "Book discovery call", bookSub: "Calendly · HubSpot deal created",
+      nurture: "Pitch follow-up nurture", nurtureSub: "5-touch · case studies & proposal chase",
+      escalate: "Account director hand-off", crm: "Pipeline CRM upsert"
+    }
+  },
+  construction: {
+    label: "Construction & trades", plural: "building contractors",
+    company: "Example building contractor",
+    noun: "homeowners", enquiry: "project enquiries", deal: "build contract",
+    avgValue: 24000, monthlyLeads: 28, closeRate: 15,
+    channels: ["Checkatrade", "Google Ads", "Word of mouth"],
+    leadNames: ["Dave R", "Claire T", "Mo A", "Helen B", "Ryan P"],
+    services: ["Rear extension", "Loft conversion", "Full house renovation", "Kitchen refit", "Garage conversion"],
+    build: {
+      trigger: "New project enquiry", triggerSub: "Webform · Checkatrade · missed call",
+      book: "Book site visit", bookSub: "Site diary · Tradify / Powered Now",
+      nurture: "Quote follow-up", nurtureSub: "5-touch · after quote sent",
+      escalate: "Estimator hand-off", crm: "Job pipeline upsert"
+    }
+  },
+  solar: {
+    label: "Solar & renewables", plural: "solar installers",
+    company: "Example solar installer",
+    noun: "homeowners", enquiry: "install enquiries", deal: "system install",
+    avgValue: 8500, monthlyLeads: 50, closeRate: 18,
+    channels: ["Meta lead ads", "Google Ads", "MCS directory"],
+    leadNames: ["Gavin S", "Nadia H", "Peter W", "Sofia L", "Craig D"],
+    services: ["Solar PV survey", "Battery storage", "Solar + battery", "EV charger", "Air source heat pump"],
+    build: {
+      trigger: "New install enquiry", triggerSub: "Meta lead ad · webform · quote tool",
+      book: "Book roof survey", bookSub: "Surveyor diary · OpenSolar / Pylon",
+      nurture: "Quote nurture", nurtureSub: "6-touch · payback & battery upsell",
+      escalate: "Sales surveyor hand-off", crm: "Install CRM upsert"
+    }
+  },
+  cleaning: {
+    label: "Commercial cleaning", plural: "commercial cleaning contractors",
+    company: "Example cleaning contractor",
+    noun: "clients", enquiry: "cleaning enquiries", deal: "cleaning contract",
+    avgValue: 8400, monthlyLeads: 30, closeRate: 20,
+    channels: ["Google Ads", "Managing agent referrals", "Bark"],
+    leadNames: ["Kingsway Offices", "Bramley Dental", "Orbit Logistics", "St Anne's School", "Meridian Gym"],
+    services: ["Office daily clean", "Communal area clean", "Deep clean / one-off", "Washroom services", "End of tenancy"],
+    build: {
+      trigger: "New cleaning enquiry", triggerSub: "Webform · Bark lead · missed call",
+      book: "Book site survey", bookSub: "Ops diary · Joblogic / Timegate",
+      nurture: "Quote & tender nurture", nurtureSub: "5-touch · quote chase & renewal dates",
+      escalate: "Ops manager hand-off", crm: "Contract CRM upsert"
+    }
+  },
+  gym: {
+    label: "Gym / fitness studio", plural: "gyms and fitness studios",
+    company: "Example fitness studio",
+    noun: "members", enquiry: "membership enquiries", deal: "membership",
+    avgValue: 540, monthlyLeads: 90, closeRate: 28,
+    channels: ["Meta lead ads", "Google Ads", "Referrals & walk-ins"],
+    leadNames: ["Chloe B", "Marcus T", "Aisha N", "Danny W", "Sophie L"],
+    services: ["Monthly membership", "Free trial pass", "Personal training", "Class pack", "Student / off-peak"],
+    build: {
+      trigger: "New membership enquiry", triggerSub: "Meta lead ad · webform · walk-in",
+      book: "Book tour or trial", bookSub: "Studio diary · Glofox / TeamUp",
+      nurture: "Trial follow-up", nurtureSub: "5-touch · trial to direct debit",
+      escalate: "Membership advisor hand-off", crm: "Member CRM upsert"
+    }
+  },
+  physio: {
+    label: "Physiotherapy clinic", plural: "physiotherapy clinics",
+    company: "Example physio clinic",
+    noun: "patients", enquiry: "patient enquiries", deal: "course of treatment",
+    avgValue: 320, monthlyLeads: 45, closeRate: 34,
+    channels: ["Google Ads", "Google Business Profile", "GP & insurer referrals"],
+    leadNames: ["Rachel P", "Dev S", "Karen A", "Liam F", "Nina G"],
+    services: ["Back & neck pain", "Sports injury", "Post-op rehab", "Sciatica assessment", "Sports massage"],
+    build: {
+      trigger: "New patient enquiry", triggerSub: "Webform · Google call · missed call",
+      book: "Book initial assessment", bookSub: "Clinic diary · Cliniko / TM3",
+      nurture: "Rehab plan nurture", nurtureSub: "5-touch · rebooking & block plans",
+      escalate: "Clinic manager hand-off", crm: "Patient record upsert"
+    }
+  },
+  education: {
+    label: "Tutoring & training", plural: "tutoring and training providers",
+    company: "Example tutoring provider",
+    noun: "students", enquiry: "tuition enquiries", deal: "tuition package",
+    avgValue: 650, monthlyLeads: 40, closeRate: 25,
+    channels: ["Google Ads", "Tutorful / MyTutor", "Parent referrals"],
+    leadNames: ["Hannah W", "Omar Q", "Claire D", "Ben I", "Maya S"],
+    services: ["GCSE maths", "A-level sciences", "11+ preparation", "English & literacy", "Adult upskilling course"],
+    build: {
+      trigger: "New tuition enquiry", triggerSub: "Webform · Tutorful lead · missed call",
+      book: "Book consultation call", bookSub: "Tutor diary · TutorCruncher / Teachworks",
+      nurture: "Enrolment nurture", nurtureSub: "5-touch · trial lesson & term blocks",
+      escalate: "Head tutor hand-off", crm: "Student CRM upsert"
+    }
+  },
+  other: {
+    label: "Something else", plural: "service businesses",
+    company: "Example service business",
+    noun: "customers", enquiry: "new enquiries", deal: "job",
+    avgValue: 1800, monthlyLeads: 45, closeRate: 25,
+    channels: ["Google Ads", "Website & SEO", "Referrals"],
+    leadNames: ["Daniel W", "Aisha R", "Mark T", "Lucy P", "Ben K"],
+    services: ["Quote request", "Pricing enquiry", "Site visit", "Callback request", "Existing customer"],
+    build: {
+      trigger: "New customer enquiry", triggerSub: "Webform · Missed call · Live chat",
+      book: "Book a call", bookSub: "Calendar sync · Google / Outlook",
+      nurture: "Follow-up nurture", nurtureSub: "5-touch · Email & SMS",
+      escalate: "Sales team hand-off", crm: "CRM record upsert"
+    }
   }
 };
 

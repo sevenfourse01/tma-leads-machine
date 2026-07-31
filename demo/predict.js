@@ -30,7 +30,20 @@ const SECTOR_ECON = {
   hvac:        { margin: 0.42, spend: 2000, cpl: [45, 70, 130], leadToCall: 0.62, callShow: 0.85 },
   recruitment: { margin: 0.55, spend: 1200, cpl: [70, 120, 240], leadToCall: 0.45, callShow: 0.82 },
   ifa:         { margin: 0.70, spend: 1000, cpl: [55, 95, 180], leadToCall: 0.50, callShow: 0.78 },
-  vet:         { margin: 0.55, spend: 900,  cpl: [18, 30, 55],  leadToCall: 0.65, callShow: 0.88 }
+  vet:         { margin: 0.55, spend: 900,  cpl: [18, 30, 55],  leadToCall: 0.65, callShow: 0.88 },
+  estate:       { margin: 0.6, spend: 1200, cpl: [30, 55, 110], leadToCall: 0.5, callShow: 0.75 },
+  law:          { margin: 0.65, spend: 2000, cpl: [45, 80, 160], leadToCall: 0.6, callShow: 0.78 },
+  accounting:   { margin: 0.7, spend: 1200, cpl: [50, 90, 180], leadToCall: 0.6, callShow: 0.75 },
+  mortgage:     { margin: 0.7, spend: 1200, cpl: [35, 60, 120], leadToCall: 0.52, callShow: 0.78 },
+  msp:          { margin: 0.6, spend: 1200, cpl: [75, 150, 300], leadToCall: 0.6, callShow: 0.75 },
+  agency:       { margin: 0.6, spend: 1200, cpl: [65, 130, 280], leadToCall: 0.45, callShow: 0.7 },
+  construction: { margin: 0.38, spend: 800, cpl: [25, 55, 110], leadToCall: 0.5, callShow: 0.75 },
+  solar:        { margin: 0.4, spend: 2500, cpl: [30, 65, 130], leadToCall: 0.45, callShow: 0.7 },
+  cleaning:     { margin: 0.35, spend: 900, cpl: [25, 55, 110], leadToCall: 0.6, callShow: 0.75 },
+  gym:          { margin: 0.6, spend: 900, cpl: [10, 20, 38], leadToCall: 0.45, callShow: 0.62 },
+  physio:       { margin: 0.55, spend: 1000, cpl: [25, 42, 75], leadToCall: 0.62, callShow: 0.78 },
+  education:    { margin: 0.45, spend: 800, cpl: [22, 40, 80], leadToCall: 0.58, callShow: 0.72 },
+  other:        { margin: 0.55, spend: 1500, cpl: [30, 55, 110], leadToCall: 0.55, callShow: 0.75 }
 };
 
 /* Conservative improvement ranges for the two levers the service actually

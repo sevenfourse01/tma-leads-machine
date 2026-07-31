@@ -7,7 +7,9 @@
    ========================================================================= */
 
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-const singular = s => String(s).replace(/ies\b/g, "y").replace(/s\b/g, "");
+/* Singularise the LAST word only. Stripping a trailing "s" at every word
+   boundary turned "new business enquiries" into "new busines enquiry". */
+const singular = s => String(s).replace(/(\w+)$/, w => w.replace(/ies$/, "y").replace(/s$/, ""));
 
 /* ---------- the four example weeks ---------------------------------------
    Shape: an improving trend with a deliberate week-3 setback (cost per

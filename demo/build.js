@@ -7,25 +7,56 @@
 const SVG_NS = "http://www.w3.org/2000/svg";
 const NODE_W = 170, NODE_H = 64;
 
+/* ---------- which of our builds delivers which part of the pipeline -------
+   These are the real entry builds from the pricing page, not invented modules.
+   Every node names the system that does it and the question we'd ask on the
+   diagnosis call to find out whether this business actually needs that part —
+   the whole point being that most people need three or four of these, not
+   fifteen, and the call is how we find out which. */
+const SYSTEMS = {
+  SPEED:   { name: "Speed-to-lead responder",     days: "3 days", tier: "entry", col: "#4da3ff" },
+  TRIAGE:  { name: "Inbox triage & draft replies", days: "4 days", tier: "entry", col: "#df7afe" },
+  RESCUE:  { name: "Missed-call rescue",          days: "2 days", tier: "entry", col: "#ffc46b" },
+  SIGNAL:  { name: "Buying-signal watcher",       days: "5 days", tier: "entry", col: "#9fd6b8" },
+  CRM:     { name: "Onboarding pack automation",  days: "4 days", tier: "entry", col: "#a9d3ff" },
+  DASH:    { name: "Live KPI dashboard",          days: "5 days", tier: "entry", col: "#b7c0cc" },
+  MACHINE: { name: "THE MACHINE — the full build", days: "~3 weeks", tier: "core", col: "#e2c6ff" }
+};
+
 /* ---------- nodes --------------------------------------------------------- */
 function nodeDefs(cfg) {
   const b = cfg.build;
   return [
-    { id: 1,  x: 30,  y: 60,  ic: "⚡", name: b.trigger,              sub: b.triggerSub },
-    { id: 2,  x: 240, y: 60,  ic: "🧹", name: "Capture & clean",       sub: "Dedupe · validate · normalise" },
-    { id: 3,  x: 450, y: 60,  ic: "🔎", name: "Enrich contact",        sub: "Phone · company · source" },
-    { id: 4,  x: 660, y: 60,  ic: "🤖", name: "AI qualify & score",    sub: "Intent · urgency · fit → 0–100" },
-    { id: 5,  x: 880, y: 60,  ic: "🔀", name: "Route by score",        sub: "Hot ≥70 · Warm 40–69 · Cold <40" },
-    { id: 6,  x: 240, y: 210, ic: "✉️", name: "Instant reply <60s",    sub: "SMS + email · your voice" },
-    { id: 7,  x: 450, y: 210, ic: "📅", name: b.book,                  sub: b.bookSub },
-    { id: 8,  x: 660, y: 210, ic: "🔔", name: "Hot-lead alert to you", sub: "Straight to your phone" },
-    { id: 9,  x: 240, y: 330, ic: "💬", name: b.nurture,               sub: b.nurtureSub },
-    { id: 10, x: 450, y: 330, ic: "👤", name: "Your approval gate",    sub: "One tap · approve / edit / skip", human: true },
-    { id: 11, x: 660, y: 330, ic: "📤", name: "Send + schedule",       sub: "Best send-time · stops on reply" },
-    { id: 12, x: 240, y: 450, ic: "🗂️", name: "Long-term list",        sub: "Quarterly value emails" },
-    { id: 13, x: 450, y: 450, ic: "♻️", name: "Reactivation campaign", sub: "Dormant leads · 90-day cycle" },
-    { id: 14, x: 880, y: 270, ic: "🗄️", name: b.crm,                   sub: "Every touch logged automatically" },
-    { id: 15, x: 880, y: 410, ic: "📊", name: "Weekly report to you",  sub: "Monday 08:00 · plain English" }
+    { id: 1,  x: 30,  y: 60,  ic: "⚡", name: b.trigger,              sub: b.triggerSub, sys: "RESCUE",
+      dx: "How many of your enquiries arrive as a missed call or a DM — and what happens to those today?" },
+    { id: 2,  x: 240, y: 60,  ic: "🧹", name: "Capture & clean",       sub: "Dedupe · validate · normalise", sys: "SPEED",
+      dx: "How many separate places do you have to check to be sure you've seen every enquiry?" },
+    { id: 3,  x: 450, y: 60,  ic: "🔎", name: "Enrich contact",        sub: "Phone · company · source", sys: "SIGNAL",
+      dx: "When a name lands, how much do you know about them before you pick up the phone?" },
+    { id: 4,  x: 660, y: 60,  ic: "🤖", name: "AI qualify & score",    sub: "Intent · urgency · fit → 0–100", sys: "TRIAGE",
+      dx: "Who decides which enquiry gets called first, and on what basis?" },
+    { id: 5,  x: 880, y: 60,  ic: "🔀", name: "Route by score",        sub: "Hot ≥70 · Warm 40–69 · Cold <40", sys: "MACHINE",
+      dx: "Roughly what share of your enquiries are actually worth a call?" },
+    { id: 6,  x: 240, y: 210, ic: "✉️", name: "Instant reply <60s",    sub: "SMS + email · your voice", sys: "SPEED",
+      dx: "Time your last ten enquiries from arrival to first human reply. What's the median?" },
+    { id: 7,  x: 450, y: 210, ic: "📅", name: b.book,                  sub: b.bookSub, sys: "SPEED",
+      dx: "How many booked calls reach your diary without someone retyping them?" },
+    { id: 8,  x: 660, y: 210, ic: "🔔", name: "Hot-lead alert to you", sub: "Straight to your phone", sys: "RESCUE",
+      dx: "If your best-fit lead all year came in at 7pm on a Friday, when would you find out?" },
+    { id: 9,  x: 240, y: 330, ic: "💬", name: b.nurture,               sub: b.nurtureSub, sys: "MACHINE",
+      dx: "How many times does someone chase a quiet enquiry before they quietly give up?" },
+    { id: 10, x: 450, y: 330, ic: "👤", name: "Your approval gate",    sub: "One tap · approve / edit / skip", human: true, sys: "TRIAGE",
+      dx: "Which messages would you insist on seeing before they go out in your name?" },
+    { id: 11, x: 660, y: 330, ic: "📤", name: "Send + schedule",       sub: "Best send-time · stops on reply", sys: "MACHINE",
+      dx: "Today, what actually stops a follow-up sequence when someone replies?" },
+    { id: 12, x: 240, y: 450, ic: "🗂️", name: "Long-term list",        sub: "Quarterly value emails", sys: "MACHINE",
+      dx: "How many enquiries from last year are sitting in a spreadsheet doing nothing?" },
+    { id: 13, x: 450, y: 450, ic: "♻️", name: "Reactivation campaign", sub: "Dormant leads · 90-day cycle", sys: "SIGNAL",
+      dx: "When did you last deliberately contact someone who enquired six months ago?" },
+    { id: 14, x: 880, y: 270, ic: "🗄️", name: b.crm,                   sub: "Every touch logged automatically", sys: "CRM",
+      dx: "How much of the week goes on retyping the same details into a second system?" },
+    { id: 15, x: 880, y: 410, ic: "📊", name: "Weekly report to you",  sub: "Monday 08:00 · plain English", sys: "DASH",
+      dx: "Which number do you check on a Monday morning, and where do you get it from?" }
   ];
 }
 
@@ -114,6 +145,12 @@ function renderCanvas() {
     const ic = svgText(n.x + NODE_W - 12, n.y + 44, "nicon", n.ic);
     ic.setAttribute("text-anchor", "end");
     g.appendChild(ic);
+    /* which of our builds delivers this step — shown only in systems view */
+    const tag = svgText(n.x + 14, n.y - 7, "nsys", n.sys);
+    /* inline style, not a fill attribute — `.wf-node text{fill:#fff}` is a CSS
+       rule and beats a presentation attribute, which painted every tag white */
+    tag.style.fill = SYSTEMS[n.sys].col;
+    g.appendChild(tag);
     g.addEventListener("click", () => openDrawer(n));
     svg.appendChild(g);
     nodeEls[n.id] = g;
@@ -145,6 +182,7 @@ function drawerRows(n, cfg) {
 
 function openDrawer(n) {
   const cfg = PRESETS[getProfile().industry];
+  const sys = SYSTEMS[n.sys];
   const rows = drawerRows(n, cfg)
     .map(r => `<div class="cfg-row"><span class="k">${esc(r[0])}</span><span class="v">${esc(r[1])}</span></div>`)
     .join("");
@@ -153,7 +191,17 @@ function openDrawer(n) {
       <div><h4>${esc(n.name)}</h4><p class="dim" style="font-size:13px">${esc(n.sub)}</p></div>
     </div>
     ${rows}
-    <div class="cfg-row"><span class="k">Owner</span><span class="v">${n.human ? "You — one click" : "TMA builds & runs it"}</span></div>`;
+    <div class="cfg-row"><span class="k">Owner</span><span class="v">${n.human ? "You — one click" : "TMA builds & runs it"}</span></div>
+    <div class="sysbox">
+      <div class="syshead">
+        <span class="sysdot" style="background:${sys.col}"></span>
+        <div>
+          <div class="sysname">${esc(sys.name)}</div>
+          <div class="sysmeta">${sys.tier === "core" ? "part of the full build" : "a standalone entry build"} · ${sys.days}</div>
+        </div>
+      </div>
+      <div class="sysdx"><span class="dxlab">On the call we'd ask</span>${esc(n.dx)}</div>
+    </div>`;
 }
 
 /* ---------- test-run simulation ------------------------------------------- */
@@ -355,10 +403,44 @@ function renderHow() {
 }
 
 /* ---------- init ----------------------------------------------------------- */
+/* ---------- systems view --------------------------------------------------
+   The canvas answers "what would you build me?". This answers the follow-up:
+   "which of those is a thing I can buy on its own, and how would you know I
+   need it?" Each node carries the build that delivers it. */
+function renderSysLegend() {
+  const box = $("#sysLegend");
+  if (!box) return;                      /* guard: markup is optional */
+  const used = {};
+  nodeDefs(PRESETS[getProfile().industry]).forEach(n => {
+    used[n.sys] = (used[n.sys] || 0) + 1;
+  });
+  box.innerHTML = Object.keys(SYSTEMS)
+    .filter(k => used[k])
+    .map(k => {
+      const s = SYSTEMS[k];
+      return `<div class="sysitem">
+        <span class="sysdot" style="background:${s.col}"></span>
+        <span class="sysk" style="color:${s.col}">${k}</span>
+        <span class="sysn">${esc(s.name)}</span>
+        <span class="sysd">${used[k]} step${used[k] > 1 ? "s" : ""} · ${s.days}</span>
+      </div>`;
+    }).join("");
+}
+
+function toggleSystems() {
+  const btn = $("#sysBtn"), leg = $("#sysLegend");
+  if (!btn || !leg) return;
+  const on = $("#wfSvg").classList.toggle("show-sys");
+  leg.classList.toggle("hide", !on);
+  btn.classList.toggle("on", on);
+  btn.textContent = on ? "◧ Hide the systems" : "◧ Which system does what?";
+}
+
 function renderAll() {
   if (running) { pendingRender = true; return; }
   $("#wfTitle").textContent = companyName() + " — lead engine";
   renderCanvas();
+  renderSysLegend();
   renderDash();
   renderCode();
   renderHow();
@@ -376,4 +458,6 @@ document.addEventListener("DOMContentLoaded", () => {
   wireNameInput($("#bizname"), () => { $("#wfTitle").textContent = companyName() + " — lead engine"; });
   renderAll();
   $("#runWf").addEventListener("click", runSim);
+  const sb = $("#sysBtn");
+  if (sb) sb.addEventListener("click", toggleSystems);
 });
