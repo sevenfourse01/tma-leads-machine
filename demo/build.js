@@ -199,6 +199,132 @@ function openDrawer(n) {
     </div>`;
 }
 
+/* ---------- one step, three ways -----------------------------------------
+   Adam's ask: show the flowchart, the software it's built in, and the actual
+   code, so a prospect can see that with a bit of customisation this is their
+   build rather than a diagram of one. Same six steps in all three views. */
+function miniSteps(cfg) {
+  const b = cfg.build;
+  return [
+    { app: "Webhook",     ic: "⚡", name: b.trigger,        sub: "Custom webhook",
+      cfg: [["Source", b.triggerSub], ["Method", "POST"], ["Data structure", "enquiry_v2"]] },
+    { app: "Tools",       ic: "🧹", name: "Clean & dedupe", sub: "Set multiple variables",
+      cfg: [["Phone", "parsePhone(1.phone; \"GB\")"], ["Email", "lower(trim(1.email))"], ["Dedupe key", "email + phone"]] },
+    { app: "OpenAI",      ic: "🤖", name: "Score intent",   sub: "Create a chat completion",
+      cfg: [["Model", "gpt-4o-mini"], ["System", "You score " + cfg.enquiry + " 0-100"], ["Max tokens", "300"]] },
+    { app: "Router",      ic: "🔀", name: "Route by score", sub: "3 routes",
+      cfg: [["Route 1", "score >= 70 → hot"], ["Route 2", "40-69 → warm"], ["Fallback", "< 40 → cold"]] },
+    { app: "Twilio",      ic: "✉️", name: "Instant reply",  sub: "Send an SMS",
+      cfg: [["To", "{{2.phone}}"], ["From", "your business number"], ["Body", "drafted in your voice"]] },
+    { app: "CRM",         ic: "🗄️", name: cfg.build.crm,    sub: "Upsert a record",
+      cfg: [["Record", "Contact"], ["Match on", "email"], ["Fields", "score, source, transcript"]] }
+  ];
+}
+
+let threeView = "flow", makeSel = 2;
+
+function viewFlow(cfg) {
+  const steps = miniSteps(cfg);
+  const W = 190, H = 62, GAP = 26, PAD = 16;
+  const w = steps.length * W + (steps.length - 1) * GAP + PAD * 2;
+  const nodes = steps.map((s, i) => {
+    const x = PAD + i * (W + GAP);
+    return `<g class="wf-node">
+      <rect x="${x}" y="18" width="${W}" height="${H}" rx="13"></rect>
+      <text class="nname" x="${x + 14}" y="${18 + 26}">${esc(s.name)}</text>
+      <text class="nsub"  x="${x + 14}" y="${18 + 44}">${esc(s.sub)}</text>
+      <text class="nicon" x="${x + W - 12}" y="${18 + 44}" text-anchor="end">${s.ic}</text>
+    </g>` + (i < steps.length - 1
+      ? `<path class="wf-edge" d="M ${x + W} ${18 + H / 2} L ${x + W + GAP} ${18 + H / 2}"></path>` : "");
+  }).join("");
+  return `<div class="flowscroll"><svg viewBox="0 0 ${w} 100" style="min-width:${w}px" role="img"
+    aria-label="Hot lead path as a flowchart">${nodes}</svg></div>
+    <p class="threefoot">Six steps of the hot lane. The full fifteen-node build is below.</p>`;
+}
+
+function viewMake(cfg) {
+  const steps = miniSteps(cfg);
+  const mods = steps.map((s, i) => `
+    <button type="button" class="mkmod${i === makeSel ? " on" : ""}" data-i="${i}">
+      <span class="mkcirc">${s.ic}<i class="mkbadge">${i + 1}</i></span>
+      <span class="mkapp">${esc(s.app)}</span>
+      <span class="mkname">${esc(s.name)}</span>
+    </button>`).join('<span class="mkline"></span>');
+  const s = steps[makeSel];
+  return `<div class="mk">
+      <div class="mkbar">
+        <span class="mkscn">${esc(companyName())} · hot lead</span>
+        <span class="mkchip">Scheduling: immediately</span>
+        <span class="mkrun">Run once</span>
+      </div>
+      <div class="mkflow">${mods}</div>
+      <div class="mkcfg">
+        <div class="mkcfghead"><span class="mkcirc sm">${s.ic}</span>
+          <div><b>${esc(s.app)}</b><span>${esc(s.sub)}</span></div></div>
+        ${s.cfg.map(r => `<div class="cfg-row"><span class="k">${esc(r[0])}</span><span class="v mono">${esc(r[1])}</span></div>`).join("")}
+      </div>
+    </div>
+    <p class="threefoot">A scenario in make.com, laid out the way you'd see it in the editor.
+    Where a build is better off in code, we write code instead and say why.</p>`;
+}
+
+function viewCode(cfg) {
+  const kw = s => `<span class="c-kw">${s}</span>`, fn = s => `<span class="c-fn">${s}</span>`,
+        st = s => `<span class="c-str">${s}</span>`, cm = s => `<span class="c-cm">${s}</span>`,
+        nu = s => `<span class="c-num">${s}</span>`;
+  return `<div class="codebox">
+    <div class="cb-head"><span class="cdot"></span><span class="cdot"></span><span class="cdot"></span>
+      <span class="cname">webhook.py · the same six steps, in code</span></div>
+    <pre>${cm("# the webhook make.com would call, or replace entirely")}
+${kw("@app")}.${fn("post")}(${st('"/enquiry"')})
+${kw("async def")} ${fn("intake")}(e: Enquiry):
+    e = ${fn("clean")}(e)                      ${cm("# 2. normalise phone + email")}
+    ${kw("if")} ${fn("is_duplicate")}(e.dedupe_key):
+        ${kw("return")} {${st('"status"')}: ${st('"duplicate"')}}
+
+    score, reason = ${kw("await")} ${fn("score_intent")}(   ${cm("# 3. same prompt as the module")}
+        text=e.message, sector=${st('"' + cfg.label.toLowerCase() + '"')},
+    )
+
+    ${kw("if")} score >= ${nu("70")}:                    ${cm("# 4. the router, in one line")}
+        ${kw("await")} ${fn("reply_now")}(e, ${fn("draft")}(e, tone=BRAND_VOICE))
+        ${kw("await")} ${fn("alert")}(OWNER, e, score, reason)
+    ${kw("elif")} score >= ${nu("40")}:
+        ${kw("await")} ${fn("queue_for_approval")}(e, ${fn("draft")}(e, tone=BRAND_VOICE))
+    ${kw("else")}:
+        ${kw("await")} ${fn("add_to_nurture")}(e, cycle=${nu("90")})
+
+    ${kw("await")} ${fn("crm_upsert")}(e, score=score, reason=reason)
+    ${kw("return")} {${st('"status"')}: ${st('"ok"')}, ${st('"score"')}: score}</pre>
+  </div>
+  <p class="threefoot">Real code from a build of this shape. Nothing here is pseudocode, and you own
+  it: if you leave, the repository and the scenarios go with you.</p>`;
+}
+
+function renderThree() {
+  const cfg = PRESETS[getProfile().industry];
+  const body = $("#threeBody");
+  if (!body) return;
+  body.innerHTML = threeView === "flow" ? viewFlow(cfg)
+                 : threeView === "make" ? viewMake(cfg)
+                 : viewCode(cfg);
+  if (threeView === "make") {
+    $$(".mkmod", body).forEach(b => b.addEventListener("click", () => {
+      makeSel = +b.dataset.i;
+      renderThree();
+    }));
+  }
+}
+
+function wireThree() {
+  $$(".tt").forEach(b => b.addEventListener("click", () => {
+    $$(".tt").forEach(x => x.classList.remove("on"));
+    b.classList.add("on");
+    threeView = b.dataset.v;
+    renderThree();
+  }));
+}
+
 /* ---------- sample dashboard ---------------------------------------------- */
 const kpiTile = (label, val, cls, delta) => `
   <div class="kpi"><div class="klabel">${label}</div>
@@ -314,6 +440,7 @@ function renderAll() {
   $("#wfTitle").textContent = companyName() + ": lead engine";
   renderCanvas();
   renderSysLegend();
+  renderThree();
   renderDash();
   renderCode();
   renderHow();
@@ -327,6 +454,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderPicker($("#industryPick"), renderAll);
   wireNameInput($("#bizname"), () => { $("#wfTitle").textContent = companyName() + ": lead engine"; });
   renderAll();
+  wireThree();
   const sb = $("#sysBtn");
   if (sb) sb.addEventListener("click", toggleSystems);
 });

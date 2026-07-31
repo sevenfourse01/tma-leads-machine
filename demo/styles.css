@@ -465,6 +465,105 @@ ul.notes li::before{content:"";position:absolute;left:0;top:8px;width:6px;height
 .msg.them{align-self:flex-start;background:rgba(255,255,255,.06);box-shadow:0 0 0 1px var(--line-soft) inset}
 .msg.us{align-self:flex-end;background:rgba(51,87,113,.45);box-shadow:0 0 0 1px rgba(77,163,255,.25) inset}
 
+/* ---------- one day, hour by hour ---------------------------------------
+   Colour carries the WHO: green system, blue us, violet you. Violet is the
+   same colour the approval gate uses on the Build canvas, so "your part" reads
+   consistently across the two demos. */
+.dayline{display:flex;gap:0;margin-top:18px;align-items:stretch;overflow-x:auto;
+  background:var(--panel);border-radius:var(--r);box-shadow:0 0 0 1px var(--line) inset;padding:6px}
+.dm{flex:1;min-width:112px;display:flex;flex-direction:column;align-items:center;gap:9px;
+  padding:15px 8px 13px;border-radius:13px;transition:.16s var(--ease);position:relative}
+.dm:hover{background:rgba(255,255,255,.05)}
+.dm.on{background:rgba(255,255,255,.07)}
+.dmt{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--muted)}
+.dm.on .dmt{color:#fff}
+.dmdot{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.2);transition:.16s var(--ease)}
+.dm.system .dmdot{background:#59d49b}
+.dm.tma .dmdot{background:#4da3ff}
+.dm.you .dmdot{background:#df7afe}
+.dm.on .dmdot{box-shadow:0 0 0 5px rgba(255,255,255,.09)}
+.dmtag{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim)}
+.dm.on.system .dmtag{color:#9fd6b8}
+.dm.on.tma .dmtag{color:#a9d3ff}
+.dm.on.you .dmtag{color:#e2c6ff}
+
+.daydetail{margin-top:14px}
+.dd{padding:22px 24px;border-radius:var(--r);background:var(--panel);
+  box-shadow:0 0 0 1px var(--line) inset}
+.dd.you{background:linear-gradient(160deg,rgba(129,74,200,.16),rgba(11,15,20,.85) 58%)}
+.ddhead{display:flex;align-items:center;gap:13px;flex-wrap:wrap;margin-bottom:10px}
+.ddtime{font-family:var(--mono);font-size:15px;font-weight:700;color:#fff}
+.ddhead h4{font-size:18px;letter-spacing:-.025em}
+.dd p{font-size:14.5px;color:var(--muted);line-height:1.6;max-width:76ch}
+.ddyou{margin-top:14px;padding-top:13px;border-top:1px solid var(--line-soft);
+  font-size:13.5px;color:var(--muted)}
+.ddlab{display:block;font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--dim);margin-bottom:5px}
+
+.askbar{display:grid;grid-template-columns:1.35fr 1fr;gap:18px;margin-top:26px}
+@media(max-width:900px){.askbar{grid-template-columns:1fr}}
+.askbar > div{padding:22px 24px;border-radius:var(--r);background:var(--panel);
+  box-shadow:0 0 0 1px var(--line) inset}
+.asklist{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.askq{font-size:14px;color:var(--muted);padding-left:20px;position:relative;line-height:1.45}
+.askq::before{content:"?";position:absolute;left:0;top:0;font-family:var(--mono);font-size:11px;
+  font-weight:700;color:#a9d3ff}
+.alwayson{display:flex;gap:13px;align-items:flex-start;
+  background:linear-gradient(160deg,rgba(51,87,113,.3),rgba(11,15,20,.85) 60%)!important}
+.aodot{width:10px;height:10px;border-radius:50%;background:#59d49b;flex:none;margin-top:6px;
+  box-shadow:0 0 0 4px rgba(89,212,155,.18)}
+.alwayson b{display:block;font-size:15.5px;margin-bottom:5px}
+.alwayson p{font-size:13.5px;color:var(--dim);line-height:1.55}
+
+/* ---------- one step, three ways ----------------------------------------
+   Flowchart / make.com / code, as tabs over the same six steps. The make view
+   borrows make.com's visual grammar (numbered circular modules on a dotted
+   run, config below) so a prospect who has seen the tool recognises it. */
+.three{background:var(--panel);border-radius:var(--r);box-shadow:0 0 0 1px var(--line) inset;
+  overflow:hidden}
+.threetabs{display:flex;align-items:center;gap:6px;padding:12px 14px;flex-wrap:wrap;
+  border-bottom:1px solid var(--line-soft);background:rgba(0,0,0,.3)}
+.tt{padding:8px 15px;border-radius:9px;font-size:13.5px;font-weight:600;color:var(--muted);
+  transition:.16s var(--ease)}
+.tt:hover{color:#fff;background:rgba(255,255,255,.06)}
+.tt.on{color:#fff;background:rgba(77,163,255,.15);box-shadow:0 0 0 1px rgba(77,163,255,.45) inset}
+.ttnote{margin-left:auto;font-size:12.5px;color:var(--dim);padding-right:4px}
+.threebody{padding:20px}
+.threefoot{margin-top:14px;font-size:13px;color:var(--dim);line-height:1.55;max-width:78ch}
+.flowscroll{overflow-x:auto;padding-bottom:4px}
+.flowscroll svg{height:auto}
+
+.mk{border-radius:14px;overflow:hidden;background:#05070a;box-shadow:0 0 0 1px var(--line) inset}
+.mkbar{display:flex;align-items:center;gap:12px;padding:11px 15px;border-bottom:1px solid var(--line-soft);
+  background:rgba(255,255,255,.03)}
+.mkscn{font-size:13.5px;font-weight:600}
+.mkchip{font-size:11px;color:var(--dim);padding:3px 9px;border-radius:6px;
+  box-shadow:0 0 0 1px var(--line) inset}
+.mkrun{margin-left:auto;font-size:12px;font-weight:600;color:#9fd6b8;padding:5px 12px;border-radius:7px;
+  background:rgba(89,212,155,.12);box-shadow:0 0 0 1px rgba(89,212,155,.3) inset}
+.mkflow{display:flex;align-items:flex-start;gap:0;padding:24px 18px;overflow-x:auto}
+.mkmod{display:flex;flex-direction:column;align-items:center;gap:7px;width:132px;flex:none;
+  padding:6px 4px;border-radius:12px;transition:.16s var(--ease)}
+.mkmod:hover{background:rgba(255,255,255,.05)}
+.mkcirc{position:relative;width:56px;height:56px;border-radius:50%;display:grid;place-items:center;
+  font-size:22px;background:#131a23;box-shadow:0 0 0 2px rgba(255,255,255,.16);transition:.16s var(--ease)}
+.mkcirc.sm{width:38px;height:38px;font-size:16px}
+.mkmod.on .mkcirc{box-shadow:0 0 0 2px var(--blue),0 0 22px rgba(77,163,255,.4)}
+.mkbadge{position:absolute;top:-3px;left:-3px;width:19px;height:19px;border-radius:50%;font-style:normal;
+  font-family:var(--mono);font-size:10px;font-weight:700;display:grid;place-items:center;
+  background:#4da3ff;color:#04070c}
+.mkapp{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--dim)}
+.mkmod.on .mkapp{color:#a9d3ff}
+.mkmod .mkname{font-size:12px;color:var(--muted);text-align:center;line-height:1.3}
+.mkline{flex:none;width:34px;height:2px;margin-top:34px;
+  background:repeating-linear-gradient(90deg,rgba(255,255,255,.3) 0 5px,transparent 5px 10px)}
+.mkcfg{padding:16px 18px;border-top:1px solid var(--line-soft);background:rgba(255,255,255,.02)}
+.mkcfghead{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+.mkcfghead b{display:block;font-size:14px}
+.mkcfghead span{font-size:12px;color:var(--dim)}
+.mkcfg .cfg-row .v{font-size:12.5px}
+
 /* ---------- the live mini forecast --------------------------------------
    Controls left, result right, nothing between them. The whole point is that
    a prospect can see the number move while their hand is still on the slider,

@@ -291,6 +291,82 @@ function renderQa(cfg, weeks, i) {
     </div>`).join("");
 }
 
+/* ---------- one day, hour by hour ----------------------------------------
+   The small version of this demo: a single Tuesday, six moments, and a WHO on
+   each one. The argument is made by the tally rather than by a claim — five of
+   the six belong to us or the system, and yours takes about ten seconds. */
+let daySel = 1;
+
+function dayMoments(cfg) {
+  const one = singular(cfg.enquiry);
+  const svc = cfg.services[1] || cfg.services[0];
+  const name = cfg.leadNames[0];
+  return [
+    { t: "07:12", who: "system", tag: "System", head: "Overnight, answered",
+      body: `Three ${esc(cfg.enquiry)} arrived after you closed. All three got a full reply inside
+             60 seconds, in your voice, with a live booking link. Nothing sat in an inbox.`,
+      you: "Nothing. You were asleep." },
+    { t: "09:41", who: "system", tag: "System", head: "A hot one",
+      body: `${esc(name)} scored 91 of 100: asked about ${esc(svc)} and wants it this week. Your phone
+             buzzed once, a slot was held provisionally, and a call script was drafted.`,
+      you: "Read one alert. Called them at 09:52." },
+    { t: "11:05", who: "tma", tag: "TMA", head: "We caught a drift",
+      body: `Cost per ${esc(one)} on ${esc(cfg.channels[0])} moved up 14% against last week. We traced
+             it to one keyword group, paused it, and sent you two lines explaining why.`,
+      you: "Nothing. You found out because we told you." },
+    { t: "14:20", who: "you", tag: "You", head: "Your ten seconds",
+      body: `Two drafted messages were waiting for approval: one follow-up and one quote chase.
+             You approved the first and changed a line in the second before it went.`,
+      you: "About ten seconds. This is the whole of your job." },
+    { t: "18:40", who: "system", tag: "System", head: "After you've gone home",
+      body: `Touch four of six went out to the ${esc(cfg.enquiry)} that went quiet a fortnight ago.
+             Two replied that evening; both are now in tomorrow's queue.`,
+      you: "Nothing. You were at dinner." },
+    { t: "02:14", who: "tma", tag: "TMA", head: "Someone's still awake",
+      body: `Three more ${esc(cfg.enquiry)} overnight, all answered in under a minute. You messaged to
+             check nothing was broken and got an answer in two minutes, from a person.`,
+      you: "You went back to sleep." }
+  ];
+}
+
+function renderDay() {
+  const cfg = PRESETS[getProfile().industry];
+  const ms = dayMoments(cfg);
+  $("#dayLine").innerHTML = ms.map((m, i) => `
+    <button type="button" class="dm ${m.who}${i === daySel ? " on" : ""}" data-i="${i}">
+      <span class="dmt">${m.t}</span>
+      <span class="dmdot"></span>
+      <span class="dmtag">${m.tag}</span>
+    </button>`).join("");
+
+  const m = ms[daySel];
+  const mine = ms.filter(x => x.who === "you").length;
+  $("#dayDetail").innerHTML = `
+    <div class="dd ${m.who}">
+      <div class="ddhead"><span class="ddtime">${m.t}</span><h4>${m.head}</h4>
+        <span class="chip ${m.who === "you" ? "violet" : m.who === "tma" ? "blue" : "hi"}">${m.tag}</span></div>
+      <p>${m.body}</p>
+      <div class="ddyou"><span class="ddlab">What it cost you</span>${m.you}</div>
+    </div>
+    <p class="threefoot" style="margin-top:12px">${mine} of the six moments in this day
+    ${mine === 1 ? "was" : "were"} yours.
+    <span class="modeltag" style="margin-left:8px">Example day</span></p>`;
+
+  $$("#dayLine .dm").forEach(b => b.addEventListener("click", () => {
+    daySel = +b.dataset.i;
+    renderDay();
+  }));
+}
+
+function renderAsk() {
+  $("#askList").innerHTML = [
+    "Are we prioritising the right goals?",
+    "What's performing best this week?",
+    "Where are the biggest bottlenecks?",
+    "What should we optimise next?"
+  ].map(q => `<span class="askq">${q}</span>`).join("");
+}
+
 /* ---------- rhythm + chat + "what you're buying" -------------------------- */
 function renderRhythm(cfg) {
   const rows = [
@@ -373,6 +449,7 @@ function setTitle() { $("#growTitle").textContent = companyName() + ": weekly gr
 function renderAll() {
   const cfg = PRESETS[getProfile().industry];
   setTitle();
+  renderDay();
   renderWeek();
   renderRhythm(cfg);
   renderChat(cfg);
@@ -383,5 +460,6 @@ document.addEventListener("DOMContentLoaded", () => {
   wireNameInput($("#bizname"), setTitle);
   renderWeekSel();
   renderBuying();
+  renderAsk();
   renderAll();
 });
