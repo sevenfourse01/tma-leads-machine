@@ -104,6 +104,7 @@ function phaseCard(label, when, items, cfg) {
       </div>
       <p>${esc(b.what)}</p>
       <div class="bcneed"><span class="needlab">To integrate it we need</span>${esc(b.needs)}</div>
+      <a class="bclink" href="resources.html#${code}">What this involves →</a>
     </div>`;
   }).join("");
   return `<div class="phase">
@@ -160,6 +161,7 @@ function renderPlan() {
           <div><h4>${esc(BUILDS.MACHINE.name)}</h4><span class="bcdays">${esc(BUILDS.MACHINE.days)}</span></div></div>
         <p>${esc(BUILDS.MACHINE.what)}</p>
         <div class="bcneed"><span class="needlab">To integrate it we need</span>${esc(BUILDS.MACHINE.needs)}</div>
+        <a class="bclink" href="resources.html#MACHINE">What this involves →</a>
       </div></div></div>`;
   }
   $("#planPhases").innerHTML = html;
@@ -261,6 +263,8 @@ document.addEventListener("DOMContentLoaded", () => {
   renderSymptoms();
   wireSegs();
   updateCount();
+  applyEmbedMode();
+  wireBooking();          /* the nav and intro CTAs, before any plan exists */
   $("#buildBtn").addEventListener("click", runBuild);
   $("#redoBtn").addEventListener("click", () => {
     $("#planStage").classList.add("hide");

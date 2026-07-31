@@ -17,35 +17,94 @@ const CONTACT_EMAIL = "hello@themissionautomation.com";  // confirm before launc
    that build. None of it is knowable from a form, which is why every route
    through these demos ends at a call rather than a checkout. Deliberately no
    prices — the site prices on the diagnosis call and so do we. */
+const BUILD_CATS = [
+  ["capture", "Catching the enquiry", "Nothing else matters if it never reaches a human."],
+  ["qualify", "Working out who's worth it", "So the best enquiry of the week isn't behind the worst."],
+  ["convert", "Turning it into a sale", "Most revenue is lost after the first reply, not before it."],
+  ["deliver", "Running the work",         "The admin that quietly eats a day a week."],
+  ["retain",  "Getting more from the same customers", "The cheapest growth you will ever buy."],
+  ["measure", "Knowing what happened",    "You cannot steer what you find out about a month late."],
+  ["full",    "All of it, run for you",   "When the pieces should be one machine with a team behind it."]
+];
+
 const BUILDS = {
-  SPEED: { name: "Speed-to-lead responder", days: "3 days", tier: "entry", col: "#4da3ff",
+  /* --- capture ------------------------------------------------------- */
+  SPEED: { name: "Speed-to-lead responder", days: "3 days", tier: "entry", cat: "capture", col: "#4da3ff",
     what: "Answers every new enquiry in under 60 seconds, day or night, with a live booking link.",
     needs: "your web forms, the number you take enquiries on, and your calendar" },
-  RESCUE: { name: "Missed-call rescue", days: "2 days", tier: "entry", col: "#ffc46b",
+  RESCUE: { name: "Missed-call rescue", days: "2 days", tier: "entry", cat: "capture", col: "#ffc46b",
     what: "Texts back every missed call within 30 seconds, before they ring the next name on the list.",
     needs: "your phone system and a number we can send from" },
-  TRIAGE: { name: "Inbox triage & draft replies", days: "4 days", tier: "entry", col: "#df7afe",
+  WEBCHAT: { name: "Website chat that books", days: "4 days", tier: "entry", cat: "capture", col: "#6fb7ff",
+    what: "Answers the questions people actually ask on your site, and puts the ready ones straight in the diary.",
+    needs: "your site, your five most common questions, and your calendar" },
+  INTAKE: { name: "Enquiry form rebuild", days: "2 days", tier: "entry", cat: "capture", col: "#8ec2ff",
+    what: "One form that asks the right things, validates as it goes, and routes by answer instead of by inbox.",
+    needs: "your current form and who each type of enquiry should reach" },
+
+  /* --- qualify ------------------------------------------------------- */
+  TRIAGE: { name: "Inbox triage & draft replies", days: "4 days", tier: "entry", cat: "qualify", col: "#df7afe",
     what: "Scores each enquiry and drafts the reply in your voice. You approve, edit or bin it.",
     needs: "mailbox access and about twenty of your past replies, so we can learn how you write" },
-  QUOTE: { name: "Quote & proposal generator", days: "5 days", tier: "entry", col: "#ffd9a0",
-    what: "Turns an enquiry into a branded quote or proposal, ready to e-sign, while it still matters.",
-    needs: "your pricing rules and a recent quote we can rebuild as a template" },
-  SIGNAL: { name: "Buying-signal watcher", days: "5 days", tier: "entry", col: "#9fd6b8",
+  SCORE: { name: "Lead scoring & routing", days: "3 days", tier: "entry", cat: "qualify", col: "#c98cff",
+    what: "Every enquiry gets a score and a reason in plain English, then goes to the right lane automatically.",
+    needs: "a sense of what your best customer looks like, and what a time-waster looks like" },
+  ENRICH: { name: "Contact & company enrichment", days: "3 days", tier: "entry", cat: "qualify", col: "#9fd6b8",
+    what: "Fills in who this person actually is before you call them, so you don't open cold.",
+    needs: "your enquiry data and whichever enrichment source suits your market" },
+  SIGNAL: { name: "Buying-signal watcher", days: "5 days", tier: "entry", cat: "qualify", col: "#7fd0a8",
     what: "Watches for the events that mean someone is about to buy, and tells you while it's still news.",
     needs: "your ideal-customer definition and the sources worth watching in your market" },
-  REVIEW: { name: "Review & referral engine", days: "3 days", tier: "entry", col: "#a9d3ff",
-    what: "Asks for the review at the moment people are happiest, and routes the unhappy ones to you first.",
-    needs: "your Google or Trustpilot profile and a signal for when a job is finished" },
-  DASH: { name: "Live KPI dashboard", days: "5 days", tier: "entry", col: "#b7c0cc",
-    what: "One screen with the numbers that matter, updated live, so Monday stops being a guess.",
-    needs: "read access to wherever those numbers live today, however messy that is" },
-  CRM: { name: "Onboarding pack automation", days: "4 days", tier: "entry", col: "#8ec2ff",
+
+  /* --- convert ------------------------------------------------------- */
+  QUOTE: { name: "Quote & proposal generator", days: "5 days", tier: "entry", cat: "convert", col: "#ffd9a0",
+    what: "Turns an enquiry into a branded quote or proposal, ready to e-sign, while it still matters.",
+    needs: "your pricing rules and a recent quote we can rebuild as a template" },
+  NURTURE: { name: "Follow-up that stops on reply", days: "4 days", tier: "entry", cat: "convert", col: "#ffc46b",
+    what: "The five or six touches most people never send, in your voice, ending the second someone answers.",
+    needs: "your typical sales cycle and anything you would never want said in your name" },
+  BOOKING: { name: "Booking & no-show recovery", days: "3 days", tier: "entry", cat: "convert", col: "#ffb3b3",
+    what: "Confirms, reminds and rebooks. No-shows cost more than the advertising that produced them.",
+    needs: "your calendar and how far ahead you take bookings" },
+  REACTIVATE: { name: "Dormant-list reactivation", days: "3 days", tier: "entry", cat: "convert", col: "#a9d3ff",
+    what: "One respectful message to everyone who enquired, never bought, and went quiet. Cheapest revenue there is.",
+    needs: "your old enquiry data, in whatever state it's in" },
+
+  /* --- deliver ------------------------------------------------------- */
+  CRM: { name: "Onboarding pack automation", days: "4 days", tier: "entry", cat: "deliver", col: "#8ec2ff",
     what: "Logs every touch automatically and stops anyone retyping the same details twice.",
     needs: "your CRM and its current fields, or a conversation about picking one" },
-  CONTENT: { name: "Content repurposer", days: "4 days", tier: "entry", col: "#dfb2ff",
+  CRMBUILD: { name: "CRM build or migration", days: "5 days", tier: "entry", cat: "deliver", col: "#6fb7ff",
+    what: "A CRM your team will actually use, or your existing one cleaned up and made to match how you work.",
+    needs: "whatever you use today, spreadsheets included, and who needs to see what" },
+  DOCS: { name: "Document & contract automation", days: "4 days", tier: "entry", cat: "deliver", col: "#b7c0cc",
+    what: "Contracts, packs and onboarding paperwork generated, sent and chased without anyone opening Word.",
+    needs: "your templates and the fields that change between clients" },
+  CALLS: { name: "Call notes into your CRM", days: "3 days", tier: "entry", cat: "deliver", col: "#dfb2ff",
+    what: "Calls transcribed, summarised and filed against the right record, with the actions pulled out.",
+    needs: "how you take calls today and where the notes should land" },
+
+  /* --- retain -------------------------------------------------------- */
+  REVIEW: { name: "Review & referral engine", days: "3 days", tier: "entry", cat: "retain", col: "#a9d3ff",
+    what: "Asks for the review at the moment people are happiest, and routes the unhappy ones to you first.",
+    needs: "your Google or Trustpilot profile and a signal for when a job is finished" },
+  CONTENT: { name: "Content repurposer", days: "4 days", tier: "entry", cat: "retain", col: "#dfb2ff",
     what: "Turns one recording into a week of platform-native posts, queued for your approval.",
     needs: "a recent recording and a sense of what you would never want posted" },
-  MACHINE: { name: "THE MACHINE: the full build", days: "about 3 weeks", tier: "core", col: "#e2c6ff",
+  WINBACK: { name: "Past-customer win-back", days: "3 days", tier: "entry", cat: "retain", col: "#e2c6ff",
+    what: "The people who already bought once are the likeliest to buy again, and the least likely to be asked.",
+    needs: "your customer history and what a sensible repeat interval looks like" },
+
+  /* --- measure ------------------------------------------------------- */
+  DASH: { name: "Live KPI dashboard", days: "5 days", tier: "entry", cat: "measure", col: "#b7c0cc",
+    what: "One screen with the numbers that matter, updated live, so Monday stops being a guess.",
+    needs: "read access to wherever those numbers live today, however messy that is" },
+  ATTRIB: { name: "Where your leads actually come from", days: "4 days", tier: "entry", cat: "measure", col: "#9fd6b8",
+    what: "Tracks each enquiry back to what produced it, so you stop guessing which half of the budget works.",
+    needs: "your ad accounts, your site and the point where an enquiry becomes a sale" },
+
+  /* --- the whole thing ------------------------------------------------ */
+  MACHINE: { name: "THE MACHINE: the full build", days: "about 3 weeks", tier: "core", cat: "full", col: "#e2c6ff",
     what: "The whole engine, run by our team against a budget you set: sourcing, research, drafting, sending and reporting.",
     needs: "the full diagnosis. Your economics, your stack, your deliverability and your compliance position" }
 };
@@ -388,17 +447,45 @@ function toast(msg) {
 
 /* Booking buttons: honest no-op until BOOKING_URL is set (same as tma-site) */
 function wireBooking() {
+  /* Embedded on another site, "Book a call" must leave the iframe: without
+     _top it loads this site inside the host page's own layout. ?book=<url>
+     lets the host pass its own booking page, which is the one its visitors
+     expect to land on. */
+  const q = new URLSearchParams(location.search);
+  const embedded = q.get("embed") === "1";
+  const url = q.get("book") || BOOKING_URL;
+
   $$("[data-book]").forEach(a => {
-    if (BOOKING_URL) {
-      a.setAttribute("href", BOOKING_URL);
-      /* new tab only for an external scheduler — never for the in-site anchor */
-      if (/^https?:/i.test(BOOKING_URL)) a.setAttribute("target", "_blank");
+    if (url) {
+      a.setAttribute("href", url);
+      if (embedded) a.setAttribute("target", "_top");
+      else if (/^https?:/i.test(url)) a.setAttribute("target", "_blank");
     }
     else a.addEventListener("click", e => {
       e.preventDefault();
       toast("Booking link coming soon — email " + CONTACT_EMAIL);
     });
   });
+}
+
+/* ---------- embed mode ---------------------------------------------------
+   ?embed=1 strips the nav and footer so the page can sit inside an iframe on
+   another site (the Framer one) without showing a second set of navigation.
+   It also posts its height to the parent on change, so a Framer embed can be
+   sized to the content instead of guessing and leaving a dead scroll area. */
+function applyEmbedMode() {
+  const p = new URLSearchParams(location.search);
+  if (p.get("embed") !== "1") return;
+  document.body.classList.add("embed");
+  $$("[data-chrome]").forEach(el => el.remove());
+
+  const post = () => {
+    const h = Math.ceil(document.documentElement.scrollHeight);
+    parent.postMessage({ tmaEmbedHeight: h, source: location.pathname }, "*");
+  };
+  post();
+  addEventListener("load", post);
+  if (window.ResizeObserver) new ResizeObserver(post).observe(document.body);
 }
 
 /* ---------- reveal on scroll (with the non-firing-observer backstop) ----- */
