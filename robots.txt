@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /demo/archive/
+
+Sitemap: https://themissionautomation.com/sitemap.xml
