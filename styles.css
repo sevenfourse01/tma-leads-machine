@@ -215,6 +215,15 @@ header.nav.stuck{background:rgba(0,0,0,.72);backdrop-filter:blur(18px) saturate(
    eye in a feed that would otherwise read as software talking to itself */
 .console .tag.h{color:#fff}
 .console .row:has(.tag.h) .msg{color:#e2e7ee}
+
+/* Every row states who acted. A prospect buying a service should never have to
+   work out which lines were a machine and which were a person. */
+.console .who{flex:none;width:52px;font-size:9.5px;font-weight:700;letter-spacing:.1em;
+  text-align:center;padding:1px 0;border-radius:4px;align-self:center}
+.console .who.ai{color:#8e9aa8;background:rgba(255,255,255,.05);
+  box-shadow:0 0 0 1px rgba(255,255,255,.08) inset}
+.console .who.hu{color:#04070c;background:#fff}
+@media(max-width:560px){.console .who{width:auto;padding:1px 5px;font-size:9px}}
 .console .msg{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .counters{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line-soft)}
@@ -534,6 +543,16 @@ a.pillar:hover .pillar-go{transform:translateX(4px)}
   box-shadow:0 0 0 4px rgba(89,212,155,.16)}
 .machine-foot{margin:18px auto 0;max-width:62ch;font-size:14px;line-height:1.6;
   color:var(--dim);text-align:center}
+
+/* the key for the AI / HUMAN column in the feed below */
+.machine-key{display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;
+  margin:0 auto 16px;font-size:12.5px;color:var(--dim)}
+.machine-key .kai,.machine-key .khu{font-family:var(--mono);font-size:9.5px;font-weight:700;
+  letter-spacing:.1em;padding:2px 7px;border-radius:4px}
+.machine-key .kai{color:#8e9aa8;background:rgba(255,255,255,.05);
+  box-shadow:0 0 0 1px rgba(255,255,255,.08) inset}
+.machine-key .khu{color:#04070c;background:#fff}
+.machine-key .ksep{width:1px;height:12px;background:var(--line);margin:0 6px}
 
 /* ---------- contents rail ----------------------------------------------
    Fixed to the left margin: where you are, how far through, and a way to skip

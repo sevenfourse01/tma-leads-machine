@@ -270,35 +270,37 @@ setInterval(() => {
 const nodes = [...document.querySelectorAll('#rail .node')];
 const consoleEl = document.getElementById('console');
 
-/* The feed deliberately alternates machine work and named people. Read as
-   pure system output it looked like software you log into, which is the one
-   thing TMA is not. Every few lines someone has to have done something. */
+/* Every line is tagged AI or HUMAN, because a prospect should never have to
+   guess which work a machine did and which a person did. Adam owns strategy,
+   which is where the judgement calls live: what to spend, what to refuse.
+   Zach runs the account, Eric owns the words and anything regulated. */
 const LOG = [
-  ['a', 'intake',    'profile loaded · 4 metrics measured, 2 inferred, 1 unknown'],
-  ['h', 'Priya',     'chased the client for the missing lifetime-value figure'],
-  ['a', 'intake',    'wallet funded £2,000.00 · ledger opened'],
-  ['b', 'website',   'fetched primary domain + 3 social profiles'],
-  ['b', 'website',   'voice profile extracted · 4 verifiable proof points found'],
-  ['h', 'Adam',      'read the site and rewrote the voice brief before sourcing'],
-  ['b', 'intel',     'sweeping niche · news, communities, video'],
-  ['b', 'intel',     '7 UK companies surfaced with live buying signals'],
-  ['h', 'Priya',     'dropped 2 of the 7 · wrong size, would waste the budget'],
-  ['a', 'strategy',  'pricing channels against LTV:CAC floor of 3.0'],
-  ['d', 'strategy',  'paid_ads REJECTED · CAC £4,286 > affordable £1,320'],
-  ['h', 'Adam',      'called the client to explain the rejection before spending'],
-  ['c', 'strategy',  'allocated email 50% · linkedin 30% · content 20%'],
-  ['a', 'execute',   'sourcing → researching → drafting in client voice'],
-  ['a', 'execute',   'dedupe pass · 2 already contacted, skipped'],
-  ['h', 'Sam',       'edited 3 openers · too familiar for this sector'],
-  ['d', 'execute',   'regulated claim detected · second sign-off required'],
-  ['h', 'Sam',       'cleared the regulated claim with the client in writing'],
-  ['c', 'queue',     '4 leads queued · status in_review · awaiting client approval'],
-  ['c', 'wallet',    '£184.20 drawn · £1,815.80 remaining · within budget'],
+  ['ai', 'a', 'intake',   'profile loaded · 4 metrics measured, 2 inferred, 1 unknown'],
+  ['hu', 'h', 'Zach',     'chased the client for the missing lifetime-value figure'],
+  ['ai', 'a', 'intake',   'wallet funded £2,000.00 · ledger opened'],
+  ['ai', 'b', 'website',  'fetched primary domain + 3 social profiles'],
+  ['ai', 'b', 'website',  'voice profile extracted · 4 verifiable proof points found'],
+  ['hu', 'h', 'Eric',     'read the site and rewrote the voice brief before sourcing'],
+  ['ai', 'b', 'intel',    'sweeping niche · news, communities, video'],
+  ['ai', 'b', 'intel',    '7 UK companies surfaced with live buying signals'],
+  ['hu', 'h', 'Zach',     'dropped 2 of the 7 · wrong size, would waste the budget'],
+  ['ai', 'a', 'strategy', 'pricing channels against LTV:CAC floor of 3.0'],
+  ['ai', 'd', 'strategy', 'paid_ads flagged · CAC £4,286 > affordable £1,320'],
+  ['hu', 'h', 'Adam',     'reviewed the maths and refused paid ads on this account'],
+  ['hu', 'h', 'Adam',     'called the client to explain the refusal before spending'],
+  ['hu', 'h', 'Adam',     'set the split · email 50%, linkedin 30%, content 20%'],
+  ['ai', 'a', 'execute',  'sourcing → researching → drafting in client voice'],
+  ['ai', 'a', 'execute',  'dedupe pass · 2 already contacted, skipped'],
+  ['hu', 'h', 'Eric',     'edited 3 openers · too familiar for this sector'],
+  ['ai', 'd', 'execute',  'regulated claim detected · second sign-off required'],
+  ['hu', 'h', 'Eric',     'cleared the regulated claim with the client in writing'],
+  ['ai', 'c', 'queue',    '4 leads queued · status in_review · awaiting client approval'],
+  ['ai', 'c', 'wallet',   '£184.20 drawn · £1,815.80 remaining · within budget'],
 ];
 
 let li = 0;
 function pushLog() {
-  const [cls, tag, msg] = LOG[li % LOG.length];
+  const [kind, cls, tag, msg] = LOG[li % LOG.length];
   const d = new Date();
   const ts = String(d.getHours()).padStart(2, '0') + ':' +
              String(d.getMinutes()).padStart(2, '0') + ':' +
@@ -306,6 +308,7 @@ function pushLog() {
   const row = document.createElement('div');
   row.className = 'row';
   row.innerHTML = `<span class="ts">${ts}</span>` +
+                  `<span class="who ${kind}">${kind === 'hu' ? 'HUMAN' : 'AI'}</span>` +
                   `<span class="tag ${cls}">${tag.padEnd(8, ' ')}</span>` +
                   `<span class="msg">${msg}</span>`;
   consoleEl.appendChild(row);
