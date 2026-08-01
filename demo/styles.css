@@ -92,6 +92,7 @@ p{margin:0}
 .brand{display:flex;align-items:center;gap:11px;font-weight:600;letter-spacing:-.03em;font-size:15.5px}
 /* the site's logo mark, copied exactly (../styles.css:109-113) — a 9px dot
    here vs a 29px gradient tile there read as two different brands */
+/* the site's logo mark, copied exactly (../styles.css .brand .mark) */
 .brand .dot{width:29px;height:29px;border-radius:8px;flex:none;position:relative;
   background:conic-gradient(from 350deg,#000 130deg,var(--steel) 320deg,#000 320deg);
   border:1px solid var(--line);display:grid;place-items:center}

@@ -24,6 +24,74 @@ document.querySelectorAll('.js-mail').forEach(a => {
     encodeURIComponent('THE MACHINE: diagnosis call');
 });
 
+/* ---- contents rail ----------------------------------------------------
+   Marks the section you are in and fills the progress line. Driven by scroll
+   position rather than IntersectionObserver: the sections are wildly different
+   heights, so "which one is crossing the upper third" tracks a reader's sense
+   of place better than "which one is most visible". */
+(() => {
+  const toc = document.getElementById('toc');
+  if (!toc) return;
+  const fill = document.getElementById('tocFill');
+  const links = [...toc.querySelectorAll('a[data-t]')];
+  const targets = links
+    .map(a => ({ a, el: document.getElementById(a.dataset.t) }))
+    .filter(t => t.el);
+
+  /* Pin the line between the first and last dot centres, and remember where
+     each dot sits along it. Measured, not assumed: the rail's padding and gap
+     can change in CSS without this drifting out of alignment. */
+  let dotY = [], span = 0;
+  const measure = () => {
+    const top = toc.getBoundingClientRect().top;
+    dotY = targets.map(t => {
+      const d = t.a.querySelector('.tdot').getBoundingClientRect();
+      return d.top - top + d.height / 2;
+    });
+    span = dotY[dotY.length - 1] - dotY[0];
+    const line = toc.querySelector('.tocline');
+    line.style.top = dotY[0] + 'px';
+    line.style.height = span + 'px';
+  };
+
+  /* Scroll position at which each section takes over. Interpolating between
+     these means the fill reaches a dot at the same moment its section does,
+     instead of running on raw page percentage and arriving early or late. */
+  const marksFor = () => {
+    const m = targets.map(t => t.el.offsetTop - innerHeight * 0.32);
+    m[0] = 0;
+    for (let i = 1; i < m.length; i++) if (m[i] <= m[i - 1]) m[i] = m[i - 1] + 1;
+    return m;
+  };
+
+  const onScroll = () => {
+    const marks = marksFor();
+    let px = 0, current = 0;
+    if (scrollY >= marks[marks.length - 1]) { px = span; current = marks.length - 1; }
+    else {
+      for (let i = 0; i < marks.length - 1; i++) {
+        if (scrollY < marks[i + 1]) {
+          const f = Math.max(0, (scrollY - marks[i]) / (marks[i + 1] - marks[i]));
+          px = (dotY[i] - dotY[0]) + f * (dotY[i + 1] - dotY[i]);
+          current = i;
+          break;
+        }
+      }
+    }
+    fill.style.height = px + 'px';
+    targets.forEach((t, i) => {
+      t.a.classList.toggle('reached', dotY[i] - dotY[0] <= px + 0.5);
+      t.a.classList.toggle('on', i === current);
+    });
+  };
+
+  const refresh = () => { measure(); onScroll(); };
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', refresh);
+  addEventListener('load', refresh);
+  refresh();
+})();
+
 /* ---- sticky nav ------------------------------------------------------- */
 const nav = document.getElementById('nav');
 const onScroll = () => nav.classList.toggle('stuck', window.scrollY > 24);
