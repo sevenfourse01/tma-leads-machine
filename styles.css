@@ -211,6 +211,10 @@ header.nav.stuck{background:rgba(0,0,0,.72);backdrop-filter:blur(18px) saturate(
    hue. --violet itself is untouched for gradients and the brand mark. */
 .console .tag.a{color:var(--blue)}.console .tag.b{color:#a672ea}
 .console .tag.c{color:var(--ok)}.console .tag.d{color:var(--warn)}
+/* a person did this one: white, so the human rows are the ones that catch the
+   eye in a feed that would otherwise read as software talking to itself */
+.console .tag.h{color:#fff}
+.console .row:has(.tag.h) .msg{color:#e2e7ee}
 .console .msg{color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .counters{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line-soft)}
@@ -519,6 +523,17 @@ a.pillar:hover .pillar-go{transform:translateX(4px)}
 .nav-links a[href="#act-build"]:hover{color:var(--pink)}
 .nav-links a[href="#act-grow"]:hover{color:var(--ok)}
 @media(prefers-reduced-motion:reduce){.nav-links a[href^="#act-"]::after{transition:none}}
+
+/* ---------- framing round the ops console -------------------------------
+   The console is the most product-looking thing on a page selling a service,
+   so it is bracketed: whose screen it is above, and what the client actually
+   receives below. Without these two lines it reads as software you log into. */
+.machine-cap{display:flex;align-items:center;gap:10px;justify-content:center;flex-wrap:wrap;
+  margin:44px auto 14px;max-width:60ch;font-size:14px;color:var(--muted);text-align:center}
+.mcdot{width:7px;height:7px;border-radius:50%;flex:none;background:var(--ok);
+  box-shadow:0 0 0 4px rgba(89,212,155,.16)}
+.machine-foot{margin:18px auto 0;max-width:62ch;font-size:14px;line-height:1.6;
+  color:var(--dim);text-align:center}
 
 /* ---------- contents rail ----------------------------------------------
    Fixed to the left margin: where you are, how far through, and a way to skip

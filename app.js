@@ -270,20 +270,29 @@ setInterval(() => {
 const nodes = [...document.querySelectorAll('#rail .node')];
 const consoleEl = document.getElementById('console');
 
+/* The feed deliberately alternates machine work and named people. Read as
+   pure system output it looked like software you log into, which is the one
+   thing TMA is not. Every few lines someone has to have done something. */
 const LOG = [
   ['a', 'intake',    'profile loaded · 4 metrics measured, 2 inferred, 1 unknown'],
+  ['h', 'Priya',     'chased the client for the missing lifetime-value figure'],
   ['a', 'intake',    'wallet funded £2,000.00 · ledger opened'],
   ['b', 'website',   'fetched primary domain + 3 social profiles'],
   ['b', 'website',   'voice profile extracted · 4 verifiable proof points found'],
+  ['h', 'Adam',      'read the site and rewrote the voice brief before sourcing'],
   ['b', 'intel',     'sweeping niche · news, communities, video'],
   ['b', 'intel',     '7 UK companies surfaced with live buying signals'],
+  ['h', 'Priya',     'dropped 2 of the 7 · wrong size, would waste the budget'],
   ['a', 'strategy',  'pricing channels against LTV:CAC floor of 3.0'],
   ['d', 'strategy',  'paid_ads REJECTED · CAC £4,286 > affordable £1,320'],
+  ['h', 'Adam',      'called the client to explain the rejection before spending'],
   ['c', 'strategy',  'allocated email 50% · linkedin 30% · content 20%'],
   ['a', 'execute',   'sourcing → researching → drafting in client voice'],
   ['a', 'execute',   'dedupe pass · 2 already contacted, skipped'],
+  ['h', 'Sam',       'edited 3 openers · too familiar for this sector'],
   ['d', 'execute',   'regulated claim detected · second sign-off required'],
-  ['c', 'queue',     '4 leads queued · status in_review · awaiting approval'],
+  ['h', 'Sam',       'cleared the regulated claim with the client in writing'],
+  ['c', 'queue',     '4 leads queued · status in_review · awaiting client approval'],
   ['c', 'wallet',    '£184.20 drawn · £1,815.80 remaining · within budget'],
 ];
 
