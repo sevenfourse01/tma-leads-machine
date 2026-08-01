@@ -295,7 +295,7 @@ function report(profile, sim) {
      the survivors. */
   if (finiteShare < MIN_FINITE_SHARE) {
     throw Refusal("The inputs overflow the model, so no honest distribution exists.",
-      [(finiteShare * 100).toFixed(1) + "% of simulated scenarios were finite — " +
+      [(finiteShare * 100).toFixed(1) + "% of simulated scenarios were finite: " +
        "the economics as entered are too extreme to simulate."]);
   }
 

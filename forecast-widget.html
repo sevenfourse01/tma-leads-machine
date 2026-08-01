@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Growth Forecast — The Mission Automation</title>
+<title>Growth Forecast: The Mission Automation</title>
 <style>
   /* ------------------------------------------------------------------ *
    * THEME — calm, professional. Dark by default; light via the OS pref. *
@@ -170,7 +170,7 @@
 <div class="wrap" id="tma-forecast" data-forecast-api="" data-booking-url="">
   <header class="top">
     <h1>Growth Forecast</h1>
-    <div class="sub">Tell us your numbers and we model the honest <b>range</b> of outcomes — judgment plus
+    <div class="sub">Tell us your numbers and we model the honest <b>range</b> of outcomes: judgment plus
       maths, never a single guaranteed figure. If the inputs can't support an honest forecast, we say so.</div>
   </header>
 
@@ -185,7 +185,7 @@
         <label class="field" data-key="whatTheyDo">
           <span class="flabel">What does your business do?<b class="req">*</b></span>
           <div class="finput"><input type="text" name="whatTheyDo" /></div>
-          <span class="fhelp">A plain sentence — e.g. “air-conditioning installation &amp; servicing for homes”.
+          <span class="fhelp">A plain sentence, e.g. “air-conditioning installation &amp; servicing for homes”.
             This lets us reason about your business, not just crunch numbers.</span>
         </label>
         <label class="field" data-key="pricingModel">
@@ -205,7 +205,7 @@
       <fieldset>
         <legend>Your economics</legend>
         <p class="grpnote">If you don't track these in a CRM with a real sample behind them, they widen the range and
-          get flagged — honestly — as estimates.</p>
+          we flag them, honestly, as estimates.</p>
         <label class="field" data-key="acv">
           <span class="flabel">Average deal value<b class="req">*</b></span>
           <div class="finput"><span class="affix">£</span><input type="number" name="acv" inputmode="decimal" min="1" /></div>
@@ -245,7 +245,7 @@
       <div class="card placeholder">
         <div class="ph-emoji">📈</div>
         <p>Tell us what your business does and your numbers. We read the business, right-size the plan,
-          calibrate every input — flagging what we measured vs estimated — and model the honest range of outcomes.</p>
+          calibrate every input (flagging what we measured vs estimated) and model the honest range of outcomes.</p>
       </div>
     </main>
   </div>
@@ -408,7 +408,7 @@
       f.classList.toggle('missing', missing.indexOf(k) >= 0 || bad.indexOf(k) >= 0);
     });
     if (missing.length) { showFormErr('Fill in the highlighted fields to run.'); return false; }
-    if (bad.length) { showFormErr('Check the highlighted numbers — deal value must be positive, margin 1–98%, budget can’t be negative, horizon 3–36 months.'); return false; }
+    if (bad.length) { showFormErr('Check the highlighted numbers: deal value must be positive, margin 1–98%, budget can’t be negative, horizon 3–36 months.'); return false; }
     showFormErr('');
     return true;
   }
@@ -428,7 +428,7 @@
   function renderLoading() {
     out.innerHTML = card('placeholder',
       '<p><span class="spin"></span>Reading your business, right-sizing the plan, and running the model…</p>' +
-      '<p class="muted" id="warming" hidden>The forecast engine runs on free hosting and may be waking from sleep — this can take up to a minute on the first run of the day.</p>');
+      '<p class="muted" id="warming" hidden>The forecast engine runs on free hosting and may be waking from sleep. This can take up to a minute on the first run of the day.</p>');
   }
 
   // Service unreachable / cold — honest, with retry. NEVER a fabricated number.
@@ -436,7 +436,7 @@
     out.innerHTML =
       card('err',
         '<h3>The forecast engine isn’t responding</h3>' +
-        '<p>It may be waking from sleep (free hosting), or it’s offline right now. Either way we won’t invent a number — give it a moment and try again.</p>' +
+        '<p>It may be waking from sleep (free hosting), or it’s offline right now. Either way we won’t invent a number. Give it a moment and try again.</p>' +
         '<button class="btn wide" id="retry" type="button">Try again</button>') +
       ctaCard('Rather just talk it through?', 'Book a call and we’ll run your numbers live with you.');
     var r = document.getElementById('retry');
@@ -479,7 +479,7 @@
         '<ul class="flags">' + rf.we_measure_on_the_call.map(function (f) { return '<li>' + esc(f.label) + '</li>'; }).join('') + '</ul>');
     }
     html += ctaCard('Let’s get the numbers we can stand behind',
-      'Fix the flagged inputs and run it again, or book the call and we’ll measure the missing pieces together — then the forecast rests on data, not guesses.');
+      'Fix the flagged inputs and run it again, or book the call and we’ll measure the missing pieces together. Then the forecast rests on data, not guesses.');
     out.innerHTML = html;
   }
 
@@ -523,7 +523,7 @@
     if (notAFit) {
       html += card('warn',
         '<div class="section-title">Our honest read</div>' +
-        '<p><b>We don’t think we can grow this profitably right now — so we’re telling you, not selling you.</b> ' +
+        '<p><b>We don’t think we can grow this profitably right now, so we’re telling you, not selling you.</b> ' +
         'The economics as described don’t clear even a small build. That’s a real answer, and usually a signal ' +
         'to change the model (pricing, recurring revenue) before spending on acquisition.</p>');
     } else {
@@ -540,17 +540,17 @@
       var loseExtreme = r.p_lose_money <= 0.005;
       var qualifyFee  = leansOnAssumptions || feeExtreme;
       var qualifyLose = leansOnAssumptions || loseExtreme;
-      var footNote = '*Modelled on assumptions we haven’t verified with you yet — a probability under this ' +
+      var footNote = '*Modelled on assumptions we haven’t verified with you yet: a probability under this ' +
         'model, not a guarantee. We measure the real inputs on the call.';
       html += card('headline',
         '<div class="hl-label">Net uplift over ' + esc(r.horizon_months) + ' months with this plan, after our fee and your ad spend</div>' +
         '<div class="hl-band">' + band(r.uplift_vs_no_intervention, true) + '</div>' +
-        '<div class="hl-scale">P10 · P50 (most likely) · P90 — the control is “change nothing”, worth £0.</div>' +
+        '<div class="hl-scale">P10 · P50 (most likely) · P90. The control is “change nothing”, worth £0.</div>' +
         '<div class="tiles">' +
           '<div class="tile"><span class="tv" style="color:var(--green)">' + pct(r.p_beat_our_fee) + (qualifyFee ? '*' : '') + '</span>' +
-            '<span class="tl">chance you clear our fee' + (qualifyFee ? ' — modelled, not promised' : '') + '</span></div>' +
+            '<span class="tl">chance you clear our fee' + (qualifyFee ? ' (modelled, not promised)' : '') + '</span></div>' +
           '<div class="tile"><span class="tv" style="color:' + loseColor + '">' + pct(r.p_lose_money) + (qualifyLose ? '*' : '') + '</span>' +
-            '<span class="tl">chance you lose money' + (qualifyLose ? ' — modelled, not promised' : '') + '</span></div>' +
+            '<span class="tl">chance you lose money' + (qualifyLose ? ' (modelled, not promised)' : '') + '</span></div>' +
           '<div class="tile"><span class="tv">' + (pb.p50_among_those_that_pay_back != null ? 'mo ' + Math.round(pb.p50_among_those_that_pay_back) : '—') + '</span>' +
             '<span class="tl">typical payback (' + pct(pb.share_that_pay_back || 0) + ' of runs)</span></div>' +
         '</div>' +
@@ -561,7 +561,7 @@
     if (ai.input_corrections && ai.input_corrections.length) {
       html += card('',
         '<div class="section-title">What we adjusted (and why)</div>' +
-        '<p class="muted">Where a number looked off for your business type, we modelled a more realistic version — in the open, never silently.</p>' +
+        '<p class="muted">Where a number looked off for your business type, we modelled a more realistic version, in the open, never silently.</p>' +
         ai.input_corrections.map(function (c) {
           return '<div class="correction"><div class="corr-field">' + esc(inLabel(c.field)) + '</div>' +
             '<div class="corr-body"><span>you said: ' + esc(c.client_said) + '</span>' +
@@ -603,7 +603,7 @@
       notAFit ? 'Even if the numbers aren’t there yet, a quick call shows exactly what we build and whether it can change the picture.'
               : 'That was your numbers. Book a call and we’ll walk the full system end to end and pressure-test this range with you.');
 
-    html += '<p class="disclaimer">This is AI-calibrated then simulated — an honest range conditional on your inputs and the ' +
+    html += '<p class="disclaimer">This is AI-calibrated then simulated: an honest range conditional on your inputs and the ' +
       'plan above, <b>not</b> a trained-model prediction and <b>not</b> a guarantee. Inputs marked “AI estimate” are our ' +
       'reasoned priors from your business type, not measured facts. Every run is logged so the engine’s accuracy can be scored ' +
       'as real outcomes arrive.</p>';
