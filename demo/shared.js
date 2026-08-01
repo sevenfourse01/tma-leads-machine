@@ -228,7 +228,7 @@ const BUILDS = {
    here is labelled example/modelled. */
 const PRESETS = {
   dental: {
-    label: "Dental clinic", plural: "dental clinics",
+    label: "Dental practice", plural: "dental clinics",
     company: "Example dental practice",
     noun: "patients", enquiry: "patient enquiries", deal: "treatment plan",
     avgValue: 1400, monthlyLeads: 55, closeRate: 22,
@@ -243,7 +243,7 @@ const PRESETS = {
     }
   },
   aesthetics: {
-    label: "Aesthetics clinic", plural: "aesthetics clinics",
+    label: "Aesthetics / med spa", plural: "aesthetics clinics",
     company: "Example aesthetics clinic",
     noun: "clients", enquiry: "consultation enquiries", deal: "treatment package",
     avgValue: 900, monthlyLeads: 70, closeRate: 25,
@@ -258,7 +258,7 @@ const PRESETS = {
     }
   },
   hvac: {
-    label: "HVAC / home services", plural: "HVAC and home-services businesses",
+    label: "HVAC / boiler installer", plural: "HVAC and home-services businesses",
     company: "Example HVAC company",
     noun: "customers", enquiry: "job enquiries", deal: "installation",
     avgValue: 3200, monthlyLeads: 40, closeRate: 30,
@@ -333,7 +333,7 @@ const PRESETS = {
     }
   },
   law: {
-    label: "Law firm", plural: "law firms",
+    label: "Solicitors / law firm", plural: "law firms",
     company: "Example law firm",
     noun: "clients", enquiry: "case enquiries", deal: "matter",
     avgValue: 1800, monthlyLeads: 60, closeRate: 28,
@@ -348,7 +348,7 @@ const PRESETS = {
     }
   },
   accounting: {
-    label: "Accountancy practice", plural: "accountancy practices",
+    label: "Accountancy firm", plural: "accountancy practices",
     company: "Example accountancy practice",
     noun: "clients", enquiry: "client enquiries", deal: "engagement",
     avgValue: 2400, monthlyLeads: 25, closeRate: 28,
@@ -378,7 +378,7 @@ const PRESETS = {
     }
   },
   msp: {
-    label: "IT support / MSP", plural: "managed service providers",
+    label: "IT managed service provider", plural: "managed service providers",
     company: "Example IT support firm",
     noun: "clients", enquiry: "new client enquiries", deal: "support contract",
     avgValue: 12000, monthlyLeads: 12, closeRate: 20,
@@ -393,7 +393,7 @@ const PRESETS = {
     }
   },
   agency: {
-    label: "Marketing agency", plural: "marketing agencies",
+    label: "Marketing / creative agency", plural: "marketing agencies",
     company: "Example marketing agency",
     noun: "clients", enquiry: "new business enquiries", deal: "retainer",
     avgValue: 7200, monthlyLeads: 22, closeRate: 15,
@@ -408,7 +408,7 @@ const PRESETS = {
     }
   },
   construction: {
-    label: "Construction & trades", plural: "building contractors",
+    label: "Home improvement", plural: "building contractors",
     company: "Example building contractor",
     noun: "homeowners", enquiry: "project enquiries", deal: "build contract",
     avgValue: 24000, monthlyLeads: 28, closeRate: 15,
@@ -423,7 +423,7 @@ const PRESETS = {
     }
   },
   solar: {
-    label: "Solar & renewables", plural: "solar installers",
+    label: "Solar panel installer", plural: "solar installers",
     company: "Example solar installer",
     noun: "homeowners", enquiry: "install enquiries", deal: "system install",
     avgValue: 8500, monthlyLeads: 50, closeRate: 18,
@@ -498,7 +498,7 @@ const PRESETS = {
     }
   },
   other: {
-    label: "Something else", plural: "service businesses",
+    label: "Other", plural: "service businesses",
     company: "Example service business",
     noun: "customers", enquiry: "new enquiries", deal: "job",
     avgValue: 1800, monthlyLeads: 45, closeRate: 25,
@@ -511,7 +511,322 @@ const PRESETS = {
       nurture: "Follow-up nurture", nurtureSub: "5-touch · Email & SMS",
       escalate: "Sales team hand-off", crm: "CRM record upsert"
     }
-  }
+  },
+  gp: {
+    label: "Private GP / concierge medicine", plural: "private GP clinics",
+    company: "Example private GP clinic",
+    noun: "patients", enquiry: "patient enquiries", deal: "membership plan",
+    avgValue: 1800, monthlyLeads: 60, closeRate: 25,
+    channels: ["Google Ads", "Doctify", "Referrals"],
+    leadNames: ["Charlotte B", "Daniel W", "Aisha N", "Marcus T", "Freya L"],
+    services: ["Membership enquiry", "Same day appointment", "Health screen", "Blood test panel", "Travel vaccinations"],
+    build: {
+      trigger: "New patient enquiry", triggerSub: "Webform \u00b7 Google Ads \u00b7 missed call",
+      book: "Book GP consultation", bookSub: "Clinic diary \u00b7 Semble / Cliniko",
+      nurture: "Membership nurture", nurtureSub: "5-touch \u00b7 health screens & plans",
+      escalate: "Practice manager hand-off", crm: "Patient record upsert"
+    }
+  },
+  ortho: {
+    label: "Orthodontics", plural: "orthodontic practices",
+    company: "Example orthodontic practice",
+    noun: "patients", enquiry: "patient enquiries", deal: "treatment case",
+    avgValue: 3200, monthlyLeads: 48, closeRate: 28,
+    channels: ["Meta lead ads", "Google Ads", "Dentist referrals"],
+    leadNames: ["Chloe R", "Adam F", "Nisha P", "Liam G", "Sophie A"],
+    services: ["Invisalign consult", "Fixed braces enquiry", "Teen treatment", "Retainer replacement", "Second opinion"],
+    build: {
+      trigger: "New treatment enquiry", triggerSub: "Meta lead ad \u00b7 webform \u00b7 WhatsApp",
+      book: "Book free consult", bookSub: "Practice diary \u00b7 Dentally / iSmile",
+      nurture: "Case start nurture", nurtureSub: "6-touch \u00b7 finance options & scans",
+      escalate: "Treatment coordinator hand-off", crm: "Patient CRM upsert"
+    }
+  },
+  chiro: {
+    label: "Chiropractic clinic", plural: "chiropractic clinics",
+    company: "Example chiropractic clinic",
+    noun: "patients", enquiry: "patient enquiries", deal: "care plan",
+    avgValue: 650, monthlyLeads: 70, closeRate: 35,
+    channels: ["Meta lead ads", "Google Ads", "Google Business Profile"],
+    leadNames: ["Rachel P", "Ben C", "Amara O", "Steve D", "Hannah M"],
+    services: ["Back pain assessment", "Neck and shoulder pain", "Sciatica enquiry", "Sports injury", "Pregnancy care"],
+    build: {
+      trigger: "New patient enquiry", triggerSub: "Meta lead ad \u00b7 webform \u00b7 missed call",
+      book: "Book initial assessment", bookSub: "Clinic diary \u00b7 Cliniko / Jane",
+      nurture: "Care plan nurture", nurtureSub: "5-touch \u00b7 pain guides & offers",
+      escalate: "Clinic reception hand-off", crm: "Patient record upsert"
+    }
+  },
+  osteo: {
+    label: "Osteopathy", plural: "osteopathy clinics",
+    company: "Example osteopathy clinic",
+    noun: "patients", enquiry: "patient enquiries", deal: "treatment course",
+    avgValue: 380, monthlyLeads: 55, closeRate: 38,
+    channels: ["Google Ads", "Google Business Profile", "GP referrals"],
+    leadNames: ["Laura S", "Michael K", "Zara H", "Paul E", "Grace W"],
+    services: ["Lower back pain", "Neck pain assessment", "Sports injury", "Postural assessment", "Cranial osteopathy"],
+    build: {
+      trigger: "New patient enquiry", triggerSub: "Webform \u00b7 Google Ads \u00b7 missed call",
+      book: "Book first appointment", bookSub: "Clinic diary \u00b7 Cliniko / Pabau",
+      nurture: "Rebooking nurture", nurtureSub: "4-touch \u00b7 recovery plan reminders",
+      escalate: "Lead osteopath hand-off", crm: "Patient record upsert"
+    }
+  },
+  podiatry: {
+    label: "Podiatry / chiropody", plural: "podiatry clinics",
+    company: "Example podiatry clinic",
+    noun: "patients", enquiry: "appointment enquiries", deal: "treatment course",
+    avgValue: 220, monthlyLeads: 65, closeRate: 38,
+    channels: ["Google Ads", "Google Business Profile", "GP referrals"],
+    leadNames: ["Margaret D", "Alan P", "Joyce W", "Ryan T", "Nadia S"],
+    services: ["Routine nail care", "Ingrown toenail", "Verruca treatment", "Custom orthotics", "Diabetic foot check"],
+    build: {
+      trigger: "New appointment enquiry", triggerSub: "Webform \u00b7 Google Ads call \u00b7 missed call",
+      book: "Book assessment", bookSub: "Clinic diary \u00b7 Cliniko / Semble",
+      nurture: "Orthotics nurture", nurtureSub: "4-touch \u00b7 orthotics & routine care",
+      escalate: "Lead podiatrist hand-off", crm: "Patient record upsert"
+    }
+  },
+  optometry: {
+    label: "Optometry / eyecare", plural: "optometry practices",
+    company: "Example optometry practice",
+    noun: "patients", enquiry: "eye test enquiries", deal: "eyewear order",
+    avgValue: 320, monthlyLeads: 95, closeRate: 42,
+    channels: ["Google Business Profile", "Google Ads", "Recall reminders"],
+    leadNames: ["Helen B", "Marcus A", "Aisha R", "Derek L", "Chloe N"],
+    services: ["Routine eye test", "Contact lens fitting", "Children's eye test", "OCT scan", "Dry eye clinic"],
+    build: {
+      trigger: "New eye test enquiry", triggerSub: "Webform \u00b7 Google Ads call \u00b7 missed call",
+      book: "Book eye test", bookSub: "Test diary \u00b7 Optix / Ocuco",
+      nurture: "Eyewear nurture", nurtureSub: "4-touch \u00b7 lenses & second pair",
+      escalate: "Dispensing optician hand-off", crm: "Patient record upsert"
+    }
+  },
+  audiology: {
+    label: "Audiology / hearing clinic", plural: "hearing clinics",
+    company: "Example hearing clinic",
+    noun: "patients", enquiry: "hearing test enquiries", deal: "hearing aid fitting",
+    avgValue: 2200, monthlyLeads: 45, closeRate: 24,
+    channels: ["Meta lead ads", "Google Ads", "Local press inserts"],
+    leadNames: ["Brian W", "Patricia H", "Colin M", "Susan G", "Raj P"],
+    services: ["Free hearing test", "Hearing aid fitting", "Wax removal", "Tinnitus assessment", "Hearing aid repair"],
+    build: {
+      trigger: "New hearing enquiry", triggerSub: "Meta lead ad \u00b7 webform \u00b7 missed call",
+      book: "Book hearing test", bookSub: "Clinic diary \u00b7 Auditbase / Noah",
+      nurture: "Hearing aid nurture", nurtureSub: "6-touch \u00b7 trial, funding & aftercare",
+      escalate: "Lead audiologist hand-off", crm: "Patient record upsert"
+    }
+  },
+  fertility: {
+    label: "Fertility clinic", plural: "fertility clinics",
+    company: "Example fertility clinic",
+    noun: "patients", enquiry: "fertility enquiries", deal: "treatment cycle",
+    avgValue: 5500, monthlyLeads: 60, closeRate: 16,
+    channels: ["Google Ads", "Meta lead ads", "HFEA clinic finder"],
+    leadNames: ["Laura K", "Emma C", "Daniel F", "Sofia B", "Rachel V"],
+    services: ["IVF enquiry", "Egg freezing", "Fertility MOT", "ICSI enquiry", "Donor egg programme"],
+    build: {
+      trigger: "New fertility enquiry", triggerSub: "Webform \u00b7 Meta lead ad \u00b7 missed call",
+      book: "Book consultation", bookSub: "Consultant diary \u00b7 IDEAS / Meditex",
+      nurture: "Treatment nurture", nurtureSub: "8-touch \u00b7 IVF, funding & success rates",
+      escalate: "Patient coordinator hand-off", crm: "Patient CRM upsert"
+    }
+  },
+  derm: {
+    label: "Dermatology clinic", plural: "dermatology clinics",
+    company: "Example dermatology clinic",
+    noun: "patients", enquiry: "patient enquiries", deal: "treatment course",
+    avgValue: 900, monthlyLeads: 70, closeRate: 30,
+    channels: ["Google Ads", "Doctify", "GP referrals"],
+    leadNames: ["Hannah W", "Daniel K", "Aisha R", "Michael T", "Grace L"],
+    services: ["Mole check", "Acne treatment plan", "Skin cancer screening", "Laser resurfacing", "Eczema consultation"],
+    build: {
+      trigger: "New patient enquiry", triggerSub: "Webform \u00b7 Doctify \u00b7 missed call",
+      book: "Book consultation", bookSub: "Clinic diary \u00b7 Semble / Cliniko",
+      nurture: "Treatment nurture", nurtureSub: "5-touch \u00b7 mole checks & acne courses",
+      escalate: "Clinic manager hand-off", crm: "Patient record upsert"
+    }
+  },
+  hairtx: {
+    label: "Hair transplant / restoration", plural: "hair transplant clinics",
+    company: "Example hair restoration clinic",
+    noun: "patients", enquiry: "patient enquiries", deal: "transplant procedure",
+    avgValue: 4500, monthlyLeads: 95, closeRate: 15,
+    channels: ["Google Ads", "Meta lead ads", "YouTube"],
+    leadNames: ["Ryan P", "Adeel S", "Chris B", "Marcus D", "Jonathan F"],
+    services: ["FUE consultation", "Hairline restoration", "Crown density", "Beard transplant", "PRP course"],
+    build: {
+      trigger: "New patient enquiry", triggerSub: "Webform \u00b7 Meta lead ad \u00b7 WhatsApp",
+      book: "Book photo consult", bookSub: "Consult diary \u00b7 Pabau / Calendly",
+      nurture: "Procedure nurture", nurtureSub: "6-touch \u00b7 results, finance, FAQs",
+      escalate: "Patient coordinator hand-off", crm: "Patient CRM upsert"
+    }
+  },
+  weightloss: {
+    label: "Weight loss / bariatric clinic", plural: "weight loss clinics",
+    company: "Example weight loss clinic",
+    noun: "patients", enquiry: "programme enquiries", deal: "treatment programme",
+    avgValue: 900, monthlyLeads: 110, closeRate: 25,
+    channels: ["Meta lead ads", "Google Ads", "TikTok"],
+    leadNames: ["Claire B", "Nathan G", "Fatima A", "Lucy S", "Paul M"],
+    services: ["Mounjaro programme", "Wegovy enquiry", "Gastric sleeve consult", "Gastric band review", "Nutrition coaching"],
+    build: {
+      trigger: "New programme enquiry", triggerSub: "Meta lead ad \u00b7 webform \u00b7 WhatsApp",
+      book: "Book screening call", bookSub: "Clinic diary \u00b7 Semble / Calendly",
+      nurture: "Programme nurture", nurtureSub: "5-touch \u00b7 eligibility & pricing",
+      escalate: "Clinical lead hand-off", crm: "Patient CRM upsert"
+    }
+  },
+  therapy: {
+    label: "Private therapy / mental health practice", plural: "private therapy practices",
+    company: "Example therapy practice",
+    noun: "clients", enquiry: "client enquiries", deal: "course of sessions",
+    avgValue: 650, monthlyLeads: 40, closeRate: 35,
+    channels: ["Google Ads", "Psychology Today", "Counselling Directory"],
+    leadNames: ["Emma T", "Josh R", "Nadia H", "Simon C", "Beth A"],
+    services: ["CBT enquiry", "Couples counselling", "Anxiety assessment", "Trauma / EMDR", "Child & adolescent"],
+    build: {
+      trigger: "New client enquiry", triggerSub: "Webform \u00b7 directory listing \u00b7 phone",
+      book: "Book intake call", bookSub: "Therapist diary \u00b7 WriteUpp / Cliniko",
+      nurture: "Client nurture", nurtureSub: "4-touch \u00b7 fees, formats, first session",
+      escalate: "Clinical lead hand-off", crm: "Client record upsert"
+    }
+  },
+  homecare: {
+    label: "Homecare / domiciliary care agency", plural: "homecare agencies",
+    company: "Example homecare agency",
+    noun: "clients", enquiry: "care enquiries", deal: "care package",
+    avgValue: 1250, monthlyLeads: 35, closeRate: 30,
+    channels: ["Google Ads", "Homecare.co.uk", "Local authority referrals"],
+    leadNames: ["Margaret H", "David P", "Susan L", "Ian W", "Rachel N"],
+    services: ["Hourly home visits", "Live-in care", "Dementia care", "Respite care", "Companionship calls"],
+    build: {
+      trigger: "New care enquiry", triggerSub: "Webform \u00b7 homecare.co.uk \u00b7 phone",
+      book: "Book care assessment", bookSub: "Assessor diary \u00b7 Birdie / CarePlanner",
+      nurture: "Family nurture", nurtureSub: "4-touch \u00b7 funding, CQC, care options",
+      escalate: "Care manager hand-off", crm: "Client CRM upsert"
+    }
+  },
+  lettings: {
+    label: "Lettings / property management", plural: "lettings agencies",
+    company: "Example lettings agency",
+    noun: "landlords", enquiry: "landlord enquiries", deal: "management instruction",
+    avgValue: 2200, monthlyLeads: 38, closeRate: 25,
+    channels: ["Rightmove", "Google Ads", "Landlord referrals"],
+    leadNames: ["David P", "Amara N", "Ruth C", "Michael B", "Sofia L"],
+    services: ["Rental valuation", "Full management", "Let only", "Tenant find", "Portfolio review"],
+    build: {
+      trigger: "New landlord enquiry", triggerSub: "Rightmove lead \u00b7 webform \u00b7 missed call",
+      book: "Book valuation", bookSub: "Diary sync \u00b7 Reapit / Alto",
+      nurture: "Landlord nurture", nurtureSub: "6-touch \u00b7 fees, yields, compliance",
+      escalate: "Lettings manager hand-off", crm: "Landlord CRM upsert"
+    }
+  },
+  landscaping: {
+    label: "Landscaping / garden design", plural: "landscaping firms",
+    company: "Example landscaping company",
+    noun: "homeowners", enquiry: "garden enquiries", deal: "garden project",
+    avgValue: 6500, monthlyLeads: 32, closeRate: 18,
+    channels: ["Google Ads", "Checkatrade", "Referrals"],
+    leadNames: ["Claire T", "Neil W", "Hannah D", "Raj S", "Owen F"],
+    services: ["Full garden design", "Patio and paving", "Fencing and decking", "Planting scheme", "Garden maintenance"],
+    build: {
+      trigger: "New garden enquiry", triggerSub: "Webform \u00b7 Checkatrade \u00b7 missed call",
+      book: "Book site visit", bookSub: "Crew diary \u00b7 Jobber / Tradify",
+      nurture: "Quote follow-up", nurtureSub: "5-touch \u00b7 design and build quotes",
+      escalate: "Lead designer hand-off", crm: "Job CRM upsert"
+    }
+  },
+  wealth: {
+    label: "Wealth management", plural: "wealth management firms",
+    company: "Example wealth management firm",
+    noun: "clients", enquiry: "advice enquiries", deal: "financial plan",
+    avgValue: 4500, monthlyLeads: 18, closeRate: 26,
+    channels: ["Professional referrals", "Unbiased", "Google Ads"],
+    leadNames: ["Geoffrey H", "Anita R", "Charles W", "Deborah S", "Ian M"],
+    services: ["Retirement planning", "Pension transfer", "Investment review", "Inheritance tax planning", "Business exit planning"],
+    build: {
+      trigger: "New advice enquiry", triggerSub: "Webform \u00b7 Unbiased \u00b7 missed call",
+      book: "Book discovery call", bookSub: "Adviser diary \u00b7 Intelliflo",
+      nurture: "Prospect nurture", nurtureSub: "6-touch \u00b7 pensions and IHT guides",
+      escalate: "Senior adviser hand-off", crm: "Client CRM upsert"
+    }
+  },
+  benefits: {
+    label: "Employee benefits consultancy", plural: "employee benefits consultancies",
+    company: "Example benefits consultancy",
+    noun: "clients", enquiry: "scheme enquiries", deal: "benefits scheme",
+    avgValue: 5500, monthlyLeads: 14, closeRate: 22,
+    channels: ["Accountant referrals", "LinkedIn Ads", "Google Ads"],
+    leadNames: ["Halcyon Logistics", "Brightpath Care", "Merton Engineering", "Fairoak Retail Group", "Nova Software Ltd"],
+    services: ["Group life cover", "Private medical scheme", "Income protection", "Pension scheme review", "Benefits platform"],
+    build: {
+      trigger: "New scheme enquiry", triggerSub: "Webform \u00b7 LinkedIn form \u00b7 missed call",
+      book: "Book scoping call", bookSub: "Consultant diary \u00b7 HubSpot Meetings",
+      nurture: "Employer nurture", nurtureSub: "5-touch \u00b7 renewals and benchmarking",
+      escalate: "Senior consultant hand-off", crm: "Employer CRM upsert"
+    }
+  },
+  insurance: {
+    label: "Insurance broker", plural: "insurance brokers",
+    company: "Example insurance brokerage",
+    noun: "clients", enquiry: "quote enquiries", deal: "policy",
+    avgValue: 750, monthlyLeads: 70, closeRate: 24,
+    channels: ["Google Ads", "MoneySuperMarket", "Accountant referrals"],
+    leadNames: ["Hartley Joinery Ltd", "Meridian Care Group", "Oakwood Haulage", "Bright Lane Cafes", "Calder Engineering"],
+    services: ["Commercial combined", "Fleet insurance", "Professional indemnity", "Public liability", "Property owners"],
+    build: {
+      trigger: "New quote enquiry", triggerSub: "Webform \u00b7 Google Ads \u00b7 missed call",
+      book: "Book broker call", bookSub: "Adviser diary \u00b7 Acturis / Outlook",
+      nurture: "Quote follow-up nurture", nurtureSub: "5-touch \u00b7 cover options & renewal date",
+      escalate: "Senior broker hand-off", crm: "Acturis client upsert"
+    }
+  },
+  hr: {
+    label: "HR consultancy", plural: "HR consultancies",
+    company: "Example HR consultancy",
+    noun: "clients", enquiry: "employer enquiries", deal: "retainer",
+    avgValue: 3200, monthlyLeads: 28, closeRate: 20,
+    channels: ["Google Ads", "LinkedIn", "Accountant referrals"],
+    leadNames: ["Northgate Logistics", "Brambles Care Homes", "Verity Dental Group", "Kesteven Foods", "Ridgeway Construction"],
+    services: ["Outsourced HR retainer", "Tribunal support", "Redundancy process", "Contracts & handbook", "Disciplinary advice"],
+    build: {
+      trigger: "New employer enquiry", triggerSub: "Webform \u00b7 LinkedIn \u00b7 inbound call",
+      book: "Book HR consultation", bookSub: "Consultant diary \u00b7 Calendly / Teams",
+      nurture: "Retainer nurture", nurtureSub: "5-touch \u00b7 compliance & tribunal risk",
+      escalate: "Senior consultant hand-off", crm: "Client CRM upsert"
+    }
+  },
+  security: {
+    label: "Security services", plural: "security firms",
+    company: "Example security company",
+    noun: "clients", enquiry: "security enquiries", deal: "security contract",
+    avgValue: 8500, monthlyLeads: 35, closeRate: 18,
+    channels: ["Google Ads", "Client referrals", "Contracts Finder"],
+    leadNames: ["Ashfield Retail Park", "Corby Distribution Centre", "Marlow Student Halls", "Pinewood Business Park", "Harbourside Events"],
+    services: ["Manned guarding", "Mobile patrols", "Keyholding & alarm response", "Event security", "CCTV monitoring"],
+    build: {
+      trigger: "New security enquiry", triggerSub: "Webform \u00b7 Google Ads \u00b7 missed call",
+      book: "Book site survey", bookSub: "Surveyor diary \u00b7 Timegate / Outlook",
+      nurture: "Contract nurture", nurtureSub: "5-touch \u00b7 guarding & patrol options",
+      escalate: "Operations manager hand-off", crm: "Client CRM upsert"
+    }
+  },
+  commercialre: {
+    label: "Commercial real estate", plural: "commercial property agencies",
+    company: "Example commercial property agency",
+    noun: "clients", enquiry: "property enquiries", deal: "letting",
+    avgValue: 3800, monthlyLeads: 45, closeRate: 14,
+    channels: ["Rightmove Commercial", "CoStar", "Google Ads"],
+    leadNames: ["Halden Manufacturing", "Sable Coffee Roasters", "Trenton Wealth LLP", "Kestrel Fitness Ltd", "Ovington Logistics"],
+    services: ["Office letting", "Industrial unit", "Retail unit", "Investment sale", "Rent review"],
+    build: {
+      trigger: "New property enquiry", triggerSub: "Rightmove \u00b7 webform \u00b7 missed call",
+      book: "Book viewing", bookSub: "Surveyor diary \u00b7 Reapit / Outlook",
+      nurture: "Requirement nurture", nurtureSub: "5-touch \u00b7 new stock matched to brief",
+      escalate: "Lead surveyor hand-off", crm: "Property CRM upsert"
+    }
+  },
 };
 
 /* ---------- profile (persisted across the three demos) ------------------ */
@@ -621,11 +936,141 @@ function initReveal() {
   setTimeout(() => els.forEach(show), 2600);
 }
 
-/* ---------- industry picker (rendered on each demo page) ----------------- */
-/* Nineteen niches as nineteen buttons is a wall of choice before a visitor has
-   done anything. As a select it is one control, and the list still says "we do
-   yours" the moment it opens. */
+/* ---------- industry picker (rendered on each demo page) -----------------
+   Thirty-eight niches is too many to scan, so the visitor types instead. The
+   grouping is how TMA sells, core verticals first, and searching something we
+   do not cover returns "Other" rather than an empty list, because an empty
+   result reads as "they don't do my industry" and ends the demo there. */
+const NICHE_GROUPS = [
+  ["Core verticals",          ["dental", "aesthetics", "vet", "physio", "ifa", "insurance"]],
+  ["Healthcare",              ["gp", "ortho", "chiro", "osteo", "podiatry", "optometry", "audiology",
+                               "fertility", "derm", "hairtx", "weightloss", "therapy", "homecare"]],
+  ["Property & home services", ["estate", "lettings", "construction", "solar", "hvac", "landscaping"]],
+  ["Professional & financial", ["accounting", "mortgage", "wealth", "benefits", "law", "recruitment"]],
+  ["Other B2B & trades",      ["agency", "msp", "hr", "cleaning", "security", "commercialre"]],
+];
+
+/* Words a visitor might type that are not in the label. Searching "boiler",
+   "dentist" or "SEO" should find the right row. */
+const NICHE_ALIASES = {
+  dental: "dentist teeth implants invisalign", aesthetics: "botox filler injectables medspa skin",
+  vet: "vets animal pet", physio: "physiotherapy sports injury rehab",
+  ifa: "financial adviser advisor pension independent", insurance: "broker cover policy commercial",
+  gp: "doctor private medicine concierge health screening", ortho: "braces aligners orthodontist",
+  chiro: "chiropractor back pain spine", osteo: "osteopath manual therapy",
+  podiatry: "chiropodist feet foot", optometry: "optician glasses eye test eyecare",
+  audiology: "hearing aids audiologist deaf", fertility: "ivf conception reproductive",
+  derm: "skin dermatologist mole acne", hairtx: "hair loss fue transplant restoration",
+  weightloss: "bariatric obesity semaglutide slimming", therapy: "counselling psychotherapy psychology mental health",
+  homecare: "domiciliary care carers elderly live in",
+  estate: "estate agent property sales valuation", lettings: "landlord rental tenant letting agent block management",
+  construction: "builder extension kitchen bathroom renovation loft home improvement",
+  solar: "pv panels battery renewable green energy", hvac: "boiler heating plumber air conditioning gas",
+  landscaping: "garden design gardener paving driveway",
+  accounting: "accountant bookkeeping tax vat payroll", mortgage: "broker remortgage home loan protection",
+  wealth: "investment ifa portfolio pension planning", benefits: "employee benefits group risk workplace pension",
+  law: "solicitor lawyer legal conveyancing probate", recruitment: "recruiter staffing talent headhunter",
+  agency: "marketing creative advertising branding seo ppc design",
+  msp: "it support managed service provider computers cyber",
+  hr: "human resources people consultancy employment",
+  cleaning: "cleaners commercial janitorial contract",
+  security: "guards manned cctv alarms door supervision",
+  commercialre: "commercial property office industrial surveyor",
+  other: "anything else something different not listed",
+};
+
+/* the page scripts each carry their own esc(); shared.js needs its own */
+function escAttr(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+                  .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function nicheSearchable(id) {
+  const cfg = PRESETS[id];
+  if (!cfg) return "";
+  return (cfg.label + " " + (NICHE_ALIASES[id] || "") + " " + (cfg.plural || "")).toLowerCase();
+}
+
+function renderNicheSearch(root, onChange) {
+  if (!root) return;
+  const input = $(".nsinput", root), list = $(".nslist", root);
+  if (!input || !list) return;
+
+  const setLabel = () => {
+    const cfg = PRESETS[getProfile().industry];
+    input.value = cfg ? cfg.label : "";
+  };
+
+  const rowsFor = q => {
+    const term = q.trim().toLowerCase();
+    const out = [];
+    NICHE_GROUPS.forEach(([title, ids]) => {
+      const hits = ids.filter(id => PRESETS[id] && (!term || nicheSearchable(id).includes(term)));
+      if (hits.length) out.push({ title, ids: hits });
+    });
+    /* nothing matched: offer Other rather than a dead end */
+    if (!out.length) out.push({ title: "No match for that", ids: ["other"] });
+    else if (PRESETS.other && !term) out.push({ title: "", ids: ["other"] });
+    else if (PRESETS.other && term && !out.some(g => g.ids.includes("other"))) out.push({ title: "", ids: ["other"] });
+    return out;
+  };
+
+  let open = false, active = -1, flat = [];
+
+  const draw = q => {
+    const groups = rowsFor(q);
+    flat = groups.flatMap(g => g.ids);
+    const cur = getProfile().industry;
+    list.innerHTML = groups.map(g =>
+      (g.title ? `<div class="nsgroup">${escAttr(g.title)}</div>` : "") +
+      g.ids.map(id => {
+        const i = flat.indexOf(id);
+        return `<button type="button" class="nsopt${id === cur ? " cur" : ""}${i === active ? " active" : ""}"
+          data-id="${id}" role="option">${escAttr(PRESETS[id].label)}</button>`;
+      }).join("")
+    ).join("");
+  };
+
+  const show = () => { open = true; active = -1; root.classList.add("open"); draw(""); input.select(); };
+  const hide = () => { open = false; root.classList.remove("open"); setLabel(); };
+
+  const choose = id => {
+    if (!PRESETS[id]) return;
+    saveProfile({ industry: id });
+    hide();
+    onChange && onChange(id);
+  };
+
+  input.addEventListener("focus", show);
+  input.addEventListener("input", () => { if (!open) { open = true; root.classList.add("open"); } active = -1; draw(input.value); });
+  input.addEventListener("keydown", e => {
+    if (e.key === "Escape") { hide(); input.blur(); return; }
+    if (!open && (e.key === "ArrowDown" || e.key === "Enter")) { show(); return; }
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      e.preventDefault();
+      active = e.key === "ArrowDown"
+        ? Math.min(active + 1, flat.length - 1)
+        : Math.max(active - 1, 0);
+      draw(input.value);
+      const el = $(".nsopt.active", list);
+      if (el) el.scrollIntoView({ block: "nearest" });
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      choose(flat[active >= 0 ? active : 0]);
+    }
+  });
+  list.addEventListener("mousedown", e => {
+    const b = e.target.closest(".nsopt");
+    if (b) { e.preventDefault(); choose(b.dataset.id); }
+  });
+  document.addEventListener("click", e => { if (open && !root.contains(e.target)) hide(); });
+
+  setLabel();
+}
+
+/* kept so any page still calling the old select renderer keeps working */
 function renderPickerSelect(sel, onChange) {
+  if (!sel) return;
   const p = getProfile();
   sel.innerHTML = Object.entries(PRESETS)
     .map(([id, cfg]) => `<option value="${id}"${id === p.industry ? " selected" : ""}>${cfg.label}</option>`)

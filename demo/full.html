@@ -37,7 +37,13 @@
     <div class="persona-bar rv">
       <label>Your business</label>
       <input type="text" id="bizname" placeholder="Business name (optional)">
-      <select id="industrySel" class="nsel" aria-label="Your industry"></select>
+      <div class="nsearch" id="industrySearch">
+        <input type="text" class="nsinput" autocomplete="off" spellcheck="false"
+               placeholder="Search your industry" aria-label="Your industry"
+               role="combobox" aria-expanded="false" aria-controls="nsList">
+        <span class="nscaret" aria-hidden="true">▾</span>
+        <div class="nslist" id="nsList" role="listbox"></div>
+      </div>
     </div>
 
     <div class="rv" style="margin-top:26px">

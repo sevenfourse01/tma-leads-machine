@@ -742,6 +742,32 @@ body.embed .wrap{width:min(100% - 32px,var(--maxw))}
 .rclink{margin-left:auto;font-size:13px;font-weight:600;color:var(--blue)}
 .rclink:hover{color:#fff}
 
+/* ---------- searchable industry picker ---------------------------------
+   Thirty-eight options is past the point where a dropdown is scannable, so
+   the visitor types. Grouped headings keep the core verticals at the top for
+   anyone browsing rather than searching. */
+.nsearch{position:relative;min-width:270px;flex:1;max-width:340px}
+.nsinput{width:100%;background:rgba(255,255,255,.05);border:0;border-radius:10px;
+  padding:11px 34px 11px 14px;font-size:14.5px;color:#fff;cursor:pointer}
+.nsinput::placeholder{color:var(--dim)}
+.nsinput:focus{outline:none;box-shadow:0 0 0 1px rgba(77,163,255,.6) inset;cursor:text}
+.nscaret{position:absolute;right:13px;top:50%;transform:translateY(-50%);pointer-events:none;
+  color:var(--dim);font-size:11px;transition:transform .2s var(--ease)}
+.nsearch.open .nscaret{transform:translateY(-50%) rotate(180deg)}
+
+.nslist{display:none;position:absolute;z-index:60;left:0;right:0;top:calc(100% + 6px);
+  max-height:340px;overflow-y:auto;padding:6px;border-radius:14px;
+  background:var(--panel-solid);box-shadow:0 0 0 1px var(--line) inset,0 24px 60px rgba(0,0,0,.65)}
+.nsearch.open .nslist{display:block}
+.nsgroup{font-family:var(--mono);font-size:9.5px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--dim);padding:11px 10px 5px}
+.nsopt{display:block;width:100%;text-align:left;padding:8px 10px;border-radius:8px;
+  font-size:14px;color:var(--muted);cursor:pointer}
+.nsopt:hover,.nsopt.active{background:rgba(255,255,255,.07);color:#fff}
+.nsopt.cur{color:#a9d3ff}
+.nsopt.cur::after{content:"✓";float:right;font-size:12px}
+@media(max-width:640px){.nsearch{max-width:none;min-width:0;width:100%}}
+
 /* industry as one control rather than nineteen buttons */
 .nsel{background:rgba(255,255,255,.05);border:0;border-radius:10px;padding:11px 14px;
   color:#fff;font-size:14.5px;font-weight:500;min-width:230px;cursor:pointer;
