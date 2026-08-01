@@ -3,14 +3,20 @@
    ========================================================================= */
 
 /* ── ⚠️ CONFIG — REPLACE THESE TWO BEFORE GOING LIVE ──────────────────── */
-const BOOKING_URL   = 'https://themissionautomation.com/contact';  // no scheduler exists yet
-const CONTACT_EMAIL = 'hello@themissionautomation.com'; // confirm this inbox exists
+const BOOKING_URL   = 'https://cal.com/adam-attia-b3ay43/discovery-call';
+const CONTACT_EMAIL = 'adamattia@themissionautomation.com';
 /* ─────────────────────────────────────────────────────────────────────── */
 
-document.getElementById('yr').textContent = new Date().getFullYear();
+/* This file runs on the homepage and on /contact/, which has no year stamp.
+   An unguarded lookup here threw and silently killed every CTA below it. */
+const yr = document.getElementById('yr');
+if (yr) yr.textContent = new Date().getFullYear();
 
-/* ---- CTA wiring ------------------------------------------------------- */
-document.querySelectorAll('.js-book').forEach(a => {
+/* ---- CTA wiring -------------------------------------------------------
+   Both conventions: the landing page uses .js-book, the demo pages use
+   [data-book]. Supporting one and not the other leaves dead buttons on
+   whichever page happens to use the other. */
+document.querySelectorAll('.js-book, [data-book]').forEach(a => {
   if (BOOKING_URL) { a.href = BOOKING_URL; a.target = '_blank'; a.rel = 'noopener'; }
 });
 document.querySelectorAll('.js-mail').forEach(a => {

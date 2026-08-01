@@ -100,9 +100,9 @@ about a minute. There's no "publish" button to press and no separate staging ste
 
 ## Two things still not done
 
-- **There is no booking calendar.** Every "Book a call" points at `/contact/`, which has the email
-  and phone. If you set up a Cal.com link, one line changes in `app.js` and `demo/shared.js` and
-  every button on the site follows.
+- **Booking is live.** Every "Book a call" across the site, the demo and the library opens
+  `https://cal.com/adam-attia-b3ay43/discovery-call` in a new tab. It is set in two places,
+  `app.js` and `demo/shared.js`; change both if the link ever changes.
 - **The old Framer site's links were broken** and those breakages don't carry over, but worth
   knowing what they were: the main "Book a Call" pointed at `framer.link/kanishkdubey`, the
   template author's calendar, and the social icons pointed at the bare platform homepages. If you
