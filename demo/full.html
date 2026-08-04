@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Full demo · The Mission Automation</title>
-<meta name="description" content="Answer a few questions and get a customised blueprint: which systems we would build for you, in what order, and how we would run them.">
+<title>The growth blueprint · The Mission Automation</title>
+<meta name="description" content="A free sample of the process we use to design client systems: answer a few questions, get a personalised growth blueprint with a 12-month forecast, the systems we would build and the order we would build them in.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -15,10 +15,10 @@
 <div class="aura"></div><div class="grid-fade"></div>
 
 <nav class="nav" data-chrome><div class="wrap">
-  <a class="brand" href="https://themissionautomation.com"><span class="dot"></span>THE MISSION AUTOMATION <small>one-click demos</small></a>
+  <a class="brand" href="https://themissionautomation.com"><span class="dot"></span>THE MISSION AUTOMATION <small>the growth blueprint</small></a>
   <div class="navlinks">
     <a href="https://themissionautomation.com">The service</a>
-    <a href="index.html">Start again</a>
+    <a href="resources.html">The library</a>
     <a href="#" data-book class="btn ghost" style="padding:8px 15px;font-size:13.5px">Book a call</a>
   </div>
 </div></nav>
@@ -27,49 +27,171 @@
 <section id="askStage" style="padding-top:64px">
   <div class="wrap">
     <div class="sect-head rv" style="align-items:flex-start">
-      <span class="eyebrow"><span class="tick"></span>Full demo · all three pillars</span>
-      <h2>Tell us what's broken.<br>We'll show you what we'd build.</h2>
-      <p class="lead">This runs in your browser and takes about ninety seconds. You get a real blueprint:
-      which systems we'd build for you, the order we'd build them in, and how we'd run them once they're
-      live. What it can't do is diagnose you. That part needs a call, and we're explicit below about why.</p>
-    </div>
+      <span class="eyebrow"><span class="tick"></span>Your next twelve months, modelled</span>
+      <h2 id="introHead">Tell us about your business.<br>We'll show you its next twelve months.</h2>
+      <p class="lead" id="introLead">This page runs the same process we use to design growth systems for
+      clients, in your browser. You get a personalised strategic estimate, modelled from your
+      answers and industry benchmarks: the revenue leaking out of your pipeline each month, a 12-month
+      forecast in three bands, and the systems we would build first, in order. The last section shows an
+      ordinary Monday six months in. It is free because it is a sample of the work.</p>
 
-    <div class="persona-bar rv">
-      <label>Your business</label>
-      <input type="text" id="bizname" placeholder="Business name (optional)">
-      <div class="nsearch" id="industrySearch">
-        <input type="text" class="nsinput" autocomplete="off" spellcheck="false"
-               placeholder="Search your industry" aria-label="Your industry"
-               role="combobox" aria-expanded="false" aria-controls="nsList">
-        <span class="nscaret" aria-hidden="true">▾</span>
-        <div class="nslist" id="nsList" role="listbox"></div>
+      <div class="expect rv" id="introExpect">
+        <span><i class="tk"></i>5 to 15 minutes to answer</span>
+        <span><i class="tk"></i>The forecast lands seconds after your last answer</span>
+        <span><i class="tk"></i>Built around your industry</span>
+        <span><i class="tk"></i>Nothing you type here leaves your browser</span>
+      </div>
+
+      <div class="gifts rv" id="introGifts">
+        <div class="gift"><span class="gn">01</span><b>Opportunity estimate</b><span>The revenue your current setup leaves behind each month</span></div>
+        <div class="gift"><span class="gn">02</span><b>12-month forecast</b><span>Three growth bands for the year ahead</span></div>
+        <div class="gift"><span class="gn">03</span><b>Recommended systems</b><span>Chosen from your answers and your industry benchmarks</span></div>
+        <div class="gift"><span class="gn">04</span><b>Build roadmap</b><span>What goes live in month one, three, six, twelve</span></div>
+        <div class="gift"><span class="gn">05</span><b>Goal gap read</b><span>Your stated aim against the central case</span></div>
       </div>
     </div>
 
-    <div class="rv" style="margin-top:26px">
+    <!-- 01 · ABOUT YOU -->
+    <div class="rv" style="margin-top:44px">
       <div class="qhead"><span class="qstep">01</span>
-        <div><h3>Which of these sound like you?</h3>
-          <p class="dim" style="font-size:14.5px">Pick as many as apply. Every one maps to something we build.</p></div>
+        <div><h3>About you</h3>
+          <p class="dim" style="font-size:14.5px">Who you are, so the estimate fits your world.</p></div>
       </div>
-      <div class="symgrid" id="symptoms"></div>
-    </div>
-
-    <div class="rv" style="margin-top:34px">
-      <div class="qhead"><span class="qstep">02</span>
-        <div><h3>A little context</h3>
-          <p class="dim" style="font-size:14.5px">Rough answers are fine. Nothing here leaves your browser.</p></div>
+      <div class="persona-bar" style="margin-top:16px">
+        <label for="bizname">Your business</label>
+        <input type="text" id="bizname" placeholder="Business name (optional)">
+        <div class="nsearch" id="industrySearch">
+          <input type="text" class="nsinput" autocomplete="off" spellcheck="false"
+                 placeholder="Search your industry" aria-label="Your industry"
+                 role="combobox" aria-expanded="false" aria-controls="nsList">
+          <span class="nscaret" aria-hidden="true">▾</span>
+          <div class="nslist" id="nsList" role="listbox"></div>
+        </div>
       </div>
       <div class="qgrid" style="margin-top:16px">
         <div class="q">
-          <div class="qlabel"><span class="qnum">A</span>Roughly how many enquiries a month?</div>
-          <div class="seg" id="qVol">
-            <button data-v="low">Under 20</button>
-            <button data-v="mid" class="on">20 to 100</button>
-            <button data-v="high">More than 100</button>
+          <div class="qlabel"><span class="qnum">A</span>Who's filling this in?</div>
+          <div class="seg" id="qRole">
+            <button data-v="owner" class="on">I own the business</button>
+            <button data-v="ops">I run operations</button>
+            <button data-v="mkt">I'm in marketing or sales</button>
           </div>
         </div>
         <div class="q">
-          <div class="qlabel"><span class="qnum">B</span>Who handles a new enquiry today?</div>
+          <div class="qlabel"><span class="qnum">B</span>How many people work in the business?</div>
+          <div class="seg" id="qSize">
+            <button data-v="solo">Just me</button>
+            <button data-v="small" class="on">2 to 10</button>
+            <button data-v="mid">11 to 50</button>
+            <button data-v="big">More than 50</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 02 · YOUR NUMBERS -->
+    <div class="rv" style="margin-top:40px">
+      <div class="qhead"><span class="qstep">02</span>
+        <div><h3>Your numbers</h3>
+          <p class="dim" style="font-size:14.5px">Pre-set to typical figures for your industry. Correct anything you know better.</p></div>
+      </div>
+      <div class="slgrid">
+        <div class="sl">
+          <div class="slrow"><label for="inleads" id="labLeads">Enquiries each month</label><span class="slval" id="vleads"></span></div>
+          <input type="range" id="inleads">
+          <div class="slends" id="eleads"></div>
+        </div>
+        <div class="sl">
+          <div class="slrow"><label for="invalue">What a typical customer is worth</label><span class="slval" id="vvalue"></span></div>
+          <input type="range" id="invalue">
+          <div class="slends" id="evalue"></div>
+        </div>
+        <div class="sl">
+          <div class="slrow"><label for="inclose" id="labClose">Share of enquiries you win</label><span class="slval" id="vclose"></span></div>
+          <input type="range" id="inclose">
+          <div class="slends" id="eclose"></div>
+        </div>
+        <div class="sl">
+          <div class="slrow"><label for="inspend">Monthly marketing budget<span class="slopt">optional</span></label><span class="slval" id="vspend"></span></div>
+          <input type="range" id="inspend">
+          <div class="slends" id="espend"></div>
+        </div>
+      </div>
+      <p class="benchnote" id="benchNote"></p>
+    </div>
+
+    <!-- 03 · WHAT'S IN THE WAY -->
+    <div class="rv" style="margin-top:40px">
+      <div class="qhead"><span class="qstep">03</span>
+        <div><h3>What's in the way</h3>
+          <p class="dim" style="font-size:14.5px">Pick everything that sounds like your week. Every one maps to a system we build.</p></div>
+      </div>
+      <div class="symgrid" id="symptoms" style="margin-top:16px"></div>
+    </div>
+
+    <!-- 04 · WHERE YOU'RE HEADING -->
+    <div class="rv" style="margin-top:40px">
+      <div class="qhead"><span class="qstep">04</span>
+        <div><h3>Where you're heading</h3>
+          <p class="dim" style="font-size:14.5px">The ambition this forecast should aim at.</p></div>
+      </div>
+      <div class="qgrid" style="margin-top:16px">
+        <div class="q">
+          <div class="qlabel"><span class="qnum">A</span>This time next year, how much bigger should the business be?</div>
+          <div class="seg" id="qGoal">
+            <button data-v="steady">About the same, just smoother</button>
+            <button data-v="g25" class="on">Around 25% more</button>
+            <button data-v="g50">Around 50% more</button>
+            <button data-v="g2x">Double it, or more</button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="qlabel"><span class="qnum">B</span>If one thing ran itself from tomorrow, which would you pick?</div>
+          <div class="seg" id="qFirst">
+            <button data-v="replies" class="on">Instant replies, around the clock</button>
+            <button data-v="follow">Follow-up that does the chasing</button>
+            <button data-v="pipeline">A pipeline I can see</button>
+            <button data-v="reviews">Reviews and reputation, handled</button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="qlabel"><span class="qnum">C</span>Twelve months from now, what does success look like?</div>
+          <div class="seg" id="qSuccess">
+            <button data-v="revenue" class="on">More revenue</button>
+            <button data-v="time">My time back</button>
+            <button data-v="steady">Predictable months</button>
+            <button data-v="keyman">It no longer all depends on me</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 05 · HOW YOU RUN THINGS TODAY -->
+    <div class="rv" style="margin-top:40px">
+      <div class="qhead"><span class="qstep">05</span>
+        <div><h3>How you run things today</h3>
+          <p class="dim" style="font-size:14.5px">Your answers here set the baseline the forecast starts from.</p></div>
+      </div>
+      <div class="qgrid" style="margin-top:16px">
+        <div class="q">
+          <div class="qlabel"><span class="qnum">A</span>When a new enquiry lands, how fast does someone reply?</div>
+          <div class="seg" id="qResp">
+            <button data-v="u5">Under five minutes</button>
+            <button data-v="hour">Within the hour</button>
+            <button data-v="sameday" class="on">Same day</button>
+            <button data-v="nextday">Next day or later</button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="qlabel"><span class="qnum">B</span>How many times do you chase before giving up?</div>
+          <div class="seg" id="qFu">
+            <button data-v="f4">Four or more</button>
+            <button data-v="f23" class="on">Two or three</button>
+            <button data-v="f01">Once, maybe</button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="qlabel"><span class="qnum">C</span>Who handles a new enquiry today?</div>
           <div class="seg" id="qWho">
             <button data-v="me" class="on">Me, between other jobs</button>
             <button data-v="team">A small team</button>
@@ -77,25 +199,26 @@
           </div>
         </div>
         <div class="q">
-          <div class="qlabel"><span class="qnum">C</span>What happens out of hours?</div>
-          <div class="seg" id="qHours">
-            <button data-v="wait" class="on">It waits until morning</button>
-            <button data-v="some">Someone checks sometimes</button>
-            <button data-v="covered">We're covered already</button>
+          <div class="qlabel"><span class="qnum">D</span>Where do your enquiries live today?</div>
+          <div class="seg" id="qCrm">
+            <button data-v="crm">A CRM we keep up to date</button>
+            <button data-v="sheet">A spreadsheet</button>
+            <button data-v="inbox" class="on">Inbox, phone and memory</button>
+            <button data-v="none">Nowhere in particular</button>
           </div>
         </div>
         <div class="q">
-          <div class="qlabel"><span class="qnum">D</span>Where do enquiries end up?</div>
-          <div class="seg" id="qWhere">
-            <button data-v="inbox" class="on">An inbox or a phone</button>
-            <button data-v="sheet">A spreadsheet</button>
-            <button data-v="crm">A proper CRM</button>
+          <div class="qlabel"><span class="qnum">E</span>What happens to an enquiry at 9pm on a Tuesday?</div>
+          <div class="seg" id="qHours">
+            <button data-v="wait" class="on">It waits until morning</button>
+            <button data-v="some">Someone checks, sometimes</button>
+            <button data-v="covered">We're covered already</button>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="rv" style="margin-top:28px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+    <div class="rv" style="margin-top:32px;display:flex;gap:16px;align-items:center;flex-wrap:wrap">
       <button class="btn primary big" id="buildBtn">Build my blueprint →</button>
       <span class="dim" style="font-size:13.5px" id="pickCount">Pick at least one above.</span>
     </div>
@@ -107,7 +230,7 @@
   <div class="wrap">
     <div class="stagebox panel edge pad">
       <span class="eyebrow" style="margin-bottom:14px"><span class="tick"></span>Drafting</span>
-      <h3 id="workTitle" style="margin-bottom:14px">Reading your answers…</h3>
+      <h3 id="workTitle" style="margin-bottom:14px" aria-live="polite">Running your numbers…</h3>
       <div id="workSteps"></div>
     </div>
   </div>
@@ -118,16 +241,40 @@
   <div class="wrap">
 
     <div class="sect-head" style="align-items:flex-start">
-      <span class="eyebrow"><span class="tick"></span>Draft blueprint · <span id="planCompany"></span></span>
-      <h2 id="planHeadline">What we'd build for you</h2>
+      <span class="eyebrow"><span class="tick"></span>Strategic estimate · <span id="planCompany"></span></span>
+      <h2 id="planHeadline" tabindex="-1">The growth blueprint</h2>
       <p class="lead" id="planSummary"></p>
     </div>
 
-    <!-- coverage: what this could and couldn't see -->
-    <div class="cover panel edge-violet edge" id="coverBox"></div>
+    <!-- opportunity tiles -->
+    <div class="rtiles" id="planTiles"></div>
+
+    <!-- the forecast -->
+    <div style="margin-top:44px">
+      <h3 style="margin-bottom:6px">Three paths for the year ahead</h3>
+      <p class="dim" style="font-size:14.5px;max-width:76ch">The lower edge of the band carries today
+      forward unchanged. The central line applies the smallest improvement in each range and prices any
+      modelled budget at benchmark cost; the upper edge stacks the top of every range. When you tell
+      someone about this forecast, quote the central case. Dots mark months one, three, six and twelve.</p>
+      <div class="fchart" id="chartBox"></div>
+      <details class="how" id="howModel"></details>
+    </div>
+
+    <!-- milestones -->
+    <div style="margin-top:44px">
+      <h3 style="margin-bottom:6px">What goes live, and when</h3>
+      <p class="dim" style="font-size:14.5px">The same twelve months, told as what is running by when.</p>
+      <div class="miles" id="milesBox"></div>
+    </div>
+
+    <!-- the dream, made ordinary -->
+    <div class="dream" id="dreamBox"></div>
+
+    <!-- goal gap -->
+    <div class="ggap" id="gapBox"></div>
 
     <!-- the build sequence -->
-    <div style="margin-top:38px">
+    <div style="margin-top:44px">
       <h3 style="margin-bottom:6px">The order we'd build it</h3>
       <p class="dim" style="font-size:14.5px;margin-bottom:18px">One thing at a time, each one live and
       earning before the next starts. <span class="modeltag" style="margin-left:8px">Draft sequence, confirmed on the call</span></p>
@@ -137,20 +284,20 @@
     <!-- how it's run -->
     <div style="margin-top:44px">
       <h3 style="margin-bottom:6px">How it's run once it's live</h3>
-      <p class="dim" style="font-size:14.5px;margin-bottom:18px">We operate it. You approve things.
-      That's the whole division of labour.</p>
+      <p class="dim" style="font-size:14.5px;margin-bottom:18px">We operate it. You approve every
+      message before it sends.</p>
       <div class="rhythm" id="planRhythm"></div>
     </div>
 
-    <!-- THE GATE: what needs a call -->
+    <!-- THE GATE: what the call adds -->
     <div class="gatebox edge edge-violet" id="gateBox" style="margin-top:44px"></div>
 
     <div class="panel edge pad" style="margin-top:34px;display:flex;gap:18px;align-items:center;flex-wrap:wrap">
       <div style="flex:1;min-width:240px">
-        <h3>Nothing here is built until we've spoken</h3>
-        <p class="dim" style="margin-top:6px;font-size:14.5px">The call is where this blueprint becomes a
-        quote: we measure what this page had to assume, look at your actual stack, and tell you which of
-        these to build first. If the numbers don't support it, we'll say so then too.</p>
+        <h3>Turn this estimate into your plan</h3>
+        <p class="dim" style="margin-top:6px;font-size:14.5px">This page showed you how we think; the call
+        does the same work on your real numbers. You leave with an implementation plan, and the forecast
+        is yours to keep whichever way you decide.</p>
       </div>
       <a href="#" data-book class="btn primary big">Book the diagnosis call</a>
     </div>
@@ -164,7 +311,7 @@
 </section>
 
 <footer class="footer" data-chrome><div class="wrap">
-  <span>© The Mission Automation. A draft blueprint from a short form, not a diagnosis. We scope and price on the call.</span>
+  <span>© The Mission Automation. A personalised strategic estimate, modelled from your answers; scoped and priced on the call.</span>
   <a href="#" data-book>Book a diagnosis call</a>
 </div></footer>
 

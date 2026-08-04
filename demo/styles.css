@@ -841,17 +841,136 @@ body.embed .wrap{width:min(100% - 32px,var(--maxw))}
 
 .hide{display:none !important}
 
-/* Predict swaps form → analysis → report by toggling display, so its three
-   biggest moments were hard cuts. The report should arrive, not materialise. */
+/* The demo swaps questions → working → report by toggling display, so its
+   three biggest moments were hard cuts. The report should arrive, not
+   materialise. (Ids updated for the v2 rebuild.) */
 @keyframes stageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-#formStage:not(.hide),#analyseStage:not(.hide),#reportStage:not(.hide){
+#askStage:not(.hide),#workStage:not(.hide),#planStage:not(.hide){
   animation:stageIn .45s var(--ease) both}
 
 /* reveal on scroll — with the tma-site blank-page trap fixed: JS backstop reveals */
 .rv{opacity:0;transform:translateY(16px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
 .rv.in{opacity:1;transform:none}
+/* the .rv+transform trap: .rv.in's transform:none and transition list would
+   otherwise cancel .fullbar's hover lift and glow easing after reveal */
+.fullbar.rv.in{transition:.25s var(--ease)}
+.fullbar.rv.in:hover{transform:translateY(-3px)}
 @media(prefers-reduced-motion:reduce){
   .rv{opacity:1;transform:none;transition:none}
   .wf-flow{animation:none}
   *{animation-duration:.001s !important}
 }
+
+/* =========================================================================
+   FULL DEMO v2 — the consulting-sample rebuild (Aug 2026)
+   Sliders, deliverable chips, report tiles, forecast chart, milestones,
+   dream panel, goal gap. Same tokens as everything above.
+   ========================================================================= */
+
+/* ---------- deliverable chips (intro) ---------------------------------- */
+.gifts{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:26px}
+@media(max-width:980px){.gifts{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:640px){.gifts{grid-template-columns:1fr 1fr}}
+.gift{background:var(--panel);border-radius:14px;box-shadow:0 0 0 1px var(--line) inset;
+  padding:14px 15px;display:flex;flex-direction:column;gap:5px}
+.gift b{font-size:13.5px;font-weight:600;letter-spacing:-.01em}
+.gift span{font-size:12px;color:var(--dim);line-height:1.45}
+.gift .gn{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.16em;color:var(--blue)}
+.expect{display:flex;gap:10px 22px;flex-wrap:wrap;margin-top:18px;font-size:13px;color:var(--dim)}
+.expect span{display:inline-flex;align-items:center;gap:7px}
+.expect .tk{width:5px;height:5px;border-radius:2px;background:var(--blue);flex:none}
+
+/* ---------- sliders ----------------------------------------------------- */
+.slgrid{display:grid;grid-template-columns:1fr 1fr;gap:20px 26px;margin-top:16px}
+@media(max-width:760px){.slgrid{grid-template-columns:1fr}}
+.sl{background:var(--panel);border-radius:var(--r);box-shadow:0 0 0 1px var(--line) inset;padding:18px 20px}
+.sl .slrow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px}
+.sl label{font-size:14px;font-weight:600}
+.sl .slval{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--blue);white-space:nowrap}
+.sl .slopt{font-size:11.5px;color:var(--dim);font-weight:500;margin-left:7px}
+.sl input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:22px;background:none;margin:0;cursor:pointer}
+.sl input[type=range]::-webkit-slider-runnable-track{height:4px;border-radius:99px;
+  background:linear-gradient(90deg,var(--blue) var(--p,50%),rgba(255,255,255,.12) var(--p,50%))}
+.sl input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;
+  border-radius:50%;background:#fff;box-shadow:0 0 0 4px rgba(77,163,255,.35);margin-top:-6px}
+.sl input[type=range]::-moz-range-track{height:4px;border-radius:99px;background:rgba(255,255,255,.12)}
+.sl input[type=range]::-moz-range-progress{height:4px;border-radius:99px;background:var(--blue)}
+.sl input[type=range]::-moz-range-thumb{width:16px;height:16px;border:0;border-radius:50%;
+  background:#fff;box-shadow:0 0 0 4px rgba(77,163,255,.35)}
+.sl .slends{display:flex;justify-content:space-between;font-family:var(--mono);font-size:10.5px;
+  color:var(--dim);margin-top:6px}
+.benchnote{font-size:13px;color:var(--dim);margin-top:14px;display:flex;align-items:center;gap:8px}
+.benchnote::before{content:"";width:6px;height:6px;border-radius:2px;background:var(--warn);flex:none;opacity:.8}
+
+/* ---------- report tiles ------------------------------------------------ */
+.rtiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:30px}
+@media(max-width:980px){.rtiles{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.rtiles{grid-template-columns:1fr}}
+.rtile{background:var(--panel);border-radius:var(--r);box-shadow:0 0 0 1px var(--line) inset;padding:18px 20px}
+.rtile .rtlab{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--dim);display:block;margin-bottom:9px}
+.rtile .rtval{font-family:var(--mono);font-size:clamp(20px,2.4vw,26px);font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.rtile .rtval em{font-style:normal;color:var(--blue)}
+.rtile .rtsub{font-size:12.5px;color:var(--dim);margin-top:7px;line-height:1.5}
+
+/* ---------- forecast chart ---------------------------------------------- */
+.fchart{background:var(--panel);border-radius:var(--r);box-shadow:0 0 0 1px var(--line) inset;
+  padding:22px 22px 14px;margin-top:18px}
+.fchart svg{width:100%;height:auto;display:block}
+.flegend{display:flex;gap:8px 20px;flex-wrap:wrap;margin-top:10px;font-size:12.5px;color:var(--muted)}
+.flegend span{display:inline-flex;align-items:center;gap:8px}
+.flegend i{width:16px;height:0;border-top:3px solid var(--blue);border-radius:2px;flex:none}
+.flegend i.band{height:10px;border:0;border-radius:3px;background:rgba(77,163,255,.22)}
+.flegend i.base{border-top-style:dashed;border-top-color:rgba(255,255,255,.45)}
+.flegend i.goal{border-top-style:dotted;border-top-width:3px;border-top-color:var(--pink)}
+details.how{margin-top:14px;background:rgba(255,255,255,.03);border-radius:13px;
+  box-shadow:0 0 0 1px var(--line-soft) inset;padding:0 18px}
+details.how summary{cursor:pointer;list-style:none;padding:13px 0;font-size:13.5px;font-weight:600;
+  display:flex;align-items:center;gap:9px;color:var(--muted)}
+details.how summary::before{content:"+";font-family:var(--mono);color:var(--blue);font-weight:700}
+details.how[open] summary::before{content:"−"}
+details.how summary::-webkit-details-marker{display:none}
+details.how p{font-size:13.5px;color:var(--dim);line-height:1.6;margin:0 0 15px;max-width:76ch}
+
+/* ---------- milestones -------------------------------------------------- */
+.miles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}
+@media(max-width:980px){.miles{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.miles{grid-template-columns:1fr}}
+.mile{background:var(--panel);border-radius:var(--r);box-shadow:0 0 0 1px var(--line) inset;
+  padding:18px 19px;display:flex;flex-direction:column;gap:8px}
+.mile .mtag{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.16em;color:var(--blue)}
+.mile h5{margin:0;font-size:15px;font-weight:600;letter-spacing:-.015em;line-height:1.3}
+.mile p{margin:0;font-size:13px;color:var(--muted);line-height:1.55}
+.mile .mfig{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--blue);margin-top:auto}
+
+/* ---------- dream panel ------------------------------------------------- */
+.dream{margin-top:44px;padding:30px;border-radius:var(--r-lg);position:relative;
+  background:linear-gradient(165deg,rgba(129,74,200,.16),rgba(11,15,20,.9) 62%);
+  box-shadow:0 0 0 1px rgba(129,74,200,.35) inset}
+.dream h3{margin-bottom:12px}
+.dream p{font-size:15.5px;color:var(--muted);line-height:1.7;max-width:74ch;margin:0}
+.dream .dtag{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--pink);display:block;margin-bottom:14px}
+
+/* ---------- mobile nav (pre-existing overflow on every demo page: brand +
+   three links never fit 375px; keep brand + the booking button only) ------ */
+@media(max-width:600px){
+  .nav .wrap{gap:12px}
+  .navlinks{gap:0}
+  .navlinks a:not(.btn){display:none}
+}
+
+/* ---------- goal gap ---------------------------------------------------- */
+.ggap{margin-top:44px;background:var(--panel);border-radius:var(--r);
+  box-shadow:0 0 0 1px var(--line) inset;padding:26px 28px}
+.ggap h3{margin-bottom:8px}
+.ggap .glead{font-size:14.5px;color:var(--muted);max-width:76ch}
+.gbars{margin-top:20px;display:flex;flex-direction:column;gap:14px}
+.gbar .gblab{display:flex;justify-content:space-between;font-size:12.5px;color:var(--dim);margin-bottom:6px}
+.gbar .gblab b{font-family:var(--mono);font-weight:700;color:#fff}
+.gbar .gbtrack{height:8px;border-radius:99px;background:rgba(255,255,255,.07);overflow:hidden}
+.gbar .gbtrack i{display:block;height:100%;border-radius:99px}
+.gbar.now i{background:rgba(255,255,255,.35)}
+.gbar.model i{background:linear-gradient(90deg,var(--steel),var(--blue))}
+.gbar.goal i{background:linear-gradient(90deg,var(--violet),var(--pink))}
+.gnote{margin-top:16px;font-size:13.5px;color:var(--dim);line-height:1.6;max-width:76ch}
