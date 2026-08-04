@@ -161,6 +161,47 @@ looks like software" note was really about missing humans, not about the visual.
 
 ## NEXT
 
-Adam's latest feedback follows this message. Read it, then work the list. Push when Zach approves,
-or build in a separate folder on another port if he wants to review first (that pattern worked:
-`tma-site-v2` on 8130, diffed against the live repo before merging).
+**Adam's demo critique is implemented (commit `a8eca4f`, 2026-08-04, local only — NOT pushed).**
+The full demo is now a consulting sample: outcome-led intro with named deliverables and honest
+timing, contact-first ordering, industry-personalised sliders (ranges/steps/defaults re-derive per
+sector), goals + ambition questions, clarified CRM wording, and a report with opportunity tiles, a
+12-month three-band SVG forecast, month 1/3/6/12 milestones, a month-six narrative, a goal-gap read
+and the gate reframed as "Six things the call adds". Homepage hero's second CTA starts the demo
+(the mislinked "See how we run it" is gone). Chooser + library updated to match; mobile nav
+overflow, stale v1 stage-animation ids, and the .rv/hover trap on the chooser cards fixed.
+
+Forecast honesty rules baked into full.js: the band's lower edge holds today flat (reach arm's low
+case counts none of the budget), every improvement range only applies when a matching system is in
+the rendered plan, and the central case takes the smallest figure in each range.
+
+**Adam's site-wide revision brief is also implemented (commit `0251598`, local only).** Hero is now
+headline + one line + two CTAs with the ops console moved into its own `#live` section; problem block
+reframed as where growth budgets go (six cards, each closing to money lost); pillars reframed around
+the client's objectives with the demo under Predict; Build leads with the machine as anchor and the
+cold-email deliverability block became four channels at equal depth; a new `#grow` section carries the
+weekly rhythm, the people and the ten-minutes ask, with the pipeline moved to Build as the running
+order; twelve FAQs rewritten; footer is Next steps. One CTA label sitewide: "Book a diagnosis call".
+
+**Honesty corrections made during review — do not undo:** the ops console is a *worked example*, not
+live client data (it carries fixed `Mon 09:04`-style replay timestamps, not `new Date()`); the example
+lead card uses a fictional company; the verdict figures carry a `.modeltag`. Bugs fixed in passing:
+app.js threw on `/contact/` (no `#stageList`) and killed every CTA there; the forecast widget pointed
+at a different cal.com link; the event feed kept 8 rows in a 5-row box.
+
+**Remaining for Zach:** eyeball locally (`node serve.cjs` → :8125 — homepage, demo, /contact/, at
+desktop and 375px), then `git push origin main` to publish both commits. Not built: email capture (no
+backend; demo answers instead ride into the cal.com booking notes), and Adam's video idea (item 24,
+explicitly later).
+
+**Four open questions Adam raised, answered against what exists:**
+1. *Live dashboard on real data?* Not from this repo: it is static on GitHub Pages with no backend,
+   and showing real client activity would need a sanitised feed plus that client's consent. It is now
+   honestly framed as a worked example. Wiring a real feed is a Render-service job, not a copy change.
+2. *Hard ceiling for FAQ #6 ("no longer than X weeks")?* Adam has to set this; it is a commercial
+   promise. The FAQ currently says "typically around three weeks depending on scope, agreed on the
+   call before anything is signed" and states no ceiling.
+3. *Reducing junk demo submissions?* There is no endpoint to spam: the summary travels in the cal.com
+   booking URL, so a submission costs the sender a booking. Further tightening is cal.com config, not
+   code: turn on "requires confirmation" and add a required company-website question.
+4. *Final CTA label?* Standardised on **"Book a diagnosis call"** across index, contact, demo and the
+   report. Change it in one place per file if Adam prefers another.
