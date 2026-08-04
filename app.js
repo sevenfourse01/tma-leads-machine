@@ -157,11 +157,11 @@ document.querySelectorAll('[data-count]').forEach(el => countIO.observe(el));
 const STAGES = [
   {
     kicker: 'Stage 01 · intake',
-    ttl: 'You brief us',
+    ttl: 'We build your profile together',
     hint: 'The deep profile',
-    body: `On the diagnosis call you tell us what you know: what you do, who you sell to, ticket size, margin, what a customer is worth over their lifetime, your monthly budget, your website and platforms, and whatever funnel numbers you have.
+    body: `On the diagnosis call we go through what you know: what you do, who you sell to, ticket size, margin, what a customer is worth over their lifetime, your monthly budget, your website and platforms, and whatever funnel numbers exist.
 
-We store every metric with its provenance: measured by you, inferred by us, or unknown. That tag follows the number through every decision we make downstream, so nothing we recommend later rests on a guess you never gave us.`,
+We store every metric with its provenance: measured, inferred, or unknown. That tag follows the number through every decision downstream, so nothing we recommend later rests on a number nobody measured.`,
     out: 'Captured',
     kv: ['<b>Ticket</b> £4,400', '<b>Margin</b> 62%', '<b>LTV</b> ×3.4', '<b>Budget</b> £2,000/mo',
          '<b>Cost per lead</b> unknown', '<b>Call→close</b> inferred']
@@ -172,10 +172,10 @@ We store every metric with its provenance: measured by you, inferred by us, or u
     hint: 'Site, socials, voice',
     body: `Before we write a word on your behalf, we read your website and your public profiles. We pull out three things: what you offer, what proof you can point to, and how you sound in writing.
 
-This constraint keeps everything we send honest. We build every later draft from claims your own material already supports, so we can't invent a client, a case study, or a statistic that doesn't exist.`,
+This constraint keeps everything we send honest: every later draft is built from claims your own material already supports, and a person checks it against that source before it can be approved.`,
     out: 'Extracted',
     kv: ['<b>Offer</b> parsed', '<b>Real proof</b> 4 items', '<b>Tone</b> direct, plain-English',
-         '<b>Fabricated claims</b> impossible']
+         '<b>Claim source</b> required']
   },
   {
     kicker: 'Stage 03 · market intel',
@@ -194,10 +194,10 @@ We refresh this on every run rather than baking it in once at setup, because a t
     hint: 'Gated on your maths',
     body: `Now we decide the channel mix, the budget split across those channels, and the messaging angle for each. We choose against your real economics rather than against what's fashionable.
 
-We hard-gate paid channels on a 3:1 lifetime-value-to-acquisition-cost ratio. If the numbers don't clear it, we reject the channel and write the refusal down with the arithmetic beside it. We also name the human tasks: the parts a person handles.`,
+Paid channels are gated on what a customer is worth against what one costs to win. If a channel can't hit the return you're aiming for, we won't spend your money there, and you get the arithmetic behind that decision in writing. We also name the human tasks: the parts a person handles.`,
     out: 'Decided',
-    kv: ['<b>Email</b> 50%', '<b>LinkedIn</b> 30%', '<b>Content</b> 20%',
-         '<b style="color:#ff6b6b">Paid ads</b> refused', '<b>Human tasks</b> listed']
+    kv: ['<b>Email</b> 51%', '<b>LinkedIn</b> 31%', '<b>Content</b> 18%',
+         '<b style="color:#ff6b6b">Paid ads</b> declined', '<b>Human tasks</b> listed']
   },
   {
     kicker: 'Stage 05 · execution',
@@ -225,6 +225,11 @@ Either way a person signs off. The system enforces it: nothing carries an approv
 
 const listEl = document.getElementById('stageList');
 const panelEl = document.getElementById('stagePanel');
+
+/* /contact/ loads this same file and has no stage explorer. Unguarded, the
+   innerHTML below threw there and killed every block after it — the same trap
+   the year-stamp lookup hit at the top of this file. */
+if (listEl && panelEl) {
 
 listEl.innerHTML = STAGES.map((s, i) => `
   <button class="stage-btn${i === 0 ? ' on' : ''}" data-i="${i}" type="button">
@@ -264,47 +269,48 @@ setInterval(() => {
   paint(stageI);
 }, 5200);
 
+}   /* end stage-explorer guard */
+
 /* =========================================================================
-   HERO — travelling pulse along the rail + streaming console
+   THE ACCOUNT VIEW — travelling pulse along the rail + the event feed
    ========================================================================= */
 const nodes = [...document.querySelectorAll('#rail .node')];
 const consoleEl = document.getElementById('console');
 
 /* Every line is tagged AI or HUMAN, because a prospect should never have to
    guess which work a machine did and which a person did. Adam owns strategy,
-   which is where the judgement calls live: what to spend, what to refuse.
+   which is where the judgement calls live: what to spend, what to decline.
    Zach runs the account, Eric owns the words and anything regulated. */
+/* Timestamps are FIXED, not generated from new Date(). The panel is a worked
+   example of one week, and stamping it with the visitor's clock made a scripted
+   loop read as live client activity — a claim the page cannot support. */
 const LOG = [
-  ['ai', 'a', 'intake',   'profile loaded · 4 metrics measured, 2 inferred, 1 unknown'],
-  ['hu', 'h', 'Zach',     'chased the client for the missing lifetime-value figure'],
-  ['ai', 'a', 'intake',   'wallet funded £2,000.00 · ledger opened'],
-  ['ai', 'b', 'website',  'fetched primary domain + 3 social profiles'],
-  ['ai', 'b', 'website',  'voice profile extracted · 4 verifiable proof points found'],
-  ['hu', 'h', 'Eric',     'read the site and rewrote the voice brief before sourcing'],
-  ['ai', 'b', 'intel',    'sweeping niche · news, communities, video'],
-  ['ai', 'b', 'intel',    '7 UK companies surfaced with live buying signals'],
-  ['hu', 'h', 'Zach',     'dropped 2 of the 7 · wrong size, would waste the budget'],
-  ['ai', 'a', 'strategy', 'pricing channels against LTV:CAC floor of 3.0'],
-  ['ai', 'd', 'strategy', 'paid_ads flagged · CAC £4,286 > affordable £1,320'],
-  ['hu', 'h', 'Adam',     'reviewed the maths and refused paid ads on this account'],
-  ['hu', 'h', 'Adam',     'called the client to explain the refusal before spending'],
-  ['hu', 'h', 'Adam',     'set the split · email 50%, linkedin 30%, content 20%'],
-  ['ai', 'a', 'execute',  'sourcing → researching → drafting in client voice'],
-  ['ai', 'a', 'execute',  'dedupe pass · 2 already contacted, skipped'],
-  ['hu', 'h', 'Eric',     'edited 3 openers · too familiar for this sector'],
-  ['ai', 'd', 'execute',  'regulated claim detected · second sign-off required'],
-  ['hu', 'h', 'Eric',     'cleared the regulated claim with the client in writing'],
-  ['ai', 'c', 'queue',    '4 leads queued · status in_review · awaiting client approval'],
-  ['ai', 'c', 'wallet',   '£184.20 drawn · £1,815.80 remaining · within budget'],
+  ['ai', 'a', 'intake',   'profile loaded · 4 metrics measured, 1 inferred, 1 unknown', 'Mon 09:04'],
+  ['hu', 'h', 'Zach',     'chased the client for the missing lifetime-value figure',    'Mon 09:31'],
+  ['ai', 'a', 'intake',   'wallet funded £2,000.00 · ledger opened',                    'Mon 10:02'],
+  ['ai', 'b', 'website',  'fetched primary domain + 3 social profiles',                 'Mon 10:15'],
+  ['ai', 'b', 'website',  'voice profile extracted · 4 verifiable proof points found',  'Mon 10:44'],
+  ['hu', 'h', 'Eric',     'read the site and rewrote the voice brief before sourcing',  'Mon 14:20'],
+  ['ai', 'b', 'intel',    'sweeping niche · news, communities, video',                  'Tue 08:12'],
+  ['ai', 'b', 'intel',    '8 UK companies surfaced with live buying signals',           'Tue 08:47'],
+  ['hu', 'h', 'Zach',     'dropped 2 of the 8 · wrong size, would waste the budget',    'Tue 11:05'],
+  ['ai', 'a', 'strategy', 'pricing channels against the client target return',          'Tue 15:38'],
+  ['ai', 'd', 'strategy', 'paid ads flagged · cost per customer £4,286 vs £1,320 affordable', 'Tue 15:39'],
+  ['hu', 'h', 'Adam',     'showed the client why paid could not hit their target',      'Wed 09:50'],
+  ['hu', 'h', 'Adam',     'called the client before any budget moved',                  'Wed 10:10'],
+  ['hu', 'h', 'Adam',     'set the split · email 51%, linkedin 31%, content 18%',       'Wed 11:26'],
+  ['ai', 'a', 'execute',  'sourcing → researching → drafting in client voice',          'Wed 13:02'],
+  ['ai', 'a', 'execute',  'duplicate check · 2 already contacted, skipped',             'Wed 13:44'],
+  ['hu', 'h', 'Eric',     'edited 3 openers · too familiar for this sector',            'Thu 09:18'],
+  ['ai', 'd', 'execute',  'regulated claim detected · second sign-off required',        'Thu 10:03'],
+  ['hu', 'h', 'Eric',     'cleared the regulated claim with the client in writing',     'Thu 16:41'],
+  ['ai', 'c', 'queue',    '4 leads queued · status in review · awaiting sign-off',      'Fri 08:30'],
+  ['ai', 'c', 'wallet',   '£184.20 drawn · £1,815.80 remaining · within budget',        'Fri 08:31'],
 ];
 
 let li = 0;
 function pushLog() {
-  const [kind, cls, tag, msg] = LOG[li % LOG.length];
-  const d = new Date();
-  const ts = String(d.getHours()).padStart(2, '0') + ':' +
-             String(d.getMinutes()).padStart(2, '0') + ':' +
-             String(d.getSeconds()).padStart(2, '0');
+  const [kind, cls, tag, msg, ts] = LOG[li % LOG.length];
   const row = document.createElement('div');
   row.className = 'row';
   row.innerHTML = `<span class="ts">${ts}</span>` +
@@ -312,7 +318,8 @@ function pushLog() {
                   `<span class="tag ${cls}">${tag.padEnd(8, ' ')}</span>` +
                   `<span class="msg">${msg}</span>`;
   consoleEl.appendChild(row);
-  while (consoleEl.children.length > 8) consoleEl.removeChild(consoleEl.firstChild);
+  /* the box fits five rows; keeping eight pushed the newest event out of sight */
+  while (consoleEl.children.length > 5) consoleEl.removeChild(consoleEl.firstChild);
 
   // fire the pulse on the matching rail node
   const map = { intake: 0, website: 1, intel: 2, strategy: 3, execute: 4, queue: 5, wallet: 5 };
@@ -331,13 +338,22 @@ function pushLog() {
   li++;
 }
 
-const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-for (let i = 0; i < 5; i++) pushLog();
-if (!reduced) {
-  let heroVisible = true;
-  new IntersectionObserver(e => { heroVisible = e[0].isIntersecting; }, { threshold: 0 })
-    .observe(document.getElementById('machine'));
-  setInterval(() => { if (heroVisible && !document.hidden) pushLog(); }, 1750);
+/* Pacing: a tracker, not an animation. Events land at a human interval and vary
+   slightly rather than ticking like a clock. It behaved like a GIF at 1.75s. */
+const machineEl = document.getElementById('machine');
+if (consoleEl && machineEl) {
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  for (let i = 0; i < 5; i++) pushLog();
+  if (!reduced) {
+    let machineVisible = true;
+    new IntersectionObserver(e => { machineVisible = e[0].isIntersecting; }, { threshold: 0 })
+      .observe(machineEl);
+    const tick = () => {
+      if (machineVisible && !document.hidden) pushLog();
+      setTimeout(tick, 5200 + Math.random() * 2600);
+    };
+    setTimeout(tick, 5200);
+  }
 }
 
 /* =========================================================================
@@ -359,7 +375,9 @@ if (!reduced) {
   const LOCAL_ENGINE = 'http://localhost:8791';
   const isLocal = /^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname);
   const engine = isLocal ? LOCAL_ENGINE : PROD_ENGINE;
-  const booking = frame.getAttribute('data-booking') || '';
+  /* one booking link sitewide: the widget used to carry its own stale cal.com
+     URL in a data-booking attribute, which sent prospects somewhere else */
+  const booking = frame.getAttribute('data-booking') || BOOKING_URL || '';
   if (!frame.src) {
     frame.src = 'forecast-widget.html?api=' + encodeURIComponent(engine) +
       '&booking=' + encodeURIComponent(booking) + '&theme=dark&embed=1';

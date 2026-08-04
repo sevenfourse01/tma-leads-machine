@@ -618,10 +618,54 @@ function renderPlan() {
     </div>
     <div class="gatefoot">
       <span>About 45 minutes, and this report is yours to keep either way.</span>
-      <a href="#" data-book class="btn primary">Book the diagnosis call</a>
+      <a href="#" data-book class="btn primary">Book a diagnosis call</a>
     </div>`;
 
   wireBooking();
+  attachSummaryToBooking(bookingSummary(a, cfg, fc, first, wantsMachine));
+}
+
+/* ---------- carrying the answers to the call ------------------------------
+   Adam's brief: let people send what they filled in, but only attached to a
+   booking. A standalone "send us your numbers" button collects junk from
+   people poking at the page; a booking costs the sender a slot, which is the
+   cheapest spam filter available to a static site. So we prefill the
+   scheduler's notes field instead of building an endpoint. No form, no
+   inbox to police, nothing stored: the summary only exists in the URL the
+   visitor themselves opens. */
+function bookingSummary(a, cfg, fc, first, wantsMachine) {
+  const L = [
+    "From the demo blueprint (modelled, unverified):",
+    "Business: " + companyName() + " · " + cfg.label,
+    "Volume: " + a.leads + " " + cfg.enquiry + "/mo · win rate " + Math.round(a.close * 100) +
+      "% · typical customer " + fmtGBP(a.value),
+    a.spend > 0 ? "Marketing budget: " + fmtGBP(a.spend) + "/mo" : "Marketing budget: not given",
+    "Goal: " + COPY.goalLabel[a.goal] + " · success looks like " +
+      { revenue: "more revenue", time: "time back", steady: "predictable months",
+        keyman: "less dependence on me" }[a.success],
+    "Today: first reply " + COPY.respNow[a.resp] + " · " +
+      { f4: "chases 4+ times", f23: "chases 2 to 3 times", f01: "chases once" }[a.fu] + " · " +
+      { crm: "CRM kept current", sheet: "spreadsheet", inbox: "inbox and phone", none: "no system" }[a.crm],
+    "Picked: " + SYMPTOMS.filter(s => picked.has(s.id)).map(s => s.text).join("; "),
+    "Suggested first: " + BUILDS[first[0]].name + (wantsMachine ? " (reach problem flagged)" : ""),
+    "Modelled 12-month addition: " + fmtGBPk(fc.added12.mid) + " to " + fmtGBPk(fc.added12.hi)
+  ];
+  return L.join("\n");
+}
+
+/* Append the summary to whatever wireBooking() resolved, so the scheduler
+   opens with it in the notes field and the visitor can read or delete it
+   before confirming. Runs after wireBooking(), never before. */
+function attachSummaryToBooking(summary) {
+  $$("#planStage [data-book]").forEach(a => {
+    const href = a.getAttribute("href");
+    if (!href || !/^https?:/i.test(href)) return;
+    try {
+      const u = new URL(href);
+      u.searchParams.set("notes", summary);
+      a.setAttribute("href", u.toString());
+    } catch { /* leave the plain booking link alone */ }
+  });
 }
 
 /* ---------- the working animation ----------------------------------------- */
