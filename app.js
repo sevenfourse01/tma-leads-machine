@@ -25,78 +25,85 @@ document.querySelectorAll('.js-mail').forEach(a => {
 });
 
 /* ---- contents rail ----------------------------------------------------
-   Marks the section you are in and fills the progress line. Driven by scroll
-   position rather than IntersectionObserver: the sections are wildly different
-   heights, so "which one is crossing the upper third" tracks a reader's sense
-   of place better than "which one is most visible". */
+   Marks the section you are in and fills the progress line.
+
+   Observer-driven, not scroll-driven. The previous version recomputed every
+   section's offsetTop inside a scroll handler, which forces a synchronous
+   layout on every frame of every scroll — the single most expensive thing a
+   page like this can do. Here the dot positions are measured once, and the
+   fill moves between them on a CSS transition, so scrolling costs nothing. */
 (() => {
   const toc = document.getElementById('toc');
   if (!toc) return;
   const fill = document.getElementById('tocFill');
-  const links = [...toc.querySelectorAll('a[data-t]')];
-  const targets = links
+  const targets = [...toc.querySelectorAll('a[data-t]')]
     .map(a => ({ a, el: document.getElementById(a.dataset.t) }))
     .filter(t => t.el);
+  if (!targets.length) return;
 
   /* Pin the line between the first and last dot centres, and remember where
      each dot sits along it. Measured, not assumed: the rail's padding and gap
      can change in CSS without this drifting out of alignment. */
-  let dotY = [], span = 0;
+  let dotY = [];
   const measure = () => {
     const top = toc.getBoundingClientRect().top;
     dotY = targets.map(t => {
       const d = t.a.querySelector('.tdot').getBoundingClientRect();
       return d.top - top + d.height / 2;
     });
-    span = dotY[dotY.length - 1] - dotY[0];
     const line = toc.querySelector('.tocline');
     line.style.top = dotY[0] + 'px';
-    line.style.height = span + 'px';
+    line.style.height = (dotY[dotY.length - 1] - dotY[0]) + 'px';
   };
 
-  /* Scroll position at which each section takes over. Interpolating between
-     these means the fill reaches a dot at the same moment its section does,
-     instead of running on raw page percentage and arriving early or late. */
-  const marksFor = () => {
-    const m = targets.map(t => t.el.offsetTop - innerHeight * 0.32);
-    m[0] = 0;
-    for (let i = 1; i < m.length; i++) if (m[i] <= m[i - 1]) m[i] = m[i - 1] + 1;
-    return m;
-  };
-
-  const onScroll = () => {
-    const marks = marksFor();
-    let px = 0, current = 0;
-    if (scrollY >= marks[marks.length - 1]) { px = span; current = marks.length - 1; }
-    else {
-      for (let i = 0; i < marks.length - 1; i++) {
-        if (scrollY < marks[i + 1]) {
-          const f = Math.max(0, (scrollY - marks[i]) / (marks[i + 1] - marks[i]));
-          px = (dotY[i] - dotY[0]) + f * (dotY[i + 1] - dotY[i]);
-          current = i;
-          break;
-        }
-      }
-    }
-    fill.style.height = px + 'px';
+  let current = 0;
+  const paintRail = () => {
+    if (!dotY.length) return;
+    fill.style.height = (dotY[current] - dotY[0]) + 'px';
     targets.forEach((t, i) => {
-      t.a.classList.toggle('reached', dotY[i] - dotY[0] <= px + 0.5);
+      t.a.classList.toggle('reached', i <= current);
       t.a.classList.toggle('on', i === current);
     });
   };
 
-  const refresh = () => { measure(); onScroll(); };
-  addEventListener('scroll', onScroll, { passive: true });
-  addEventListener('resize', refresh);
-  addEventListener('load', refresh);
-  refresh();
+  /* The band is the upper third of the viewport. A section is "current" while
+     it is crossing that band, which matches where a reader's eye actually
+     sits — and because the sections are wildly different heights, the deepest
+     one currently in the band wins. */
+  const live = new Set();
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      const i = targets.findIndex(t => t.el === e.target);
+      if (i < 0) return;
+      e.isIntersecting ? live.add(i) : live.delete(i);
+    });
+    if (live.size) {
+      const next = Math.max(...live);
+      if (next !== current) { current = next; paintRail(); }
+    }
+  }, { rootMargin: '-30% 0px -62% 0px', threshold: 0 });
+
+  targets.forEach(t => io.observe(t.el));
+  measure();
+  paintRail();
+  addEventListener('resize', () => { measure(); paintRail(); });
 })();
 
-/* ---- sticky nav ------------------------------------------------------- */
-const nav = document.getElementById('nav');
-const onScroll = () => nav.classList.toggle('stuck', window.scrollY > 24);
-addEventListener('scroll', onScroll, { passive: true });
-onScroll();
+/* ---- sticky nav -------------------------------------------------------
+   A 1px sentinel at the top of the document: while it is on screen we are at
+   the top of the page and the bar stays transparent. Costs one observer
+   callback per crossing instead of one handler call per scroll frame. */
+(() => {
+  const nav = document.getElementById('nav');
+  if (!nav) return;
+  const sentinel = document.createElement('div');
+  sentinel.setAttribute('aria-hidden', 'true');
+  sentinel.style.cssText = 'position:absolute;top:0;left:0;width:1px;height:24px;pointer-events:none';
+  document.body.prepend(sentinel);
+  new IntersectionObserver(
+    ([e]) => nav.classList.toggle('stuck', !e.isIntersecting)
+  ).observe(sentinel);
+})();
 
 /* ---- reveal on scroll ------------------------------------------------- */
 const io = new IntersectionObserver((entries) => {
@@ -383,13 +390,36 @@ if (consoleEl && machineEl) {
       '&booking=' + encodeURIComponent(booking) + '&theme=dark&embed=1';
   }
 
+  /* The frame grows to fit its content shortly after load, which pushes
+     everything below it down the page. A browser resolves a hash exactly once,
+     using the placeholder height, so deep-linking to #pricing landed about
+     220px short of the heading and was never corrected. Re-anchor whenever the
+     frame's height changes, and stop the moment the visitor takes over the
+     scroll themselves so we can never fight them for it. */
+  let owned = false;
+  const release = () => { owned = true; };
+  ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(ev =>
+    addEventListener(ev, release, { passive: true, once: true }));
+
+  const reanchor = () => {
+    if (owned || !location.hash) return;
+    const el = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+    /* 'auto', not the page's smooth default: this is a correction to a position
+       the visitor already asked for, not a journey they should watch. */
+    if (el) el.scrollIntoView({ behavior: 'auto', block: 'start' });
+  };
+
   let last = 0;
   const fit = () => {
     try {
       const doc = frame.contentDocument;
       if (!doc || !doc.body) return;
       const h = doc.body.scrollHeight;               // body has min-height:0 in embed mode
-      if (h > 200 && Math.abs(h - last) > 3) { last = h; frame.style.height = (h + 8) + 'px'; }
+      if (h > 200 && Math.abs(h - last) > 3) {
+        last = h;
+        frame.style.height = (h + 8) + 'px';
+        reanchor();
+      }
     } catch (e) { /* cross-origin (e.g. if later hosted elsewhere) — leave CSS height */ }
   };
   frame.addEventListener('load', () => {
