@@ -4,25 +4,30 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Growth Forecast: The Mission Automation</title>
+<link rel="stylesheet" href="fonts/fonts.css">
 <style>
   /* ------------------------------------------------------------------ *
    * THEME — calm, professional. Dark by default; light via the OS pref. *
    * Mirrors the intake app's palette so the widget reads as one brand.  *
    * ------------------------------------------------------------------ */
   :root {
-    --bg: #0a0e17;
-    --panel: #121826;
-    --panel-2: #1a2133;
-    --line: #253049;
-    --ink: #e8edf7;
-    --ink-dim: #8b98b4;
-    --ink-faint: #5b6885;
-    --accent: #4da3ff;
-    --gold: #f2c14e;
-    --green: #35d07f;
-    --amber: #f2a93b;
-    --red: #ff5c72;
-    --radius: 12px;
+    /* Same tokens as styles.css so the embedded widget and its host page are
+       one surface. Previously this ran on a navy palette of its own, which
+       read as a different website sitting inside a hole in this one. */
+    --bg: #0a0a0c;            /* the host insets this in a tray: match --well */
+    --panel: #121316;
+    --panel-2: #191b1f;
+    --line: rgba(255,255,255,.09);
+    --ink: #F2F3F5;
+    --ink-dim: #A9AFB9;
+    --ink-faint: #767D89;
+    --accent: #4C8DF6;
+    --accent-ink: #9CC4FF;
+    --gold: #E0A551;
+    --green: #4FBF87;
+    --amber: #E0A551;
+    --red: #E5645F;
+    --radius: 14px;
     color-scheme: dark;
   }
   /* OS light preference — only when the host hasn't forced a theme via ?theme= */
@@ -55,10 +60,15 @@
   * { box-sizing: border-box; }
   html, body { margin: 0; }
   body {
-    background: radial-gradient(1200px 600px at 80% -10%, color-mix(in srgb, var(--accent) 12%, var(--bg)) 0%, var(--bg) 55%);
+    /* flat, not an accent-tinted wash: the host page supplies the only
+       ambient light on the site, and 100dvh rather than 100vh so iOS Safari
+       does not jump as the URL bar collapses */
+    background: var(--bg);
     color: var(--ink);
-    font: 14px/1.55 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-    min-height: 100vh;
+    font: 15px/1.6 "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    letter-spacing: -.006em;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100dvh;
   }
   .wrap { max-width: 1080px; margin: 0 auto; padding: 24px 18px 72px; }
   header.top h1 { font-size: 21px; margin: 0; }
@@ -89,18 +99,25 @@
   .formerr { color: var(--red); font-size: 12.5px; margin-top: 10px; }
 
   .btn { cursor: pointer; border: 1px solid var(--line); background: var(--panel-2); color: var(--ink);
-    border-radius: 9px; padding: 11px 15px; font-size: 14px; transition: filter .15s, border-color .15s;
+    border-radius: 999px; padding: 12px 20px; font-size: 14px; white-space: nowrap; transition: filter .15s, border-color .15s;
     text-decoration: none; display: inline-block; text-align: center; font-family: inherit; }
   .btn:hover { filter: brightness(1.06); }
   .btn:disabled { opacity: .55; cursor: default; }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #04121f; font-weight: 700; }
-  .btn.gold { background: var(--gold); border-color: var(--gold); color: #241c02; font-weight: 700; }
+  .btn.primary { background: var(--ink); border-color: var(--ink); color: #08090B; font-weight: 600; }
+  .btn.gold { background: var(--ink); border-color: var(--ink); color: #08090B; font-weight: 600; }
   .btn.wide { width: 100%; margin-top: 6px; }
 
   .resultcol { min-width: 0; }
-  .placeholder { color: var(--ink-dim); text-align: center; padding: 46px 26px; }
-  .placeholder p { max-width: 460px; margin: 12px auto 0; }
-  .ph-emoji { font-size: 32px; }
+  .placeholder { color: var(--ink-dim); text-align: center; padding: 56px 26px; }
+  .placeholder p { max-width: 460px; margin: 16px auto 0; }
+  /* This was a chart emoji. Emoji as iconography renders differently on every
+     platform and dates a page instantly; it is now the same square mark the
+     host page uses for its brand and its section ticks. */
+  .ph-emoji { width: 46px; height: 46px; margin: 0 auto; border-radius: 13px;
+    background: var(--panel-2); border: 1px solid var(--line);
+    display: grid; place-items: center; }
+  .ph-emoji::after { content: ""; width: 14px; height: 14px; border-radius: 3px;
+    background: var(--accent); }
   .err { border-color: color-mix(in srgb, var(--red) 50%, var(--line)); }
   .warn { border-color: color-mix(in srgb, var(--amber) 45%, var(--line)); }
   .err h3, .warn h3 { margin: 0 0 8px; }
@@ -243,7 +260,7 @@
 
     <main class="resultcol" id="result">
       <div class="card placeholder">
-        <div class="ph-emoji">📈</div>
+        <div class="ph-emoji" aria-hidden="true"></div>
         <p>Tell us what your business does and your numbers. We read the business, right-size the plan,
           calibrate every input (flagging what we measured vs estimated) and model the honest range of outcomes.</p>
       </div>
@@ -278,8 +295,8 @@
   if (THEME === 'dark' || THEME === 'light') document.documentElement.setAttribute('data-theme', THEME);
   if (QS.get('embed') === '1') {
     if (ROOT) ROOT.classList.add('embed');
-    // Kill body min-height:100vh in embed mode — a host that auto-sizes the iframe
-    // to body height would otherwise feed back into 100vh and ratchet the height up.
+    // Kill body min-height in embed mode — a host that auto-sizes the iframe to
+    // body height would otherwise feed back into 100dvh and ratchet it upward.
     document.body.style.minHeight = '0';
   }
 

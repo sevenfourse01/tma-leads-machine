@@ -5,22 +5,22 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>The Mission Automation | Predict, Build, Grow</title>
 <meta name="description" content="Predict, Build, Grow. We forecast what growth is worth on your numbers before you pay us, build the systems that make you more money, and run them with you until the results show up in your accounts.">
-<meta name="theme-color" content="#000000">
+<meta name="theme-color" content="#050506">
 <meta property="og:type" content="website">
 <meta property="og:title" content="The Mission Automation | Predict, Build, Grow">
 <meta property="og:description" content="We forecast what growth is worth on your numbers before you pay a penny, then build and run only the systems that make you more money.">
 <meta property="og:site_name" content="The Mission Automation">
 <meta name="twitter:card" content="summary_large_image">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/geist-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/geistmono-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="styles.css">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23000'/><rect x='11' y='11' width='10' height='10' rx='2' fill='%234da3ff'/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23050506'/><rect x='11' y='11' width='10' height='10' rx='2' fill='%234C8DF6'/></svg>">
 </head>
 <body>
 
-<div class="aura"></div>
-<div class="grid-fade"></div>
+<div class="aura" aria-hidden="true"></div>
+<div class="grid-fade" aria-hidden="true"></div>
 
 <!-- ══════════════════════════ NAV ══════════════════════════ -->
 <header class="nav" id="nav">
@@ -57,17 +57,28 @@
 
 <!-- ══════════════════════════ HERO ══════════════════════════ -->
 <section class="hero" id="top">
-  <div class="wrap">
-    <h1 class="rv" style="margin-top:0">Growth, run on one principle.<br><span class="grad-text">Predict. Build. Grow.</span></h1>
+  <div class="wrap hero-in">
+    <h1 class="rv">Growth, run on one principle.<br><span class="hl">Predict. Build. Grow.</span></h1>
 
-    <p class="lead rv">We forecast what growth is worth on your numbers, build the systems that make
-      you more money, and run them with you at the pace your goals set.</p>
+    <div class="hero-copy">
+      <p class="lead rv">We forecast what growth is worth on your numbers, build the systems that make
+        you more money, and run them with you at the pace your goals set.</p>
 
-    <div class="hero-cta rv">
-      <a class="btn btn-primary js-book" href="#book">Book a diagnosis call</a>
-      <a class="btn btn-ghost" href="demo/full.html">See the demo →</a>
+      <div class="hero-cta rv">
+        <a class="btn btn-primary js-book" href="#book">Book a diagnosis call</a>
+        <a class="btn btn-ghost" href="demo/full.html">See the demo →</a>
+      </div>
+      <p class="hero-note rv">We run the numbers before you pay a penny.</p>
     </div>
-    <p class="hero-note rv">We run the numbers before you pay a penny.</p>
+
+    <!-- The three acts, indexed. Same three words as the headline, but as the
+         page's structure: it tells the reader how long the argument is and
+         lets them jump straight to the part they came for. -->
+    <ol class="hero-index rv">
+      <li><a href="#act-predict"><span class="hix">I</span><span class="hin">Predict</span></a></li>
+      <li><a href="#act-build"><span class="hix">II</span><span class="hin">Build</span></a></li>
+      <li><a href="#act-grow"><span class="hix">III</span><span class="hin">Grow</span></a></li>
+    </ol>
   </div>
 </section>
 
@@ -267,7 +278,7 @@
   <div class="wrap">
     <div class="sec-head rv">
       <span class="eyebrow"><span class="tick"></span> Pillar I · Predict</span>
-      <h2>See what an extra push on growth<br>could <span class="grad-text">be worth to you.</span></h2>
+      <h2>See what an extra push on growth<br>could <span class="hl">be worth to you.</span></h2>
       <p class="lead">Give us your real numbers and we model what a growth engagement could add over the
         next year: the likely case, the good case and the bad case, after our fee and your ad spend.
         What runs on this page is the best representative sample of that process we can put on a public
@@ -310,7 +321,7 @@
   <div class="wrap">
     <div class="sec-head rv">
       <span class="eyebrow"><span class="tick"></span> The differentiator</span>
-      <h2>The only growth partner that will tell you <span class="grad-text">not to spend.</span></h2>
+      <h2>The only growth partner that will tell you <span class="hl">not to spend.</span></h2>
       <p class="lead">Before we spend a single pound of your budget, we price every channel against your
         real economics: ticket, margin, lifetime value. If a channel can't hit the return you're
         aiming for, we won't waste your time or your money on it. In writing, with the arithmetic
@@ -507,7 +518,7 @@ We handle that for firms in your position. Worth fifteen minutes before it becom
         </div>
       </div>
 
-      <div style="display:flex;flex-direction:column;gap:18px">
+      <div class="out-stack">
         <article class="card rv"><span class="glow"></span>
           <h4>Sourced from a real event</h4>
           <p>We only open with something that happened: a funding round, a job advert,
