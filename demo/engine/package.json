@@ -1,0 +1,10 @@
+{
+  "name": "tma-forecast-engine",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Causal, capacity-aware forecast engine for the growth blueprint. No dependencies, no build step: the browser loads these files directly.",
+  "scripts": {
+    "test": "node --test"
+  }
+}
