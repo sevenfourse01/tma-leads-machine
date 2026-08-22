@@ -374,7 +374,8 @@ function renderOpportunity(inp, f, cfg) {
     <div class="rtile"><span class="rtlab">Twelve months, net</span>
       <span class="rtval">${tileValue(yr)}</span>
       <span class="rtsub">Added across the year against carrying on unchanged, after our fees and after
-      any budget. ${esc(rangeLine(yr, "across the year"))}. <span class="modeltag">modelled</span></span></div>
+      any budget. The band is the 10th to 90th percentile of ${f.sim.n.toLocaleString("en-GB")} runs, not
+      a best and worst case. <span class="modeltag">modelled</span></span></div>
     <div class="rtile"><span class="rtlab">Simulated runs that cleared the cost</span>
       <span class="rtval"><em>${esc(pct(f.monthly.pPositive))}</em></span>
       <span class="rtsub">Of ${f.sim.n.toLocaleString("en-GB")} simulated versions of a business
@@ -399,12 +400,16 @@ function renderOpportunity(inp, f, cfg) {
     </tr>`;
   }).join("");
 
+  /* the table scrolls inside its own box on a narrow screen; without this it
+     widens the page and the whole report scrolls sideways */
   $("#leakBox").innerHTML = `
-    <table class="ltable">
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+    <table class="ltable" style="min-width:560px">
       <thead><tr><th>Where it leaks</th><th>What moves, and by how much</th><th>Customers</th>
         <th>Recoverable per month</th></tr></thead>
       <tbody>${rows}</tbody>
     </table>
+    </div>
     <p class="dim" style="font-size:13px;margin-top:12px;max-width:78ch">These four rows do not add up
     to the forecast, in either direction. They overlap, because a better close rate lifts the phone line
     and the form line at the same time, and capacity clips the total afterwards. They also leave things
@@ -429,13 +434,22 @@ function confChipsFor(inp, keys) {
 /* ---------- section 02 · the forecast -------------------------------------- */
 function renderForecast(inp, f, cfg) {
   const m1 = f.year.months[0], m12 = f.year.months[11];
+  /* the figure a visitor will repeat to somebody else, written the way we
+     want it repeated: never a single number, always with its period */
+  const steady = f.monthly;
   $("#chartBox").innerHTML = chartSVG(f.year) + `
     <div class="flegend">
       <span><i></i>central case (p50)</span>
       <span><i class="band"></i>p10 to p90</span>
       <span><i class="base"></i>carry on unchanged</span>
       <span class="modeltag" style="margin-left:auto">modelled, not promised</span>
-    </div>`;
+    </div>
+    <p class="dim" style="font-size:13.5px;line-height:1.65;margin-top:14px;max-width:78ch">
+      <b style="color:#fff">At steady state, ${esc(rangeLine(steady))}.</b>
+      Across the twelve months, ${esc(rangeLine(f.year.cumulative, "in total"))}. In
+      ${esc(pct(steady.pPositive))} of ${f.sim.n.toLocaleString("en-GB")} simulated runs the gain cleared
+      the cost. If you repeat one figure from this page, repeat the central case with the band beside
+      it — a single number from a model this uncertain is the one thing here that would be misleading.</p>`;
 
   const width1 = m1.p90 - m1.p10, width12 = m12.p90 - m12.p10;
   $("#howModel").innerHTML = `<summary>How we modelled this</summary>
@@ -617,7 +631,9 @@ function renderPicked(f) {
     <h4 style="margin-bottom:8px">What you picked, and where the arithmetic put it</h4>
     <p class="dim" style="font-size:13.5px;max-width:78ch;margin-bottom:12px">Your picks do not move the
     ranking. The numbers do. This is where each one landed, including the ones we would not build.</p>
-    <table class="ltable"><tbody>${rows}</tbody></table>`;
+    <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
+    <table class="ltable" style="min-width:520px"><tbody>${rows}</tbody></table>
+    </div>`;
 }
 
 /* ---------- section 04 · build roadmap ------------------------------------- */
