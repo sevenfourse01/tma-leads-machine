@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Mercer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Mercer is TMA's planning tool. Answer questions about your business or the one you want to start, watch it take shape as a tree, and leave with a plan you can act on.">
+<!-- what a shared link shows in a message or a post. No image is named: the page has no hosted image to point at, and a
+     broken og:image reads worse than none. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="The Mission Automation">
+<meta property="og:title" content="Mercer, by TMA">
+<meta property="og:description" content="Answer questions about your business, or the one you want to start. Leave with a plan you can act on.">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Mercer, by TMA">
+<meta name="twitter:description" content="Answer questions about your business, or the one you want to start. Leave with a plan you can act on.">
+<meta name="robots" content="noindex">
+<script>
+/* Refine 1, R2 (Rebuild 1, C14): the mode is chosen before first paint, so no screen flashes in the wrong theme. The stored
+   choice (mercer-mode) wins; without one the host hint (html[data-theme]) or the system setting decides. It is written on the
+   html element here, because the body element does not exist yet; the first script inside the body hands it to body[data-mode],
+   which base.css reads. */
+(function () {
+  var m = null;
+  try { m = localStorage.getItem('mercer-mode'); } catch (e) { m = null; }
+  if (m !== 'light' && m !== 'dark') {
+    var t = document.documentElement.getAttribute('data-theme');
+    m = t === 'light' || t === 'dark' ? t : (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }
+  document.documentElement.setAttribute('data-mode', m);
+})();
+</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2022.5%2022.5'%3E%3Crect%20width='22.5'%20height='22.5'%20rx='5.098'%20fill='%2312B87F'/%3E%3Cpath%20d='M4.922%2017.578%2010.547%200h6.855a5.098%205.098%200%200%201%205.098%205.098v10.371z'%20fill='%23F4FFFA'%20fill-opacity='.38'/%3E%3Cpath%20d='M4.922%2017.578%2016.172%200h1.23a5.098%205.098%200%200%201%205.098%205.098v3.34z'%20fill='%23F4FFFA'%20fill-opacity='.92'/%3E%3Ccircle%20cx='4.922'%20cy='17.578'%20r='1.406'%20fill='%23F4FFFA'/%3E%3Ccircle%20cx='4.922'%20cy='17.578'%20r='.598'%20fill='%230B8A5F'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,400&family=Figtree:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="base.css?v=14i">
+<link rel="stylesheet" href="scene.css?v=14i">
+<link rel="stylesheet" href="tree.css?v=14i">
+<link rel="stylesheet" href="feel.css?v=14i">
+<link rel="stylesheet" href="questions.css?v=14i">
+<link rel="stylesheet" href="results.css?v=14i">
+<link rel="stylesheet" href="map.css?v=14i">
+<link rel="stylesheet" href="intro.css?v=14i">
+</head>
+<body data-stage="arrival">
+<script>document.body.setAttribute('data-mode', document.documentElement.getAttribute('data-mode') || 'light');</script>
+
+<svg width="0" height="0" style="position: absolute" aria-hidden="true">
+  <defs>
+    <symbol id="tma-mark" viewBox="0 0 22.5 22.5">
+      <rect width="22.5" height="22.5" rx="5.098" fill="#12B87F"/>
+      <path d="M4.922 17.578 10.547 0h6.855a5.098 5.098 0 0 1 5.098 5.098v10.371z" fill="#F4FFFA" fill-opacity=".38"/>
+      <path d="M4.922 17.578 16.172 0h1.23a5.098 5.098 0 0 1 5.098 5.098v3.34z" fill="#F4FFFA" fill-opacity=".92"/>
+      <circle cx="4.922" cy="17.578" r="1.406" fill="#F4FFFA"/>
+      <circle cx="4.922" cy="17.578" r=".598" fill="#0B8A5F"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- R3: the ground under the seed at arrival: a faint grid and a root map, drawn flat by intro.js, under the tree's own canvas -->
+<canvas id="ground" aria-hidden="true"></canvas>
+<!-- Task 06 (D11): the halo. One decorative layer behind the tree, held on the tree's own centre by help.js through
+     --halo-x / --halo-y / --halo-r. It is a frame and a focus treatment, never a score: it carries no number and no
+     scale. Shown from the tutorial's tree slide through questioning and the results. -->
+<div id="halo" aria-hidden="true"></div>
+<div id="stage" aria-hidden="true"></div>
+
+<div id="flight" aria-hidden="true"></div>
+<div class="tag" id="label" aria-hidden="true"></div>
+<!-- the Core is out of the main journey (R10); the element stays, hidden, for the Method chart under the crown card -->
+<div id="core" role="img" aria-label="The simulation settling" hidden></div>
+
+<!-- Task 02: the application header. It is attached to the app shell, not to a content panel, so it is in the same place on
+     every step and on the results: the TMA mark in the true top-left, the controls in the true top-right, on one centre
+     line. Its height is published as --header-h and every region below reserves that much space under it. -->
+<header id="top" role="banner">
+  <span class="wordmark" id="wordmark"><svg class="logo" role="img" aria-label="The Mission Automation"><use href="#tma-mark"/></svg><span>TMA</span></span>
+  <nav id="topnav" aria-label="TMA">
+    <button type="button" class="toplink" id="about-tma" aria-haspopup="dialog" aria-controls="about-panel" aria-expanded="false">About TMA</button>
+    <button type="button" class="glass glass-on small" id="mercer-go">Mercer</button>
+  </nav>
+  <div id="switches">
+    <button type="button" class="mode feel-sound" id="sound" aria-label="Sound on" aria-pressed="true"></button>
+    <button type="button" class="mode" id="mode" aria-label="Dark"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10 3a7 7 0 0 1 0 14z" fill="currentColor"/></svg></button>
+    <button type="button" class="mode" id="help" aria-label="Help" aria-haspopup="dialog" aria-controls="help-panel" title="Help">?</button>
+  </div>
+</header>
+
+<!-- R12: the homepage. TMA's message, then the Mercer panel: the route choice, the example, and the saved session when there is one -->
+<section id="arrival" aria-labelledby="arrival-cap">
+  <div class="tma-say">
+    <h1 class="t-headline" id="arrival-cap">Put your ambition to work.</h1>
+    <p class="arrival-support">TMA helps you start a business or make yours work better, with AI and systems built around you.</p>
+  </div>
+  <div class="mercer-panel" id="mercer-panel" tabindex="-1" aria-labelledby="mercer-name">
+    <p class="mercer-name" id="mercer-name"><svg class="logo" aria-hidden="true"><use href="#tma-mark"/></svg>Mercer</p>
+    <p class="mercer-line">Find your next move. Leave with a plan.</p>
+    <div class="saved-block" id="saved-block" hidden>
+      <p class="saved-line" id="saved-line">Saved on this device.</p>
+      <div class="arrival-row">
+        <button type="button" class="glass glass-on" id="resume">Continue your plan</button>
+        <button type="button" class="glass" id="restart">Start again</button>
+      </div>
+    </div>
+    <div class="route-block" id="route-block">
+      <p class="route-ask" id="route-ask">Do you own or run a business?</p>
+      <div class="routes" role="group" aria-labelledby="route-ask">
+        <button type="button" class="choice-card" id="route-owner" aria-pressed="false"><b>I run a business</b><span class="card-more-word">Diagnose · Decide · Act</span></button>
+        <button type="button" class="choice-card" id="route-starter" aria-pressed="false"><b>I don't run a business yet</b><span class="card-more-word">Discover · Shape · Launch</span></button>
+      </div>
+    </div>
+    <div class="arrival-row">
+      <button type="button" class="glass" id="example">Explore an example</button>
+    </div>
+    <!-- the business name is asked on the owner route's first screen (questions.js); this input stays for app.js readers, unseen -->
+    <input id="biz" data-src="biz" type="text" autocomplete="organization" tabindex="-1" aria-hidden="true" hidden>
+  </div>
+</section>
+
+<!-- Task 04 (D9), cut on Declan Murphy's note of 28 September: the first run is ONE page. It carries the purpose, the
+     device-saving choice, the start action and a shut drawer holding the disclaimer and the privacy statements, so
+     nothing a visitor must be told is lost and none of it takes the screen before Mercer has shown anything.
+     Slides 2 to 4 (Your tree, Your answers, Your result) are the tour: they play only on a replay from Help, because a
+     glossary of limbs and roots ahead of the first question fights the reader. The tree names itself as it is drawn
+     instead (app.js, the part caption). Nothing advances on its own; Show all text ends a reveal at once. -->
+<section id="intro" aria-labelledby="slide-cap">
+  <div class="eyebrow" id="intro-eyebrow"><i class="dot"></i><span class="name" id="orient-route">Mercer</span></div>
+
+  <article class="slide" id="slide-1" data-slide="1">
+    <h2 class="t-caption slide-cap" id="slide-cap" tabindex="-1">Find what is holding your business back, and leave with a plan to address it.</h2>
+    <p class="slide-say" data-phrases="1">One question at a time. Your tree is drawn as you answer, and you can stop at any point.</p>
+    <label class="toggle" for="orient-save" id="orient-save-row">
+      <input type="checkbox" role="switch" id="orient-save">
+      <span class="toggle-track" aria-hidden="true"><i></i></span>
+      <span class="toggle-word">Save on this device</span>
+    </label>
+    <p class="small" id="orient-save-note" aria-live="polite"></p>
+    <!-- the privacy drawer: the statements stand, shut, until the reader opens them. They were a page of their own
+         and took the screen before Mercer had shown anything. -->
+    <details class="drawer" id="privacy-drawer">
+      <summary>Privacy, and what this page does</summary>
+      <ul class="orient-facts" id="orient-facts">
+        <li>Your plan is built from your answers and the assumptions Mercer states.</li>
+        <li>Results are not guaranteed.</li>
+        <li>You choose whether to send a brief to TMA for review.</li>
+      </ul>
+      <p class="orient-privacy">Mercer sends none of your answers anywhere. The page loads its fonts and its drawing and PDF libraries from Google Fonts, jsDelivr and cdnjs when it opens. <button type="button" class="linklike" id="orient-method">Method and privacy</button></p>
+      <div id="intro-disclaimer"></div>
+    </details>
+  </article>
+
+  <article class="slide" id="slide-2" data-slide="2" hidden>
+    <h2 class="t-caption slide-cap" tabindex="-1">This is your tree.</h2>
+    <p class="slide-say" data-phrases="1">It is your business drawn as one picture. The roots are where each figure came from, the limbs are the parts of the business, and the marker is the height of your goal.</p>
+    <ul class="slide-parts" id="slide-parts">
+      <li data-part="roots"><b>Roots</b><span>Where each figure came from</span></li>
+      <li data-part="branches"><b>Limbs</b><span>Customers, offer, delivery and leverage</span></li>
+      <li data-part="marker"><b>Goal marker</b><span>The height you are aiming at</span></li>
+    </ul>
+  </article>
+
+  <article class="slide" id="slide-3" data-slide="3" hidden>
+    <h2 class="t-caption slide-cap" tabindex="-1">Each answer makes the plan more useful.</h2>
+    <p class="slide-say" data-phrases="1">One question at a time. An answer goes to its branch, and the plan behind it changes.</p>
+    <div class="orient-demo" id="orient-demo" role="group" aria-label="How an answer becomes a plan"></div>
+  </article>
+
+  <article class="slide" id="slide-4" data-slide="4" hidden>
+    <h2 class="t-caption slide-cap" tabindex="-1">See your next move.</h2>
+    <p class="slide-say" data-phrases="1">One decision, the first action under it, and what the decision rests on. Open a row to read it.</p>
+    <div id="slide-result"></div>
+  </article>
+
+  <div class="intro-nav" id="intro-nav">
+    <button type="button" class="glass" id="intro-back" aria-label="Back"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M12 4.5 6.5 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button type="button" class="glass glass-on" id="intro-go">Continue</button>
+    <button type="button" class="glass glass-on" id="orient-go" hidden>Start</button>
+    <span class="intro-count tabular" id="intro-count" aria-live="polite" hidden>1 of 1</span>
+    <button type="button" class="intro-quiet" id="intro-all" hidden>Show all text</button>
+    <button type="button" class="intro-quiet" id="intro-skip">Skip tour</button>
+  </div>
+</section>
+
+<!-- R13: the example, a sandbox over the homepage. intro.js builds it; nothing in it reaches M.state -->
+<section id="example-panel" class="plate" role="dialog" aria-labelledby="example-title" aria-modal="true" hidden></section>
+
+<!-- the veil under the clearing's words: the page's own colours, eased out toward the tree (scene.css). It comes after
+     #label and #core so it lies over them, and before #discs so the discs lie over it. -->
+<div id="veil" aria-hidden="true"></div>
+
+<main id="clearing">
+  <div class="eyebrow" id="eyebrow"><i class="dot"></i><span class="name"></span><span class="purpose"></span></div>
+  <div id="q">
+    <button type="button" class="headline" id="q-title" aria-expanded="false" aria-controls="q-explain"></button>
+    <p class="sub" id="q-sub"></p>
+    <p class="explain" id="q-explain" hidden></p>
+    <div class="body" id="q-body"></div>
+    <p class="insight" id="q-insight" aria-live="polite"></p>
+  </div>
+  <!-- the foot row (R6): Back, then Not sure as the other answer, then Continue. No N/A: routing omits what does not apply -->
+  <div id="foot">
+    <button type="button" class="glass" id="back" aria-label="Back"><svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true"><path d="M12 4.5 6.5 10l5.5 5.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <div class="alts" role="group" aria-label="Other answers">
+      <button type="button" class="glass" id="unsure">Not sure</button>
+    </div>
+    <button type="button" class="glass glass-on" id="next">Continue</button>
+  </div>
+  <section class="card" id="card" aria-labelledby="card-title">
+    <div id="card-scroll">
+      <h2 class="t-caption" id="card-title" tabindex="-1"></h2>
+      <div class="eyebrow" id="card-term"></div>
+      <div class="lines tabular" id="card-lines" aria-live="polite"></div>
+      <button type="button" class="drop" id="card-more" aria-label="More" aria-expanded="false" aria-controls="card-body">▾</button>
+      <div class="tabular" id="card-body" hidden></div>
+    </div>
+  </section>
+  <!-- R19: "Your plan" (was Harvest). The children keep their ids for canopy; canopy adopts #hv-title as the heading -->
+  <section id="plan" aria-labelledby="hv-title">
+    <h2 class="t-caption" id="hv-title">Your plan</h2>
+    <button type="button" class="glass fill-you" id="hv-md">Copy the implementation brief</button>
+    <button type="button" class="glass fill-estimate" id="hv-pdf">Download plan</button>
+    <button type="button" class="glass fill-crown" id="hv-call">Book a call</button>
+    <button type="button" class="glass fill-you-hue" id="hv-agent" hidden></button>
+    <button type="button" class="glass small" id="hv-json" hidden>Download a brief for TMA</button>
+    <p class="small" id="hv-private">Mercer sends none of your answers anywhere. The page loads its fonts and its drawing and PDF libraries from Google Fonts, jsDelivr and cdnjs when it opens. Downloads are files on your device.</p>
+    <div id="agent"></div>
+  </section>
+</main>
+
+<div id="discs" role="group" aria-label="Branches"></div>
+
+<!-- R16: the tree's own controls, above the wheel at the bottom right; the chip a tapped leaf or limb opens (help.js) -->
+<div id="tree-tools" role="group" aria-label="Tree view" hidden>
+  <button type="button" class="tool" id="tree-in" aria-label="Zoom in" title="Zoom in"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4.5v11M4.5 10h11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  <button type="button" class="tool" id="tree-out" aria-label="Zoom out" title="Zoom out"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 10h11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  <button type="button" class="tool" id="tree-fit" aria-label="Fit the whole tree" title="Fit the whole tree"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4.5 8V4.5H8M12 4.5h3.5V8M15.5 12v3.5H12M8 15.5H4.5V12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+</div>
+<!-- R23, the phone: the compact tree strip opens to the whole screen with "Your tree" and closes with one obvious press -->
+<button type="button" class="tool tool-word" id="tree-expand" aria-expanded="false" aria-controls="stage" hidden>Your tree</button>
+<button type="button" class="tool tool-word" id="tree-close" hidden><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Close</button>
+<div id="tree-hint" class="plate" role="note" hidden></div>
+<div id="inspect" class="plate" role="group" aria-label="This answer" hidden></div>
+
+<!-- R11: the progress wheel, bottom right: six sections from M.progress(); a press opens the section list upward (help.js) -->
+<button type="button" id="wheel" aria-haspopup="dialog" aria-controls="wheel-panel" aria-expanded="false" aria-label="Progress" hidden>
+  <svg class="wheel-face" viewBox="0 0 80 80" aria-hidden="true"></svg>
+  <span class="wheel-index tabular" id="wheel-index" aria-hidden="true"></span>
+  <span class="wheel-text" id="wheel-text" aria-hidden="true"></span>
+</button>
+<div id="wheel-panel" class="plate" role="dialog" aria-labelledby="wheel-title" hidden></div>
+
+<!-- R10 (Task 07): help, a modal dialog. Four headings, one explanation open at a time. help.js writes it and traps focus -->
+<dialog id="help-panel" class="plate" aria-labelledby="help-title"></dialog>
+
+<!-- Task 07: About TMA, a compact panel inside this same page. about.js writes it. Nothing here leaves the session -->
+<dialog id="about-panel" class="plate" aria-labelledby="about-title"></dialog>
+
+<div id="cutscene" role="region" aria-live="polite" aria-label="Your tree">
+  <p class="t-cutscene tabular" id="cut-figure"></p>
+  <p class="sub" id="cut-line"></p>
+  <button type="button" class="glass small" id="cut-skip">Skip</button>
+</div>
+
+<script>
+/* the clearing's side, read by tree3d and the stylesheets: left beside the tree, or below it on a phone. The shares the
+   layout uses are published for the tree (R23: 55/45 at desktop; the phone's sheet from 52% of the height) */
+(function () {
+  var mq = window.matchMedia('(max-width: 720px)');
+  function side() { document.body.dataset.clearing = mq.matches ? 'bottom' : 'left'; }
+  side();
+  document.body.dataset.clearingShare = '0.55';
+  document.body.dataset.sheetTop = '0.52';
+  if (mq.addEventListener) mq.addEventListener('change', side); else mq.addListener(side);
+  /* a new question or card starts at its top: the scrollers inside the clearing carry no offset over from the last one */
+  function toTop(ids) { ids.forEach(function (id) { var el = document.getElementById(id); if (el) el.scrollTop = 0; }); }
+  document.addEventListener('mercer:question', function () { toTop(['clearing', 'q', 'q-body']); });
+  document.addEventListener('mercer:card', function () { toTop(['clearing', 'card-scroll']); });
+})();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="engine.js?v=14i"></script>
+<!-- the economics: baselines, scenarios, requirements, constraints and cash. Every figure the page shows comes from here -->
+<script src="econ.js?v=14i"></script>
+<script src="tree3d.js?v=14i"></script>
+<script src="sectors.js?v=14i"></script>
+<script src="feel.js?v=14i"></script>
+<script src="ghost.js?v=14i"></script>
+<script src="founder.js?v=14i"></script>
+<script src="build.js?v=14i"></script>
+<script src="places.js?v=14i"></script>
+<script src="data/land110.js?v=14i"></script>
+<script src="app.js?v=14i"></script>
+<script src="map.js?v=14i"></script>
+<script src="questions.js?v=14i"></script>
+<script src="research.js?v=14i"></script>
+<script src="archetypes.js?v=14i"></script>
+<script src="macro.js?v=14i"></script>
+<script src="freetools.js?v=14i"></script>
+<script src="plan.js?v=14i"></script>
+<script src="starter.js?v=14i"></script>
+<script src="model.js?v=14i"></script>
+<script src="canopy.js?v=14i"></script>
+<script src="intro.js?v=14i"></script>
+<script src="help.js?v=14i"></script>
+<script src="about.js?v=14i"></script>
+</body>
+</html>
