@@ -35,14 +35,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,400&family=Figtree:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="base.css?v=16a">
-<link rel="stylesheet" href="scene.css?v=16a">
-<link rel="stylesheet" href="tree.css?v=16a">
-<link rel="stylesheet" href="feel.css?v=16a">
-<link rel="stylesheet" href="questions.css?v=16a">
-<link rel="stylesheet" href="results.css?v=16a">
-<link rel="stylesheet" href="map.css?v=16a">
-<link rel="stylesheet" href="intro.css?v=16a">
+<link rel="stylesheet" href="base.css?v=17d">
+<link rel="stylesheet" href="scene.css?v=17d">
+<link rel="stylesheet" href="tree.css?v=17d">
+<link rel="stylesheet" href="feel.css?v=17d">
+<link rel="stylesheet" href="questions.css?v=17d">
+<link rel="stylesheet" href="results.css?v=17d">
+<link rel="stylesheet" href="map.css?v=17d">
+<link rel="stylesheet" href="intro.css?v=17d">
 </head>
 <body data-stage="arrival">
 <script>document.body.setAttribute('data-mode', document.documentElement.getAttribute('data-mode') || 'light');</script>
@@ -88,6 +88,14 @@
   </div>
 </header>
 
+<!-- the cockpit brief, 3.1: the chapter and goal rail, the left zone of the three at desktop widths. app.js paints it from
+     the same six sections the wheel counts (paintRail), with the goal line at its head once a target is known. It collapses
+     under 1100 px, where the wheel alone carries the chapters, and it is not shown on the results (the navigator is). -->
+<nav id="rail" aria-label="Chapters" hidden>
+  <p class="rail-goal" id="rail-goal" hidden></p>
+  <ol class="rail-list" id="rail-list"></ol>
+</nav>
+
 <!-- R12: the homepage. TMA's message, then the Mercer panel: the route choice, the example, and the saved session when there is one -->
 <section id="arrival" aria-labelledby="arrival-cap">
   <div class="tma-say">
@@ -96,11 +104,11 @@
   </div>
   <div class="mercer-panel" id="mercer-panel" tabindex="-1" aria-labelledby="mercer-name">
     <p class="mercer-name" id="mercer-name"><svg class="logo" aria-hidden="true"><use href="#tma-mark"/></svg>Mercer</p>
-    <p class="mercer-line">Find your next move. Leave with a plan.</p>
+    <p class="mercer-line">Your ambition. With a cockpit.</p>
     <div class="saved-block" id="saved-block" hidden>
       <p class="saved-line" id="saved-line">Saved on this device.</p>
       <div class="arrival-row">
-        <button type="button" class="glass glass-on" id="resume">Continue your plan</button>
+        <button type="button" class="glass glass-on" id="resume">Continue my plan</button>
         <button type="button" class="glass" id="restart">Start again</button>
       </div>
     </div>
@@ -132,9 +140,9 @@
     <h2 class="t-caption slide-cap" id="slide-cap" tabindex="-1">Find what is holding your business back, and leave with a plan to address it.</h2>
     <p class="slide-say" data-phrases="1">One question at a time. Your tree is drawn as you answer, and you can stop at any point.</p>
     <label class="toggle" for="orient-save" id="orient-save-row">
-      <input type="checkbox" role="switch" id="orient-save">
+      <input type="checkbox" role="switch" id="orient-save" checked>
       <span class="toggle-track" aria-hidden="true"><i></i></span>
-      <span class="toggle-word">Save on this device</span>
+      <span class="toggle-word">Saving on this device</span>
     </label>
     <p class="small" id="orient-save-note" aria-live="polite"></p>
     <!-- the privacy drawer: the statements stand, shut, until the reader opens them. They were a page of their own
@@ -291,30 +299,30 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="engine.js?v=16a"></script>
+<script src="engine.js?v=17d"></script>
 <!-- the economics: baselines, scenarios, requirements, constraints and cash. Every figure the page shows comes from here -->
-<script src="econ.js?v=16a"></script>
-<script src="tree3d.js?v=16a"></script>
-<script src="sectors.js?v=16a"></script>
-<script src="feel.js?v=16a"></script>
-<script src="ghost.js?v=16a"></script>
-<script src="founder.js?v=16a"></script>
-<script src="build.js?v=16a"></script>
-<script src="places.js?v=16a"></script>
-<script src="data/land110.js?v=16a"></script>
-<script src="app.js?v=16a"></script>
-<script src="map.js?v=16a"></script>
-<script src="questions.js?v=16a"></script>
-<script src="research.js?v=16a"></script>
-<script src="archetypes.js?v=16a"></script>
-<script src="macro.js?v=16a"></script>
-<script src="freetools.js?v=16a"></script>
-<script src="plan.js?v=16a"></script>
-<script src="starter.js?v=16a"></script>
-<script src="model.js?v=16a"></script>
-<script src="canopy.js?v=16a"></script>
-<script src="intro.js?v=16a"></script>
-<script src="help.js?v=16a"></script>
-<script src="about.js?v=16a"></script>
+<script src="econ.js?v=17d"></script>
+<script src="tree3d.js?v=17d"></script>
+<script src="sectors.js?v=17d"></script>
+<script src="feel.js?v=17d"></script>
+<script src="ghost.js?v=17d"></script>
+<script src="founder.js?v=17d"></script>
+<script src="build.js?v=17d"></script>
+<script src="places.js?v=17d"></script>
+<script src="data/land110.js?v=17d"></script>
+<script src="app.js?v=17d"></script>
+<script src="map.js?v=17d"></script>
+<script src="questions.js?v=17d"></script>
+<script src="research.js?v=17d"></script>
+<script src="archetypes.js?v=17d"></script>
+<script src="macro.js?v=17d"></script>
+<script src="freetools.js?v=17d"></script>
+<script src="plan.js?v=17d"></script>
+<script src="starter.js?v=17d"></script>
+<script src="model.js?v=17d"></script>
+<script src="canopy.js?v=17d"></script>
+<script src="intro.js?v=17d"></script>
+<script src="help.js?v=17d"></script>
+<script src="about.js?v=17d"></script>
 </body>
 </html>
