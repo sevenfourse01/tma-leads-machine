@@ -35,14 +35,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,400&family=Figtree:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="base.css?v=15i">
-<link rel="stylesheet" href="scene.css?v=15i">
-<link rel="stylesheet" href="tree.css?v=15i">
-<link rel="stylesheet" href="feel.css?v=15i">
-<link rel="stylesheet" href="questions.css?v=15i">
-<link rel="stylesheet" href="results.css?v=15i">
-<link rel="stylesheet" href="map.css?v=15i">
-<link rel="stylesheet" href="intro.css?v=15i">
+<link rel="stylesheet" href="base.css?v=16a">
+<link rel="stylesheet" href="scene.css?v=16a">
+<link rel="stylesheet" href="tree.css?v=16a">
+<link rel="stylesheet" href="feel.css?v=16a">
+<link rel="stylesheet" href="questions.css?v=16a">
+<link rel="stylesheet" href="results.css?v=16a">
+<link rel="stylesheet" href="map.css?v=16a">
+<link rel="stylesheet" href="intro.css?v=16a">
 </head>
 <body data-stage="arrival">
 <script>document.body.setAttribute('data-mode', document.documentElement.getAttribute('data-mode') || 'light');</script>
@@ -216,9 +216,18 @@
       <div class="tabular" id="card-body" hidden></div>
     </div>
   </section>
-  <!-- R19: "Your plan" (was Harvest). The children keep their ids for canopy; canopy adopts #hv-title as the heading -->
+  <!-- R19: "Your plan" (was Harvest). The children keep their ids for canopy; canopy adopts #hv-title as the heading.
+       Results round 1: canopy builds four stages here (#stage-move, #stage-why, #stage-plan, #stage-start) under the
+       navigator (#plan-nav), with one shared inspector (#inspector) that moves into the current stage's column, and
+       places every element below inside a stage. -->
   <section id="plan" aria-labelledby="hv-title">
     <h2 class="t-caption" id="hv-title">Your plan</h2>
+    <nav id="plan-nav" class="plan-nav" aria-label="Your result"></nav>
+    <section class="stage" id="stage-move" data-stage="move" aria-label="Your move"></section>
+    <section class="stage" id="stage-why" data-stage="why" aria-label="Why this move"></section>
+    <section class="stage" id="stage-plan" data-stage="plan" aria-label="Your plan"></section>
+    <section class="stage" id="stage-start" data-stage="start" aria-label="Start"></section>
+    <aside id="inspector" class="inspector" hidden></aside>
     <button type="button" class="glass fill-you" id="hv-md">Copy the implementation brief</button>
     <button type="button" class="glass fill-estimate" id="hv-pdf">Download plan</button>
     <button type="button" class="glass fill-crown" id="hv-call">Book a call</button>
@@ -282,30 +291,30 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="engine.js?v=15i"></script>
+<script src="engine.js?v=16a"></script>
 <!-- the economics: baselines, scenarios, requirements, constraints and cash. Every figure the page shows comes from here -->
-<script src="econ.js?v=15i"></script>
-<script src="tree3d.js?v=15i"></script>
-<script src="sectors.js?v=15i"></script>
-<script src="feel.js?v=15i"></script>
-<script src="ghost.js?v=15i"></script>
-<script src="founder.js?v=15i"></script>
-<script src="build.js?v=15i"></script>
-<script src="places.js?v=15i"></script>
-<script src="data/land110.js?v=15i"></script>
-<script src="app.js?v=15i"></script>
-<script src="map.js?v=15i"></script>
-<script src="questions.js?v=15i"></script>
-<script src="research.js?v=15i"></script>
-<script src="archetypes.js?v=15i"></script>
-<script src="macro.js?v=15i"></script>
-<script src="freetools.js?v=15i"></script>
-<script src="plan.js?v=15i"></script>
-<script src="starter.js?v=15i"></script>
-<script src="model.js?v=15i"></script>
-<script src="canopy.js?v=15i"></script>
-<script src="intro.js?v=15i"></script>
-<script src="help.js?v=15i"></script>
-<script src="about.js?v=15i"></script>
+<script src="econ.js?v=16a"></script>
+<script src="tree3d.js?v=16a"></script>
+<script src="sectors.js?v=16a"></script>
+<script src="feel.js?v=16a"></script>
+<script src="ghost.js?v=16a"></script>
+<script src="founder.js?v=16a"></script>
+<script src="build.js?v=16a"></script>
+<script src="places.js?v=16a"></script>
+<script src="data/land110.js?v=16a"></script>
+<script src="app.js?v=16a"></script>
+<script src="map.js?v=16a"></script>
+<script src="questions.js?v=16a"></script>
+<script src="research.js?v=16a"></script>
+<script src="archetypes.js?v=16a"></script>
+<script src="macro.js?v=16a"></script>
+<script src="freetools.js?v=16a"></script>
+<script src="plan.js?v=16a"></script>
+<script src="starter.js?v=16a"></script>
+<script src="model.js?v=16a"></script>
+<script src="canopy.js?v=16a"></script>
+<script src="intro.js?v=16a"></script>
+<script src="help.js?v=16a"></script>
+<script src="about.js?v=16a"></script>
 </body>
 </html>
