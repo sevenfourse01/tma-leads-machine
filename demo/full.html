@@ -30,24 +30,25 @@
       <span class="eyebrow"><span class="tick"></span>Your next twelve months, modelled</span>
       <h2 id="introHead">Tell us about your business.<br>We'll show you its next twelve months.</h2>
       <p class="lead" id="introLead">This page runs the same process we use to design growth systems for
-      clients, in your browser. You get a personalised strategic estimate, modelled from your
-      answers and industry benchmarks: the revenue leaking out of your pipeline each month, a 12-month
-      forecast in three bands, and the systems we would build first, in order. The last section shows an
-      ordinary Monday six months in. It is free because it is a sample of the work.</p>
+      clients, in your browser. You get a personalised strategic estimate, modelled from your answers and
+      industry benchmarks: the revenue your pipeline could recover each month, a 12-month forecast as a
+      band rather than a line, and the systems we would build first, in the order the arithmetic puts
+      them. Every figure says whether it came from you or from us, and if your answers cannot carry a
+      forecast the page says so instead of producing one. It is free because it is a sample of the work.</p>
 
       <div class="expect rv" id="introExpect">
         <span><i class="tk"></i>5 to 15 minutes to answer</span>
-        <span><i class="tk"></i>The forecast lands seconds after your last answer</span>
+        <span><i class="tk"></i>Two thousand simulations, seconds after your last answer</span>
         <span><i class="tk"></i>Built around your industry</span>
         <span><i class="tk"></i>Nothing is sent anywhere unless you choose to book</span>
       </div>
 
       <div class="gifts rv" id="introGifts">
-        <div class="gift"><span class="gn">01</span><b>Opportunity estimate</b><span>The revenue your current setup leaves behind each month</span></div>
-        <div class="gift"><span class="gn">02</span><b>12-month forecast</b><span>Three growth bands for the year ahead</span></div>
-        <div class="gift"><span class="gn">03</span><b>Recommended systems</b><span>Chosen from your answers and your industry benchmarks</span></div>
-        <div class="gift"><span class="gn">04</span><b>Build roadmap</b><span>What goes live in month one, three, six, twelve</span></div>
-        <div class="gift"><span class="gn">05</span><b>Goal gap read</b><span>Your stated aim against the central case</span></div>
+        <div class="gift"><span class="gn">01</span><b>Opportunity estimate</b><span>Recoverable revenue a month, split by where it leaks</span></div>
+        <div class="gift"><span class="gn">02</span><b>12-month forecast</b><span>A band that widens as the horizon does</span></div>
+        <div class="gift"><span class="gn">03</span><b>Recommended systems</b><span>Ranked by what each adds on top of the last</span></div>
+        <div class="gift"><span class="gn">04</span><b>Build roadmap</b><span>What goes live when, sequenced from your answers</span></div>
+        <div class="gift"><span class="gn">05</span><b>Goal gap read</b><span>Your aim against the band, unflattered</span></div>
       </div>
     </div>
 
@@ -112,12 +113,24 @@
           <div class="slends" id="eclose"></div>
         </div>
         <div class="sl">
-          <div class="slrow"><label for="inspend">Monthly marketing budget<span class="slopt">optional</span></label><span class="slval" id="vspend"></span></div>
+          <div class="slrow"><label for="inspend">Monthly outreach and ad budget<span class="slopt">optional</span></label><span class="slval" id="vspend"></span></div>
           <input type="range" id="inspend">
           <div class="slends" id="espend"></div>
         </div>
+        <div class="sl">
+          <div class="slrow"><label for="incap">How many more customers could you take on next month, without hiring?</label><span class="slval" id="vcap"></span></div>
+          <input type="range" id="incap">
+          <div class="slends" id="ecap"></div>
+          <div class="seg" id="qCapKnown" style="margin-top:12px">
+            <button data-v="known" class="on">That's about right</button>
+            <button data-v="unsure">Not sure, work it out from my team</button>
+          </div>
+        </div>
       </div>
       <p class="benchnote" id="benchNote"></p>
+      <p class="dim" style="font-size:13px;margin-top:10px;max-width:76ch">Capacity is the one answer
+      that can stop the forecast. Every system below adds customers, and a business with nowhere to put
+      them has a queue problem rather than a demand problem.</p>
     </div>
 
     <!-- 03 · WHAT'S IN THE WAY -->
@@ -183,7 +196,32 @@
           </div>
         </div>
         <div class="q">
-          <div class="qlabel"><span class="qnum">B</span>How many times do you chase before giving up?</div>
+          <div class="qlabel"><span class="qnum">B</span>How do most enquiries arrive?</div>
+          <div class="seg" id="qMix">
+            <button data-v="phone">Mostly by phone</button>
+            <button data-v="even" class="on">An even mix of phone and online</button>
+            <button data-v="form">Mostly web forms</button>
+            <button data-v="email">Mostly email</button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="qlabel"><span class="qnum">C</span>Of the calls that come in, how many get answered or rung back the same day?</div>
+          <div class="seg" id="qAnswer">
+            <button data-v="most">Nearly all of them</button>
+            <button data-v="many" class="on">Most, but some slip</button>
+            <button data-v="half">About half</button>
+            <button data-v="few">Honestly, we miss a lot</button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="qlabel"><span class="qnum">D</span>Do you send quotes or written proposals before someone buys?</div>
+          <div class="seg" id="qQuote">
+            <button data-v="yes" class="on">Yes</button>
+            <button data-v="no">No, they just book or buy</button>
+          </div>
+        </div>
+        <div class="q">
+          <div class="qlabel"><span class="qnum">E</span>How many times do you chase before giving up?</div>
           <div class="seg" id="qFu">
             <button data-v="f4">Four or more</button>
             <button data-v="f23" class="on">Two or three</button>
@@ -191,7 +229,7 @@
           </div>
         </div>
         <div class="q">
-          <div class="qlabel"><span class="qnum">C</span>Who handles a new enquiry today?</div>
+          <div class="qlabel"><span class="qnum">F</span>Who handles a new enquiry today?</div>
           <div class="seg" id="qWho">
             <button data-v="me" class="on">Me, between other jobs</button>
             <button data-v="team">A small team</button>
@@ -199,7 +237,7 @@
           </div>
         </div>
         <div class="q">
-          <div class="qlabel"><span class="qnum">D</span>Where do your enquiries live today?</div>
+          <div class="qlabel"><span class="qnum">G</span>Where do your enquiries live today?</div>
           <div class="seg" id="qCrm">
             <button data-v="crm">A CRM we keep up to date</button>
             <button data-v="sheet">A spreadsheet</button>
@@ -208,7 +246,7 @@
           </div>
         </div>
         <div class="q">
-          <div class="qlabel"><span class="qnum">E</span>What happens to an enquiry at 9pm on a Tuesday?</div>
+          <div class="qlabel"><span class="qnum">H</span>What happens to an enquiry at 9pm on a Tuesday?</div>
           <div class="seg" id="qHours">
             <button data-v="wait" class="on">It waits until morning</button>
             <button data-v="some">Someone checks, sometimes</button>
@@ -246,40 +284,67 @@
       <p class="lead" id="planSummary"></p>
     </div>
 
-    <!-- opportunity tiles -->
+    <!-- provenance: how much of this is theirs, and how much is ours -->
+    <div id="provBox"></div>
+
+    <!-- the engine is allowed to say no -->
+    <div id="refuseBox"></div>
+
+    <div id="reportBody">
+
+    <!-- 01 · OPPORTUNITY ESTIMATE -->
+    <div class="qhead" style="margin-top:38px"><span class="qstep">01</span>
+      <div><h3>Opportunity estimate</h3>
+        <p class="dim" style="font-size:14.5px;max-width:76ch">Recoverable revenue a month, split by
+        where it leaks. Recoverable, not total: a share of every leak was never winnable by anyone, and
+        counting it would be the flattering version of this number.</p></div>
+    </div>
     <div class="rtiles" id="planTiles"></div>
+    <div id="leakBox" style="margin-top:18px"></div>
 
-    <!-- the forecast -->
-    <div style="margin-top:44px">
-      <h3 style="margin-bottom:6px">Three paths for the year ahead</h3>
-      <p class="dim" style="font-size:14.5px;max-width:76ch">The lower edge of the band carries today
-      forward unchanged. The central line applies the smallest improvement in each range and prices any
-      modelled budget at benchmark cost; the upper edge stacks the top of every range. When you tell
-      someone about this forecast, quote the central case. Dots mark months one, three, six and twelve.</p>
-      <div class="fchart" id="chartBox"></div>
-      <details class="how" id="howModel"></details>
+    <!-- 02 · TWELVE-MONTH FORECAST -->
+    <div class="qhead" style="margin-top:46px"><span class="qstep">02</span>
+      <div><h3>Twelve-month forecast</h3>
+        <p class="dim" style="font-size:14.5px;max-width:76ch">The difference against carrying on
+        exactly as you are, month by month, as a band rather than a line. The band widens with the
+        horizon because forecasts get less certain the further out they go. When you tell someone about
+        this, quote the central case.</p></div>
     </div>
+    <div class="fchart" id="chartBox"></div>
+    <details class="how" id="howModel"></details>
 
-    <!-- milestones -->
-    <div style="margin-top:44px">
-      <h3 style="margin-bottom:6px">What goes live, and when</h3>
-      <p class="dim" style="font-size:14.5px">The same twelve months, told as what is running by when.</p>
-      <div class="miles" id="milesBox"></div>
+    <!-- 03 · RECOMMENDED SYSTEMS -->
+    <div class="qhead" style="margin-top:46px"><span class="qstep">03</span>
+      <div><h3>Recommended systems</h3>
+        <p class="dim" style="font-size:14.5px;max-width:76ch">Ranked by what each one adds on top of
+        everything above it, not by what it would be worth on its own. Systems we would not build appear
+        here too, with the reason, because the ones we turn down tell you more than the ones we don't.</p></div>
     </div>
+    <div id="systemsBox"></div>
+    <div id="pickedBox" style="margin-top:24px"></div>
+
+    <!-- 04 · BUILD ROADMAP -->
+    <div class="qhead" style="margin-top:46px"><span class="qstep">04</span>
+      <div><h3>Build roadmap</h3>
+        <p class="dim" style="font-size:14.5px;max-width:76ch">Two builds run at a time, each one live
+        and earning before the next starts. The order comes out of your answers, so it changes when they
+        do. <span class="modeltag" style="margin-left:8px">Draft sequence, confirmed on the call</span></p></div>
+    </div>
+    <div id="planPhases"></div>
+    <div class="miles" id="milesBox"></div>
 
     <!-- the dream, made ordinary -->
     <div class="dream" id="dreamBox"></div>
 
-    <!-- goal gap -->
-    <div class="ggap" id="gapBox"></div>
-
-    <!-- the build sequence -->
-    <div style="margin-top:44px">
-      <h3 style="margin-bottom:6px">The order we'd build it</h3>
-      <p class="dim" style="font-size:14.5px;margin-bottom:18px">One thing at a time, each one live and
-      earning before the next starts. <span class="modeltag" style="margin-left:8px">Draft sequence, confirmed on the call</span></p>
-      <div id="planPhases"></div>
+    <!-- 05 · GOAL GAP -->
+    <div class="qhead" style="margin-top:46px"><span class="qstep">05</span>
+      <div><h3>Goal gap</h3>
+        <p class="dim" style="font-size:14.5px;max-width:76ch">Your stated ambition against the central
+        case, without stretching one to meet the other.</p></div>
     </div>
+    <div class="ggap" id="gapBox" style="margin-top:18px"></div>
+
+    </div><!-- /reportBody -->
 
     <!-- how it's run -->
     <div style="margin-top:44px">
@@ -318,6 +383,6 @@
 </div></footer>
 
 <script src="shared.js"></script>
-<script src="full.js"></script>
+<script type="module" src="full.js"></script>
 </body>
 </html>
