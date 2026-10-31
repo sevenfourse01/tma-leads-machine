@@ -5,16 +5,16 @@
 <title>Mercer</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="color-scheme" content="light dark">
-<meta name="description" content="Mercer is TMA's planning tool. Answer questions about your business or the one you want to start, watch it take shape as a tree, and leave with a plan you can act on.">
+<meta name="description" content="Are your enquiries turning into paying customers? Mercer checks how your business handles enquiries: add your website, answer about 25 short questions, one at a time, and leave with a diagnostic of where enquiries are lost and what would change.">
 <!-- what a shared link shows in a message or a post. No image is named: the page has no hosted image to point at, and a
      broken og:image reads worse than none. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="The Mission Automation">
-<meta property="og:title" content="Mercer, by TMA">
-<meta property="og:description" content="Answer questions about your business, or the one you want to start. Leave with a plan you can act on.">
+<meta property="og:title" content="Mercer, by TMA: are your enquiries turning into paying customers?">
+<meta property="og:description" content="Add your website, answer about 25 short questions, one at a time, and see where your enquiries are lost. A diagnostic, not a sales pitch.">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Mercer, by TMA">
-<meta name="twitter:description" content="Answer questions about your business, or the one you want to start. Leave with a plan you can act on.">
+<meta name="twitter:title" content="Mercer, by TMA: are your enquiries turning into paying customers?">
+<meta name="twitter:description" content="Add your website, answer about 25 short questions, one at a time, and see where your enquiries are lost. A diagnostic, not a sales pitch.">
 <meta name="robots" content="noindex">
 <script>
 /* Refine 1, R2 (Rebuild 1, C14): the mode is chosen before first paint, so no screen flashes in the wrong theme. The stored
@@ -35,16 +35,17 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,400&family=Figtree:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="base.css?v=17m">
-<link rel="stylesheet" href="scene.css?v=17m">
-<link rel="stylesheet" href="tree.css?v=17m">
-<link rel="stylesheet" href="feel.css?v=17m">
-<link rel="stylesheet" href="questions.css?v=17m">
-<link rel="stylesheet" href="results.css?v=17m">
-<link rel="stylesheet" href="map.css?v=17m">
-<link rel="stylesheet" href="intro.css?v=17m">
-<!-- deployment settings, set by whoever runs the site (services/send/README.md): sendEndpoint for Send to TMA, shareEmail
-     for the address shown, bookingUrl for Book a call. Nothing here is a secret; the sending service holds its own keys. -->
+<link rel="stylesheet" href="base.css?v=18e">
+<link rel="stylesheet" href="scene.css?v=18e">
+<link rel="stylesheet" href="tree.css?v=18e">
+<link rel="stylesheet" href="feel.css?v=18e">
+<link rel="stylesheet" href="questions.css?v=18e">
+<link rel="stylesheet" href="results.css?v=18e">
+<link rel="stylesheet" href="map.css?v=18e">
+<link rel="stylesheet" href="intro.css?v=18e">
+<!-- deployment settings, set by whoever runs the site: apiEndpoint is the API worker's origin (worker/README.md), which reads a
+     visitor's own site and receives Send my answers to TMA; bookingUrl is Book a call; sendEndpoint and shareEmail serve the
+     planner (services/send/README.md). Nothing here is a secret; the worker holds its own keys. -->
 <script>window.Mercer = window.Mercer || {}; window.Mercer.CONFIG = Object.assign({}, window.Mercer.CONFIG || {}, window.MERCER_CONFIG || {});</script>
 </head>
 <body data-stage="arrival">
@@ -105,12 +106,12 @@
 <!-- R12: the homepage. TMA's message, then the Mercer panel: the route choice, the example, and the saved session when there is one -->
 <section id="arrival" aria-labelledby="arrival-cap">
   <div class="tma-say">
-    <h1 class="t-headline" id="arrival-cap">Put your ambition to work.</h1>
-    <p class="arrival-support">TMA helps you start a business or make yours work better, with AI and systems built around you.</p>
+    <h1 class="t-headline" id="arrival-cap">Are your enquiries turning into paying customers?</h1>
+    <p class="arrival-support">Mercer follows an enquiry from your website to a paying customer, shows where it is lost, and says what would change.</p>
   </div>
   <div class="mercer-panel" id="mercer-panel" tabindex="-1" aria-labelledby="mercer-name">
     <p class="mercer-name" id="mercer-name"><svg class="logo" aria-hidden="true"><use href="#tma-mark"/></svg>Mercer</p>
-    <p class="mercer-line">Your ambition. With a cockpit.</p>
+    <p class="mercer-line">A free check of how your enquiries are handled.</p>
     <div class="saved-block" id="saved-block" hidden>
       <p class="saved-line" id="saved-line">Saved on this device.</p>
       <div class="arrival-row">
@@ -119,8 +120,13 @@
       </div>
     </div>
     <div class="route-block" id="route-block">
-      <p class="route-ask" id="route-ask">Do you own or run a business?</p>
-      <div class="routes" role="group" aria-labelledby="route-ask">
+      <p class="route-ask" id="route-ask">Start here</p>
+      <div class="routes routes-one" role="group" aria-labelledby="route-ask">
+        <button type="button" class="choice-card" id="route-check" aria-pressed="false"><b>Check my enquiries</b><span class="card-more-word">Read · Diagnose · Book</span></button>
+      </div>
+      <!-- the planner is still here, behind a quiet question: it is not what this page is for -->
+      <p class="route-other"><button type="button" class="linklike" id="route-more" aria-expanded="false" aria-controls="route-planner">Planning a business instead?</button></p>
+      <div class="routes" id="route-planner" role="group" aria-label="Planning a business" hidden>
         <button type="button" class="choice-card" id="route-owner" aria-pressed="false"><b>I run a business</b><span class="card-more-word">Diagnose · Decide · Act</span></button>
         <button type="button" class="choice-card" id="route-starter" aria-pressed="false"><b>I don't run a business yet</b><span class="card-more-word">Discover · Shape · Launch</span></button>
       </div>
@@ -160,7 +166,8 @@
         <li>Results are not guaranteed.</li>
         <li>You choose whether to send a brief to TMA for review.</li>
       </ul>
-      <p class="orient-privacy">Mercer sends none of your answers anywhere. The page loads its fonts and its drawing and PDF libraries from Google Fonts, jsDelivr and cdnjs when it opens. <button type="button" class="linklike" id="orient-method">Method and privacy</button></p>
+      <p class="orient-privacy" id="orient-check-note" hidden>The website address you type is sent to TMA's reading service, together with your business name, so it can read that site's public pages. Nothing else leaves this page unless you choose Send my answers to TMA, and you agree first. Your answers are saved in this browser as you go, unless you turn Saving off.</p>
+      <p class="orient-privacy" id="orient-sends">Mercer sends none of your answers anywhere. The page loads its fonts and its drawing and PDF libraries from Google Fonts, jsDelivr and cdnjs when it opens. <button type="button" class="linklike" id="orient-method">Method and privacy</button></p>
       <div id="intro-disclaimer"></div>
     </details>
   </article>
@@ -305,30 +312,39 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="engine.js?v=17m"></script>
+<!-- the shared vocabulary and the diagnostic (UMD scripts, no DOM): the check, the API worker and the finder all run the same files -->
+<script src="shared/schema.js?v=18e"></script>
+<script src="shared/chains.js?v=18e"></script>
+<script src="shared/privacy.js?v=18e"></script>
+<script src="shared/siteread.js?v=18e"></script>
+<script src="shared/qualify.js?v=18e"></script>
+<script src="shared/diagnose.js?v=18e"></script>
+<script src="engine.js?v=18e"></script>
 <!-- the economics: baselines, scenarios, requirements, constraints and cash. Every figure the page shows comes from here -->
-<script src="econ.js?v=17m"></script>
-<script src="tree3d.js?v=17m"></script>
-<script src="sectors.js?v=17m"></script>
-<script src="feel.js?v=17m"></script>
-<script src="ghost.js?v=17m"></script>
-<script src="founder.js?v=17m"></script>
-<script src="build.js?v=17m"></script>
-<script src="places.js?v=17m"></script>
-<script src="data/land110.js?v=17m"></script>
-<script src="app.js?v=17m"></script>
-<script src="map.js?v=17m"></script>
-<script src="questions.js?v=17m"></script>
-<script src="research.js?v=17m"></script>
-<script src="archetypes.js?v=17m"></script>
-<script src="macro.js?v=17m"></script>
-<script src="freetools.js?v=17m"></script>
-<script src="plan.js?v=17m"></script>
-<script src="starter.js?v=17m"></script>
-<script src="model.js?v=17m"></script>
-<script src="canopy.js?v=17m"></script>
-<script src="intro.js?v=17m"></script>
-<script src="help.js?v=17m"></script>
-<script src="about.js?v=17m"></script>
+<script src="econ.js?v=18e"></script>
+<script src="tree3d.js?v=18e"></script>
+<script src="sectors.js?v=18e"></script>
+<script src="feel.js?v=18e"></script>
+<script src="ghost.js?v=18e"></script>
+<script src="founder.js?v=18e"></script>
+<script src="build.js?v=18e"></script>
+<script src="places.js?v=18e"></script>
+<script src="data/land110.js?v=18e"></script>
+<script src="app.js?v=18e"></script>
+<script src="map.js?v=18e"></script>
+<script src="questions.js?v=18e"></script>
+<script src="research.js?v=18e"></script>
+<!-- the enquiry check: its questions, the site read and the diagnostic plan (after the registry, before the planner) -->
+<script src="check.js?v=18e"></script>
+<script src="archetypes.js?v=18e"></script>
+<script src="macro.js?v=18e"></script>
+<script src="freetools.js?v=18e"></script>
+<script src="plan.js?v=18e"></script>
+<script src="starter.js?v=18e"></script>
+<script src="model.js?v=18e"></script>
+<script src="canopy.js?v=18e"></script>
+<script src="intro.js?v=18e"></script>
+<script src="help.js?v=18e"></script>
+<script src="about.js?v=18e"></script>
 </body>
 </html>
