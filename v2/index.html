@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Mission Automation · Enquiry handling for private clinics</title>
+<meta name="description" content="Enquiries go quiet while your team is treating patients. We install and run how your clinic answers them, and show you weekly what became a treatment plan.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- Settings for whoever runs the site. apiEndpoint is the Mercer worker's address (mercer-2/worker/README.md); while it is
+     empty the check sends visitors to the questions at /mercer/. Nothing here is a secret. -->
+<script>window.TMA_CONFIG = { apiEndpoint: '', bookingUrl: 'https://cal.com/adam-attia-b3ay43/discovery-call' };</script>
+<style>
+:root {
+  --paper: #f7f3ea;
+  --paper-2: #efe9dc;
+  --navy: #14213d;
+  --navy-soft: #4a5570;
+  --rule: #d9d1bf;
+  --amber: #d98a1f;
+  --amber-ink: #1a1203;
+  --serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
+  --sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --ease: cubic-bezier(.22, .61, .21, 1);
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--navy); font-family: var(--sans); font-size: 18px; line-height: 1.6; }
+a { color: inherit; }
+.wrap { max-width: 1040px; margin: 0 auto; padding-inline: 24px; }
+:focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; border-radius: 4px; }
+
+header.top { display: flex; align-items: center; justify-content: space-between; padding-block: 22px; }
+.mark { font-family: var(--serif); font-size: 20px; letter-spacing: -.01em; text-decoration: none; }
+.top a.call { font-size: 16px; font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--navy); padding-bottom: 2px; }
+
+h1, h2 { font-family: var(--serif); font-weight: 400; letter-spacing: -.02em; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(42px, 8.4vw, 92px); line-height: 1.02; }
+h2 { font-size: clamp(32px, 5vw, 54px); line-height: 1.08; }
+p { margin: 0; }
+.lede { font-size: clamp(19px, 2.2vw, 23px); line-height: 1.5; color: var(--navy-soft); max-width: 34em; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 54px; padding: 0 28px; border-radius: 999px; font: 600 17px var(--sans); text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: transform .5s var(--ease), background-color .5s var(--ease); }
+.btn.go { background: var(--amber); color: var(--amber-ink); }
+.btn.go:hover { transform: translateY(-2px); }
+.btn.quiet { border-color: var(--navy); color: var(--navy); background: transparent; }
+.btn.quiet:hover { background: var(--navy); color: var(--paper); }
+.btn[disabled] { opacity: .55; cursor: default; transform: none; }
+
+.hero { padding-block: clamp(56px, 12vh, 132px) clamp(72px, 14vh, 150px); }
+.hero .lede { margin-top: 28px; }
+.hero .acts { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 40px; }
+
+section { padding-block: clamp(72px, 12vh, 132px); }
+.band { background: var(--navy); color: var(--paper); }
+.band .lede { color: #b9c0d1; }
+.band :focus-visible { outline-color: var(--paper); }
+
+/* the check */
+.check h2 { max-width: 14em; }
+.check .lede { margin-top: 20px; }
+form.site { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; max-width: 640px; }
+form.site input { flex: 1 1 260px; min-height: 58px; padding: 0 22px; border-radius: 999px; border: 1px solid #44517a; background: transparent; color: var(--paper); font: 400 18px var(--sans); }
+form.site input::placeholder { color: #8a93ab; }
+form.site input:focus { outline: none; border-color: var(--paper); }
+.fine { margin-top: 16px; font-size: 15px; color: #8a93ab; max-width: 40em; }
+.fine a { color: #b9c0d1; }
+.status { margin-top: 44px; min-height: 28px; font-size: 17px; color: #b9c0d1; }
+.status.err { color: var(--paper); }
+.reading { display: block; height: 1px; width: min(100%, 640px); margin-top: 18px; background: #44517a; position: relative; overflow: hidden; }
+.reading::after { content: ''; position: absolute; inset: 0; width: 30%; background: var(--amber); animation: sweep 2.8s var(--ease) infinite; }
+@keyframes sweep { from { transform: translateX(-100%); } to { transform: translateX(340%); } }
+
+.journey { margin-top: 12px; display: grid; gap: 0; }
+.journey[hidden] { display: none; }
+.j-head { font-size: 16px; color: #b9c0d1; padding-bottom: 28px; }
+.track { display: grid; grid-template-columns: 1fr; gap: 0; position: relative; }
+.step { position: relative; padding: 0 0 36px 34px; opacity: 0; transform: translateY(14px); transition: opacity 1.1s var(--ease), transform 1.1s var(--ease); }
+.step.in { opacity: 1; transform: none; }
+.step::before { content: ''; position: absolute; left: 0; top: 9px; width: 11px; height: 11px; border-radius: 50%; border: 1px solid var(--paper); background: var(--navy); z-index: 1; }
+.step.seen::before { background: var(--paper); }
+.step.blind::before { border-color: var(--amber); background: var(--amber); }
+.step::after { content: ''; position: absolute; left: 5px; top: 20px; bottom: -9px; width: 1px; background: #44517a; }
+.step:last-child::after { display: none; }
+.step h3 { margin: 0 0 10px; font: 400 26px/1.15 var(--serif); letter-spacing: -.01em; }
+.step ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.step li { font-size: 16px; line-height: 1.45; color: #b9c0d1; }
+.step li b { font-weight: 500; color: var(--paper); }
+.step li q { display: block; font-size: 14px; color: #8a93ab; quotes: '\201C' '\201D'; overflow-wrap: anywhere; }
+.step li.no { color: #8a93ab; }
+.step p.note { font-size: 16px; color: #b9c0d1; max-width: 30em; }
+.j-next { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; }
+.band .btn.quiet { border-color: var(--paper); color: var(--paper); }
+.band .btn.quiet:hover { background: var(--paper); color: var(--navy); }
+@media (min-width: 860px) {
+  .track { grid-template-columns: repeat(4, 1fr); column-gap: 28px; }
+  .step { padding: 34px 0 36px; }
+  .step::before { top: 0; }
+  .step::after { left: 20px; right: -28px; top: 5px; bottom: auto; width: auto; height: 1px; }
+}
+
+/* what we do */
+.does { display: grid; gap: 0; margin-top: 48px; border-top: 1px solid var(--rule); }
+.does div { display: grid; gap: 6px; padding-block: 26px; border-bottom: 1px solid var(--rule); }
+.does dt { font: 400 28px/1.15 var(--serif); letter-spacing: -.01em; }
+.does dd { margin: 0; color: var(--navy-soft); max-width: 34em; }
+@media (min-width: 760px) { .does div { grid-template-columns: 240px 1fr; align-items: baseline; gap: 32px; } }
+
+/* how it starts */
+.starts { background: var(--paper-2); }
+.three { display: grid; gap: 36px; margin-top: 48px; }
+.three h3 { margin: 0 0 8px; font: 400 28px/1.15 var(--serif); letter-spacing: -.01em; }
+.three p { color: var(--navy-soft); max-width: 22em; }
+@media (min-width: 760px) { .three { grid-template-columns: repeat(3, 1fr); gap: 48px; } }
+
+/* book */
+.book { text-align: left; }
+.book .lede { margin-top: 20px; }
+.book .btn { margin-top: 36px; }
+
+footer { border-top: 1px solid var(--rule); padding-block: 32px 44px; font-size: 15px; color: var(--navy-soft); }
+footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; }
+footer nav { display: flex; flex-wrap: wrap; gap: 22px; }
+
+.rise { opacity: 1; }
+.js .rise { opacity: 0; transform: translateY(18px); transition: opacity 1.2s var(--ease), transform 1.2s var(--ease); }
+.js .rise.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .rise, .step { opacity: 1; transform: none; transition: none; }
+  .reading::after { animation: none; width: 100%; }
+  .btn { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="mark" href="/">The Mission Automation</a>
+    <a class="call" data-book href="#book">Book a call</a>
+  </header>
+</div>
+
+<main>
+  <div class="wrap hero">
+    <h1 class="rise">Enquiries go quiet while your team is treating patients.</h1>
+    <p class="lede rise">We install and run how your clinic answers them, and show you every week what became a treatment plan.</p>
+    <div class="acts rise">
+      <a class="btn go" href="#check">Check your clinic</a>
+      <a class="btn quiet" data-book href="#book">Book a call</a>
+    </div>
+  </div>
+
+  <section class="band check" id="check">
+    <div class="wrap">
+      <h2 class="rise">See your clinic the way a new patient does.</h2>
+      <p class="lede rise">Enter your website. We read its public pages and lay out the enquiry journey they show: how people reach you, what you promise, and how they book.</p>
+      <form class="site rise" id="site-form" novalidate>
+        <input id="site-url" name="url" type="text" inputmode="url" autocomplete="url" autocapitalize="none" spellcheck="false" placeholder="yourclinic.co.uk" aria-label="Your clinic's website">
+        <button class="btn go" id="site-go" type="submit">Check your clinic</button>
+      </form>
+      <p class="fine rise">Only the address you enter is sent, and only to read that site's public pages. No patient details are asked for. <a href="/privacy/">Privacy notice</a></p>
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+      <div class="journey" id="journey" hidden>
+        <p class="j-head" id="j-head"></p>
+        <div class="track" id="track"></div>
+        <div class="j-next">
+          <a class="btn go" href="/mercer/">Take the full check</a>
+          <a class="btn quiet" data-book href="#book">Talk it through</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="what">
+    <div class="wrap">
+      <h2 class="rise">What we do</h2>
+      <dl class="does">
+        <div class="rise"><dt>Response</dt><dd>Every website and email enquiry gets a reply and a named person who owns it.</dd></div>
+        <div class="rise"><dt>Booking</dt><dd>Consultations are booked, confirmed and reminded.</dd></div>
+        <div class="rise"><dt>Follow-up</dt><dd>Treatment plans are followed up until there is a clear yes or no.</dd></div>
+        <div class="rise"><dt>Weekly record</dt><dd>Each Friday you see what came in, what was booked and what became a treatment plan.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="starts" id="start">
+    <div class="wrap">
+      <h2 class="rise">How it starts</h2>
+      <div class="three">
+        <div class="rise"><h3>Live in 14 days</h3><p>From your go-ahead to the first enquiry handled the new way.</p></div>
+        <div class="rise"><h3>Your data stays put</h3><p>Enquiries stay in the systems you approve. Replies never give clinical advice.</p></div>
+        <div class="rise"><h3>UK only</h3><p>We work with independent private clinics in the UK, dental first.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="book" id="book">
+    <div class="wrap">
+      <h2 class="rise">Twenty minutes, to see if it fits.</h2>
+      <p class="lede rise">A call about how enquiries are handled at your clinic today, and whether we can help. If we cannot, we will say so.</p>
+      <a class="btn go rise" data-book-link href="https://cal.com/adam-attia-b3ay43/discovery-call" target="_blank" rel="noopener">Book a 20-minute call</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>The Mission Automation</span>
+    <nav><a href="/mercer/">The enquiry check</a><a href="/contact/">Contact</a><a href="/privacy/">Privacy notice</a></nav>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const doc = document;
+  doc.documentElement.classList.add('js');
+  const CONFIG = window.TMA_CONFIG || {};
+  // a local preview may point the check at a local worker; a published page never takes its endpoint from the address bar
+  let api = typeof CONFIG.apiEndpoint === 'string' ? CONFIG.apiEndpoint.trim().replace(/\/+$/, '') : '';
+  if (/^(localhost|127\.0\.0\.1)$/.test(location.hostname)) {
+    const p = new URLSearchParams(location.search).get('api');
+    if (p && /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(p)) api = p;
+  }
+  if (typeof CONFIG.bookingUrl === 'string' && /^https:\/\/\S+$/.test(CONFIG.bookingUrl)) doc.querySelectorAll('[data-book-link]').forEach((a) => { a.href = CONFIG.bookingUrl; });
+
+  // quiet entrances: everything is readable without them
+  const rises = [...doc.querySelectorAll('.rise')];
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+    rises.forEach((el, i) => { el.style.transitionDelay = `${Math.min(i % 4, 3) * 90}ms`; io.observe(el); });
+  } else rises.forEach((el) => el.classList.add('in'));
+
+  const form = doc.getElementById('site-form');
+  const input = doc.getElementById('site-url');
+  const go = doc.getElementById('site-go');
+  const status = doc.getElementById('status');
+  const journey = doc.getElementById('journey');
+  const track = doc.getElementById('track');
+  const head = doc.getElementById('j-head');
+  const el = (tag, cls, text) => { const n = doc.createElement(tag); if (cls) n.className = cls; if (text !== undefined) n.textContent = text; return n; };
+
+  function cleanUrl(raw) {
+    let s = String(raw || '').trim();
+    if (!s || /\s|@/.test(s)) return null;
+    if (!/^https?:\/\//i.test(s)) s = 'https://' + s;
+    try { const u = new URL(s); return /\./.test(u.hostname) ? u.href : null; } catch (e) { return null; }
+  }
+  function say(text, kind) {
+    status.className = 'status' + (kind === 'err' ? ' err' : '');
+    status.textContent = '';
+    if (!text) return;
+    status.appendChild(el('span', '', text));
+    if (kind === 'wait') status.appendChild(el('span', 'reading'));
+  }
+  function fallback(lead) {
+    say('');
+    status.className = 'status err';
+    status.appendChild(el('span', '', lead + ' The full check asks about your enquiries instead and takes about five minutes. '));
+    const a = el('a', '', 'Take the full check');
+    a.href = '/mercer/';
+    status.appendChild(a);
+  }
+
+  // which observations belong to which step of the journey a website can show
+  const STEPS = [
+    { title: 'Reaching you', keys: ['contact_form', 'phone', 'email', 'whatsapp', 'live_chat'] },
+    { title: 'The first reply', keys: ['response_promise', 'opening_hours'] },
+    { title: 'Booking', keys: ['booking_link', 'consultation_offer', 'new_patients'] },
+  ];
+  const short = (s) => { const t = String(s || '').replace(/^(?:tel|mailto):/i, '').replace(/\s+/g, ' ').trim(); return t.length > 90 ? t.slice(0, 88).trimEnd() + '…' : t; };
+
+  function draw(read) {
+    track.textContent = '';
+    const seen = new Map();
+    (Array.isArray(read.observations) ? read.observations : []).forEach((o) => { if (o && o.key && !seen.has(o.key)) seen.set(o.key, o); });
+    const missing = new Map((Array.isArray(read.notSeen) ? read.notSeen : []).map((n) => [n && n.key, n]));
+    const steps = [];
+    STEPS.forEach((s) => {
+      const box = el('div', 'step');
+      box.appendChild(el('h3', '', s.title));
+      const ul = el('ul');
+      let any = false;
+      s.keys.forEach((k) => {
+        const o = seen.get(k);
+        if (o) {
+          any = true;
+          const li = el('li');
+          li.appendChild(el('b', '', String(o.label || k)));
+          const quote = short(o.evidence && o.evidence.quote);
+          if (quote) li.appendChild(el('q', '', quote));
+          ul.appendChild(li);
+        } else if (missing.has(k)) ul.appendChild(el('li', 'no', 'Not seen: ' + String(missing.get(k).label || k).replace(/\s*\(not seen[^)]*\)\s*$/i, '').replace(/^(?:An?|The)\s+/, '')));
+      });
+      if (!ul.children.length) ul.appendChild(el('li', 'no', 'Nothing on the pages read speaks to this.'));
+      if (any) box.classList.add('seen');
+      box.appendChild(ul);
+      steps.push(box);
+    });
+    const last = el('div', 'step blind');
+    last.appendChild(el('h3', '', 'Follow-up and outcome'));
+    last.appendChild(el('p', 'note', 'A website cannot show this part. Only your own records say who was followed up and what became a treatment plan. This is the part we run, and report to you each week.'));
+    steps.push(last);
+    steps.forEach((s) => track.appendChild(s));
+
+    const pages = Array.isArray(read.pagesRead) ? read.pagesRead.filter((p) => p && p.status === 200).length : 0;
+    let host = '';
+    try { host = new URL(read.site).hostname.replace(/^www\./, ''); } catch (e) { host = ''; }
+    head.textContent = `What ${pages === 1 ? 'the 1 page' : `the ${pages} pages`} we read${host ? ` on ${host}` : ''} show. “Not seen” means not on those pages, which is not proof it is missing.`;
+    journey.hidden = false;
+    say('');
+    const calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    steps.forEach((s, i) => { if (calm) s.classList.add('in'); else setTimeout(() => s.classList.add('in'), 250 + i * 520); });
+    journey.scrollIntoView({ behavior: calm ? 'auto' : 'smooth', block: 'nearest' });
+  }
+
+  let busy = false;
+  form.addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    if (busy) return;
+    const url = cleanUrl(input.value);
+    if (!url) { say('Enter your clinic’s website address, such as yourclinic.co.uk.', 'err'); input.focus(); return; }
+    journey.hidden = true;
+    if (!api) { fallback('Reading a site from this page is not switched on yet.'); return; }
+    busy = true; go.disabled = true;
+    say('Reading your site. This takes a few seconds.', 'wait');
+    const stop = new AbortController();
+    const timer = setTimeout(() => stop.abort(), 30000);
+    try {
+      const res = await fetch(api + '/read', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ url }), signal: stop.signal });
+      const body = await res.json().catch(() => null);
+      if (!res.ok || !body || !Array.isArray(body.observations)) {
+        const pagesTried = body && typeof body.error === 'string' ? body.error : '';
+        fallback(res.status === 429 ? 'Too many sites have been read from this connection in the last hour.' : pagesTried || 'We could not read that site from here.');
+      } else if (!(body.pagesRead || []).some((p) => p && p.status === 200)) fallback('That site did not answer, so there is nothing to show.');
+      else draw(body);
+    } catch (e) {
+      fallback('We could not read that site from here.');
+    } finally {
+      clearTimeout(timer); busy = false; go.disabled = false;
+    }
+  });
+})();
+</script>
+</body>
+</html>
