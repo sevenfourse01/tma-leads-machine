@@ -4,9 +4,9 @@ These are the original one-per-pillar demos: **Predict**, **Build** and **Grow**
 page. They are archived, not deleted — nothing links to them from the site or from `/demo/`, but
 every one still works if you open it directly:
 
-- `/demo/archive/predict.html` — 7 questions plus the live three-slider forecast, real Monte Carlo
-- `/demo/archive/build.html` — the 15-node canvas, the systems mapping, one step shown three ways
-- `/demo/archive/grow.html` — one ordinary Tuesday, four example weeks, the Monday questions
+- `/demo-stage2/archive/predict.html` — 7 questions plus the live three-slider forecast, real Monte Carlo
+- `/demo-stage2/archive/build.html` — the 15-node canvas, the systems mapping, one step shown three ways
+- `/demo-stage2/archive/grow.html` — one ordinary Tuesday, four example weeks, the Monday questions
 
 ## Why they were archived (2026-07-31)
 
