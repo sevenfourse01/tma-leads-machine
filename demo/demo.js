@@ -267,3 +267,84 @@ $('lastrun').textContent = lastRun
   : `Engine built ${formatLondon(new Date(built.at))} from ${built.commit}.`;
 
 restart(SCENARIOS[0]);
+
+// ---------- be the patient ----------
+// The visitor writes to the test clinic. The same engine handles it, at the real time of day, in this page.
+
+const TRY_SAMPLES = [
+  ['A price question', 'Hi, how much is Invisalign and can I book a consultation? Evenings are best.'],
+  ['Something clinical', 'My crown fell out this morning and it hurts. Can someone see me today?'],
+  ['Something vague', 'A friend recommended you. Could someone give me a ring?'],
+  ['Spam', 'We can get you more customers! See https://a.example https://b.example https://c.example'],
+];
+const tryFormHtml = $('try-in').innerHTML;
+let tryWorld = null;
+
+function wireTryForm() {
+  $('try-chips').innerHTML = TRY_SAMPLES.map(([label], i) => `<button type="button" data-i="${i}">${esc(label)}</button>`).join('');
+  $('try-chips').addEventListener('click', (ev) => {
+    const b = ev.target.closest('button[data-i]');
+    if (!b) return;
+    $('try-text').value = TRY_SAMPLES[Number(b.dataset.i)][1];
+    $('try-text').focus();
+  });
+  $('try-form').addEventListener('submit', async (ev) => {
+    ev.preventDefault();
+    const text = $('try-text').value.trim();
+    if (!text) { $('try-text').focus(); return; }
+    const name = $('try-name').value.trim();
+    const w = newWorld(new Date().toISOString());
+    w.said = text;
+    w.name = name;
+    try {
+      const r = await w.system.inbound({ source: 'form', name, email: 'you@example.com', message: text });
+      w.enquiryId = r.enquiry.id;
+    } catch (err) {
+      w.error = err.message;
+    }
+    tryWorld = w;
+    renderTry();
+  });
+}
+
+function renderTry() {
+  const w = tryWorld;
+  const e = w.enquiryId ? w.system.enquiry(w.enquiryId) : null;
+  const who = w.name || 'You';
+  const out = e ? w.system.outbox((r) => r.enquiryId === e.id && r.audience === 'patient') : [];
+  const bubbles = [`<div class="msg in"><div class="who">${esc(who)} · website form</div><div class="bubble">${esc(w.said)}</div></div>`,
+    ...out.map((r) => `<div class="msg"><div class="who">${esc(clinic.name)} · ${esc(r.channel)} · ${esc(formatLondon(new Date(r.createdAt), { withDay: false }))}</div><div class="bubble">${r.subject ? `<b class="subj">${esc(r.subject)}</b>` : ''}${esc(r.body)}</div><div class="state ${stateClass(r.state)}">${esc(r.state)}</div></div>`)].join('');
+
+  let verdict = '';
+  const facts = [];
+  if (w.error || !e) {
+    verdict = 'That one tripped a safety check, so nothing was sent.';
+    facts.push(['Why', esc(w.error || 'No record was made.')]);
+  } else if (e.stage === 'spam') {
+    verdict = 'Dropped as spam. Never acknowledged.';
+    facts.push(['Rule', esc(e.sort.reason)]);
+    facts.push(['Clinic', 'Sees nothing. It is counted on Friday as spam dropped.']);
+  } else {
+    const label = e.sort ? e.sort.label : 'unclear';
+    const closed = e.acknowledgement.templateId && e.acknowledgement.templateId.endsWith('closed');
+    const followUps = out.filter((r) => String(r.purpose).startsWith('follow-up:')).length;
+    verdict = label === 'routine' ? 'Answered, and on its way to a booking.' : label === 'clinical' ? 'Acknowledged. Then straight to a person.' : 'Acknowledged. Then to a person, not a guess.';
+    facts.push(['Captured', `One record, owned by <b>${esc(e.owner.name)}</b>, the clinic's ${esc(e.owner.role.toLowerCase())}.`]);
+    facts.push(['Answered', `In under a minute. It is ${esc(formatLondon(w.startedAt || new Date(e.receivedAt)))} in London and the clinic is ${closed ? 'closed, so the out-of-hours wording went' : 'open, so the in-hours wording went'}.`]);
+    facts.push(['Sorted', `<b>${esc(label)}</b>, by the ${e.sort.decidedBy === 'keywords' ? 'keyword list' : esc(e.sort.decidedBy)}. Found ${esc(e.sort.reason.replace(/; model off$/, ''))}. No model was involved.`]);
+    if (label === 'routine') facts.push(['Next', w.skipped ? `A day on${followUps ? `, the first follow-up went, inside opening hours` : ', the follow-up is waiting for opening hours'}. It stops the moment you book, reply or say stop.` : 'The booking link went. If you do not book, one follow-up goes tomorrow.']);
+    else facts.push(['Next', w.skipped ? `A day on, nothing more was sent. It is still on ${esc(e.owner.name.split(' ')[0])}'s list.` : `A task for ${esc(e.owner.name.split(' ')[0])}, due inside one staffed hour. Nothing automated will say a word about it.`]);
+  }
+  const canSkip = e && e.stage !== 'spam' && !w.skipped;
+  const book = typeof CONFIG.bookingUrl === 'string' ? CONFIG.bookingUrl : '#book';
+  $('try-in').innerHTML = `<div class="swap"><div class="bar"><span>What you would get</span><span>${esc(formatLondon(w.clock.now()))}</span></div>
+    <p class="verdict-line">${verdict}</p>
+    <div class="convo">${bubbles}</div>
+    <ul class="facts">${facts.map(([k, v]) => `<li><span class="k">${k}</span><span>${v}</span></li>`).join('')}</ul>
+    <div class="after">${canSkip ? '<button class="btn quiet small" id="try-skip" type="button">Skip a day</button>' : ''}<button class="btn quiet small" id="try-again" type="button">Try another</button><a class="btn go small" href="${esc(book)}" target="_blank" rel="noopener">Book a 20-minute call</a></div>
+    <p class="small" style="margin-top:14px">This is what your patients would get, in your clinic's name and words.</p></div>`;
+  if (canSkip) $('try-skip').addEventListener('click', async () => { w.clock.advance(24.5 * 3600000); advanceToOpen(w); await w.system.tick(); w.skipped = true; renderTry(); });
+  $('try-again').addEventListener('click', () => { $('try-in').innerHTML = tryFormHtml; wireTryForm(); $('try-text').focus(); });
+}
+
+wireTryForm();
