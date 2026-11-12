@@ -3,20 +3,23 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>The Mission Automation · How a clinic's enquiries are handled</title>
-<meta name="description" content="The enquiry handling system we install at a clinic, running in your browser: one enquiry from form to paid, the responder's tasks, the Friday count and the 46-case test set.">
+<title>The Mission Automation · The enquiry system, running</title>
+<meta name="description" content="The enquiry handling system we install at a clinic, running in your browser: one enquiry from website form to paid patient, the clinical one that goes straight to a person, and the test set it passes.">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
 <script>window.TMA_CONFIG = { bookingUrl: 'https://cal.com/adam-attia-b3ay43/discovery-call' };</script>
 <style>
 :root {
   --paper: #f7f3ea;
   --paper-2: #efe9dc;
+  --card: #fdfbf6;
   --navy: #14213d;
   --navy-soft: #4a5570;
-  --rule: #d9d1bf;
+  --navy-faint: #8a93ab;
+  --hair: rgba(20, 33, 61, .12);
+  --hair-dark: rgba(247, 243, 234, .14);
   --amber: #d98a1f;
   --amber-ink: #1a1203;
   --green: #2f6b3a;
@@ -25,124 +28,207 @@
   --sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --mono: ui-monospace, 'Cascadia Mono', Consolas, monospace;
   --ease: cubic-bezier(.22, .61, .21, 1);
+  --ease-in: cubic-bezier(.4, 0, .2, 1);
+  --shadow-rest: 0 1px 2px rgba(20, 33, 61, .05), 0 12px 32px rgba(20, 33, 61, .06);
+  --r-card: 22px;
+  --r-inner: 16px;
+  --r-control: 12px;
+  --gutter: clamp(16px, 4vw, 28px);
+  /* type: four sizes */
+  --t-display: clamp(40px, 6.4vw, 76px);
+  --t-h2: clamp(30px, 4vw, 48px);
+  --t-body: 18px;
+  --t-small: 14.5px;
 }
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-body { margin: 0; background: var(--paper); color: var(--navy); font-family: var(--sans); font-size: 18px; line-height: 1.6; }
+body { margin: 0; background: var(--paper); color: var(--navy); font-family: var(--sans); font-size: var(--t-body); line-height: 1.6; font-feature-settings: 'ss01', 'cv11'; }
 a { color: inherit; }
-.wrap { max-width: 1040px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 24px); }
+img, video { max-width: 100%; }
+.wrap { max-width: 1080px; margin: 0 auto; padding-inline: var(--gutter); }
+.narrow { max-width: 720px; }
 :focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; border-radius: 4px; }
-header.top { display: flex; align-items: center; justify-content: space-between; padding-block: 22px; gap: 16px; }
-.mark { font-family: var(--serif); font-size: 20px; letter-spacing: -.01em; text-decoration: none; }
-.top a.call { font-size: 16px; font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--navy); padding-bottom: 2px; white-space: nowrap; }
-h1, h2, h3 { font-family: var(--serif); font-weight: 400; letter-spacing: -.02em; text-wrap: balance; margin: 0; }
-h1 { font-size: clamp(38px, 7vw, 76px); line-height: 1.04; max-width: 14em; }
-h2 { font-size: clamp(30px, 4.6vw, 48px); line-height: 1.1; }
-h3 { font-size: 24px; line-height: 1.2; }
-p { margin: 0; }
-.lede { font-size: clamp(18px, 2.1vw, 22px); line-height: 1.5; color: var(--navy-soft); max-width: 34em; }
-.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 50px; padding: 0 24px; border-radius: 999px; font: 600 16px var(--sans); text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: transform .25s var(--ease), background .25s var(--ease), color .25s var(--ease); }
-.btn.go { background: var(--amber); color: var(--amber-ink); }
-.btn.go:hover { transform: translateY(-2px); }
-.btn.quiet { border-color: var(--navy); color: var(--navy); background: transparent; }
-.btn.quiet:hover { background: var(--navy); color: var(--paper); }
-.btn.small { min-height: 40px; padding: 0 16px; font-size: 15px; }
-.btn[disabled] { opacity: .55; cursor: default; transform: none; }
-.hero { padding-block: clamp(48px, 10vh, 112px) clamp(56px, 10vh, 112px); }
-.hero .lede { margin-top: 26px; }
-.hero .acts { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
-section { padding-block: clamp(56px, 10vh, 112px); }
-section > .wrap > .lede { margin-top: 18px; }
-.band { background: var(--navy); color: var(--paper); }
-.band .lede { color: #b9c0d1; }
 .band :focus-visible { outline-color: var(--paper); }
-.band .btn.quiet { border-color: var(--paper); color: var(--paper); }
-.band .btn.quiet:hover { background: var(--paper); color: var(--navy); }
-.fine { font-size: 15px; color: var(--navy-soft); max-width: 44em; }
-.band .fine { color: #8a93ab; }
 
-/* the flow */
-.flow { list-style: none; margin: 40px 0 0; padding: 0; display: grid; gap: 14px; counter-reset: none; }
-.flow li { position: relative; border: 1px solid var(--rule); background: #fff; border-radius: 12px; padding: 14px 16px 14px 18px; min-height: 92px; transition: border-color .4s var(--ease), background .4s var(--ease), box-shadow .4s var(--ease); }
-.flow li b { display: block; font: 500 17px/1.2 var(--sans); }
-.flow li span { display: block; margin-top: 6px; font-size: 14px; line-height: 1.4; color: var(--navy-soft); }
-.flow li.on { border-color: var(--amber); box-shadow: inset 3px 0 0 var(--amber); }
-.flow li.done { background: var(--paper-2); }
-.flow li.person { border-style: dashed; }
-.flow li.person::before { content: 'clinical or unclear'; position: absolute; top: -11px; left: 14px; font-size: 12px; background: var(--paper); padding: 0 6px; color: var(--navy-soft); }
-.flow li::after { content: ''; position: absolute; left: 50%; bottom: -14px; width: 1px; height: 14px; background: var(--rule); }
-.flow li:last-child::after { display: none; }
-.alarm-line { margin-top: 18px; padding: 12px 16px; border: 1px dashed var(--rule); border-radius: 12px; font-size: 15px; color: var(--navy-soft); }
+header.top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 24px; }
+.mark { font-family: var(--serif); font-size: 21px; letter-spacing: -.01em; text-decoration: none; }
+.top a.call { font-size: 15.5px; font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--navy); padding-bottom: 2px; white-space: nowrap; }
+
+h1, h2, h3 { font-family: var(--serif); font-weight: 400; margin: 0; text-wrap: balance; }
+h1 { font-size: var(--t-display); line-height: 1.0; letter-spacing: -.025em; max-width: 12em; }
+h2 { font-size: var(--t-h2); line-height: 1.08; letter-spacing: -.02em; max-width: 16em; }
+h3 { font-size: 22px; line-height: 1.25; letter-spacing: -.01em; }
+p { margin: 0; }
+.eyebrow { display: block; font: 500 11.5px/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; color: var(--navy-soft); margin-bottom: 22px; }
+.band .eyebrow { color: var(--navy-faint); }
+.lede { font-size: clamp(18px, 2vw, 21px); line-height: 1.5; color: var(--navy-soft); max-width: 32em; margin-top: 24px; }
+.band .lede { color: #b9c0d1; }
+.small { font-size: var(--t-small); line-height: 1.5; color: var(--navy-soft); }
+.band .small { color: var(--navy-faint); }
+.measure { max-width: 36em; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; padding: 0 24px; border-radius: 999px; font: 600 15.5px var(--sans); text-decoration: none; cursor: pointer; border: 1px solid transparent; transition: transform .35s var(--ease), background .35s var(--ease), color .35s var(--ease), box-shadow .35s var(--ease); }
+.btn.go { background: var(--amber); color: var(--amber-ink); }
+.btn.go:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(217, 138, 31, .25); }
+.btn.quiet { border-color: var(--hair); color: var(--navy); background: transparent; }
+.btn.quiet:hover { border-color: var(--navy); }
+.band .btn.quiet { border-color: var(--hair-dark); color: var(--paper); }
+.band .btn.quiet:hover { border-color: var(--paper); }
+.btn.small { min-height: 40px; padding: 0 16px; font-size: 14.5px; }
+.btn[disabled] { opacity: .5; cursor: default; transform: none; box-shadow: none; }
+
+section { padding-block: clamp(80px, 12vh, 140px); }
+.hero { padding-block: clamp(56px, 11vh, 128px) clamp(64px, 12vh, 140px); }
+.hero .acts { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 40px; }
+.hero .note { margin-top: 56px; display: grid; gap: 6px; max-width: 30em; padding-top: 20px; border-top: 1px solid var(--hair); }
+.band { background: var(--navy); color: var(--paper); }
+.tint { background: var(--paper-2); }
+
+/* entrances: scroll-triggered, opacity and transform only */
+.js .rise { opacity: 0; transform: translateY(14px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.js .rise.in { opacity: 1; transform: none; }
+
+/* the flow rail */
+.rail { list-style: none; margin: 56px 0 0; padding: 0; display: grid; gap: 0; }
+.rail li { position: relative; padding: 18px 0 22px 34px; border-top: 1px solid var(--hair); transition: color .5s var(--ease); }
+.rail li::before { content: ''; position: absolute; left: 0; top: 24px; width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--navy); background: var(--paper); transition: background .5s var(--ease), border-color .5s var(--ease), transform .5s var(--ease); }
+.rail .n { display: block; font: 500 11.5px/1 var(--sans); letter-spacing: .14em; color: var(--navy-faint); margin-bottom: 10px; }
+.rail h3 { font-size: 21px; }
+.rail p { margin-top: 8px; font-size: var(--t-small); line-height: 1.5; color: var(--navy-soft); max-width: 26em; }
+.rail li.on::before { background: var(--amber); border-color: var(--amber); transform: scale(1.35); }
+.rail li.done::before { background: var(--navy); }
+.rail li.branch { margin-left: 34px; padding-left: 26px; border-top: 0; border-left: 1px solid var(--hair); }
+.rail li.branch::before { display: none; }
+.rail li.branch .n { color: var(--amber); }
+.alarm-note { margin-top: 36px; padding-top: 20px; border-top: 1px solid var(--hair); display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: baseline; }
+.alarm-note .k { font: 500 11.5px/1.3 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--navy-soft); white-space: nowrap; }
 @media (min-width: 900px) {
-  .flow { grid-template-columns: repeat(8, 1fr); grid-template-rows: auto auto; gap: 10px; }
-  .flow li { padding: 12px 10px 12px 12px; min-height: 120px; }
-  .flow li b { font-size: 15px; }
-  .flow li span { font-size: 12.5px; }
-  .flow li::after { left: auto; right: -10px; top: 50%; bottom: auto; width: 10px; height: 1px; }
-  .flow li.person { grid-column: 4 / span 2; grid-row: 2; margin-top: 18px; min-height: 0; }
-  .flow li.person::after { display: none; }
-  .flow li[data-step="s6"]::after { display: none; }
+  .rail { grid-template-columns: repeat(8, 1fr); column-gap: 18px; row-gap: 0; }
+  .rail li { padding: 22px 0 0; border-top: 1px solid var(--hair); }
+  .rail li::before { left: 0; top: -5px; }
+  .rail h3 { font-size: 19px; }
+  .rail p { font-size: 13.5px; max-width: none; }
+  .rail li.branch { grid-column: 4 / span 2; margin: 28px 0 0 4px; padding: 10px 0 0 22px; border-top: 0; border-left: 1px solid var(--hair); }
 }
 
 /* the walkthrough */
-.scenarios { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 30px; }
-.scenarios button { border: 1px solid #44517a; background: transparent; color: var(--paper); border-radius: 999px; padding: 8px 14px; font: 500 15px var(--sans); cursor: pointer; }
+.scenarios { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 36px; }
+.scenarios button { border: 1px solid var(--hair-dark); background: transparent; color: #d9dde8; border-radius: 999px; padding: 9px 15px; font: 500 14.5px var(--sans); cursor: pointer; transition: background .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease); }
+.scenarios button:hover { border-color: var(--paper); }
 .scenarios button[aria-pressed="true"] { background: var(--paper); color: var(--navy); border-color: var(--paper); }
-.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-top: 22px; }
-.clock { font: 500 15px var(--mono); color: #b9c0d1; }
-.stage { display: grid; gap: 18px; margin-top: 28px; }
-.panel { background: rgba(255,255,255,.04); border: 1px solid #2d3a5c; border-radius: 14px; padding: 16px; min-height: 120px; }
-.panel h3 { font: 500 14px var(--sans); letter-spacing: .02em; color: #8a93ab; margin: 0 0 10px; }
-.msg { border-left: 2px solid #44517a; padding: 6px 0 6px 12px; margin: 8px 0; font-size: 14px; line-height: 1.45; color: #e7e3d8; }
-.msg.in { border-left-color: var(--amber); }
-.msg .who { color: #8a93ab; font-size: 12.5px; }
-.msg .body { white-space: pre-line; }
-.msg.quiet { color: #8a93ab; }
-.narr { min-height: 72px; font-size: 17px; line-height: 1.5; color: var(--paper); }
-.narr b { color: var(--amber); font-weight: 500; }
-.record dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; margin: 0; font-size: 14px; }
-.record dt { color: #8a93ab; }
-.record dd { margin: 0; color: #e7e3d8; }
-.task { font-size: 14px; padding: 8px 0; border-top: 1px solid #2d3a5c; color: #e7e3d8; }
-.task:first-of-type { border-top: 0; }
-.task i { font-style: normal; color: #8a93ab; }
-.tg { font: 14px/1.45 var(--mono); white-space: pre-wrap; color: #e7e3d8; }
-.empty { color: #8a93ab; font-size: 14px; }
-.count { font-size: 14px; color: #e7e3d8; }
-.count b { font-weight: 500; }
-@media (min-width: 860px) {
-  .stage { grid-template-columns: 1.1fr 1fr 1fr; }
-  .stage .narrwrap { grid-column: 1 / -1; }
+.stage { display: grid; gap: 36px; margin-top: 44px; }
+.story { display: grid; align-content: start; gap: 22px; }
+.story .where { display: flex; align-items: center; gap: 14px; font: 500 13px var(--mono); color: var(--navy-faint); }
+.story .where b { font-weight: 500; color: #d9dde8; }
+.narr { font-family: var(--serif); font-size: clamp(22px, 2.4vw, 28px); line-height: 1.3; letter-spacing: -.01em; color: var(--paper); min-height: 4.2em; }
+.narr b { font-weight: 500; color: var(--amber); }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.progress { height: 1px; background: var(--hair-dark); position: relative; overflow: hidden; margin-top: 4px; }
+.progress i { position: absolute; inset: 0 auto 0 0; width: 0; background: var(--amber); transition: width .6s var(--ease); }
+
+/* the device: a single pane for what the patient sees */
+.device { background: rgba(255,255,255,.035); border: 1px solid var(--hair-dark); border-radius: var(--r-card); padding: 6px; box-shadow: inset 0 1px 0 rgba(255,255,255,.06); }
+.device .screen { background: #0f1a33; border-radius: var(--r-inner); min-height: 420px; max-height: 560px; overflow: auto; padding: 18px 18px 22px; }
+.device .bar { display: flex; justify-content: space-between; align-items: baseline; font: 500 12px var(--mono); color: var(--navy-faint); padding-bottom: 14px; margin-bottom: 6px; border-bottom: 1px solid var(--hair-dark); }
+.msg { margin: 14px 0; max-width: 92%; }
+.msg .who { font: 500 11.5px var(--sans); letter-spacing: .02em; color: var(--navy-faint); margin-bottom: 6px; }
+.msg .bubble { padding: 12px 14px; border-radius: 16px 16px 16px 4px; background: rgba(255,255,255,.06); color: #e7e3d8; font-size: 14.5px; line-height: 1.5; white-space: pre-line; }
+.msg.in { margin-left: auto; }
+.msg.in .bubble { background: var(--amber); color: var(--amber-ink); border-radius: 16px 16px 4px 16px; }
+.msg .bubble b.subj { display: block; font-weight: 600; margin-bottom: 4px; }
+.msg.quiet .bubble { opacity: .55; }
+.msg .state { font: 500 11px var(--sans); color: var(--navy-faint); margin-top: 6px; }
+.msg .state.sent { color: #7fb08a; }
+.msg .state.failed, .msg .state.blocked { color: #d98a8a; }
+.empty { color: var(--navy-faint); font-size: 14.5px; }
+
+/* the three quiet strips under the stage */
+.strips { display: grid; gap: 28px; margin-top: 40px; padding-top: 36px; border-top: 1px solid var(--hair-dark); }
+.strip h3 { font: 500 11.5px/1 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--navy-faint); margin-bottom: 16px; }
+.kv { display: grid; grid-template-columns: auto 1fr; gap: 7px 16px; font-size: 14.5px; }
+.kv dt { color: var(--navy-faint); }
+.kv dd { margin: 0; color: #e7e3d8; }
+.kv dd.warn { color: var(--amber); }
+.task { padding: 10px 0; border-top: 1px solid var(--hair-dark); font-size: 14.5px; color: #e7e3d8; }
+.task:first-of-type { border-top: 0; padding-top: 0; }
+.task .meta { font-size: 12.5px; color: var(--navy-faint); margin-top: 3px; }
+.task .kind { font-weight: 600; }
+.tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+.tabs button { border: 1px solid var(--hair-dark); background: transparent; color: #d9dde8; border-radius: 999px; padding: 5px 11px; font: 500 12.5px var(--sans); cursor: pointer; }
+.tabs button[aria-pressed="true"] { background: rgba(255,255,255,.1); border-color: transparent; }
+.tg { font: 13px/1.5 var(--mono); white-space: pre-wrap; color: #e7e3d8; }
+.count { font-size: 14.5px; color: #e7e3d8; line-height: 1.6; }
+.count b { font-weight: 600; }
+.logline { font-size: 13px; color: var(--navy-faint); padding: 5px 0; border-top: 1px solid var(--hair-dark); }
+.logline:first-child { border-top: 0; }
+.logline span { color: #d9dde8; }
+@media (min-width: 900px) {
+  .stage { grid-template-columns: 5fr 6fr; gap: 56px; align-items: start; }
+  .strips { grid-template-columns: 1fr 1fr 1.2fr; gap: 40px; }
 }
 
+/* the recording */
+.frame { margin-top: 48px; background: var(--paper-2); border: 1px solid var(--hair); border-radius: 28px; padding: 8px; box-shadow: var(--shadow-rest); }
+.frame video { display: block; width: 100%; border-radius: 20px; background: #0f1a33; }
+.caption { margin-top: 18px; display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: baseline; }
+.caption .k { font: 500 11.5px/1.3 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--navy-soft); white-space: nowrap; }
+
 /* the test set */
-.sumtable, .checks { width: 100%; border-collapse: collapse; font-size: 15px; margin-top: 24px; }
-.sumtable th, .sumtable td, .checks th, .checks td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--rule); vertical-align: top; }
-.sumtable th, .checks th { font-weight: 500; color: var(--navy-soft); font-size: 13px; letter-spacing: .02em; }
+.run-row { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; margin-top: 40px; }
+.status { font-size: var(--t-small); color: var(--navy-soft); min-height: 22px; }
+.results { margin-top: 36px; }
+table.sum { width: 100%; border-collapse: collapse; }
+table.sum th, table.sum td { text-align: left; padding: 14px 10px 14px 0; border-top: 1px solid var(--hair); vertical-align: top; font-size: 15.5px; }
+table.sum th { font: 500 11.5px/1.3 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--navy-soft); border-top: 0; padding-top: 0; }
+table.sum td.n { font-variant-numeric: tabular-nums; width: 64px; }
+table.sum td.must { color: var(--navy-soft); font-size: var(--t-small); }
 .pass { color: var(--green); font-weight: 600; }
 .fail { color: var(--red); font-weight: 600; }
-.checks { font-size: 13.5px; }
-.checks td.mono { font-family: var(--mono); font-size: 12.5px; }
-details { margin-top: 20px; }
-summary { cursor: pointer; font-weight: 500; }
-pre.review { margin-top: 24px; padding: 18px; background: #fff; border: 1px solid var(--rule); border-radius: 12px; font: 12.5px/1.5 var(--mono); overflow-x: auto; color: var(--navy); }
-.progress { margin-top: 16px; font-size: 15px; color: var(--navy-soft); min-height: 24px; }
+.verdict { margin-top: 28px; padding: 22px 26px; border-radius: var(--r-card); background: var(--card); border: 1px solid var(--hair); box-shadow: var(--shadow-rest); display: grid; gap: 6px; }
+.verdict .big { font-family: var(--serif); font-size: 26px; line-height: 1.2; letter-spacing: -.01em; }
+details { margin-top: 28px; border-top: 1px solid var(--hair); padding-top: 16px; }
+summary { cursor: pointer; font-weight: 500; font-size: 16px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+summary::after { content: '+'; font-family: var(--serif); font-size: 24px; color: var(--navy-soft); }
+details[open] summary::after { content: '−'; }
+table.checks { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 13.5px; }
+table.checks th, table.checks td { text-align: left; padding: 8px 10px 8px 0; border-top: 1px solid var(--hair); vertical-align: top; }
+table.checks th { font: 500 11px/1.3 var(--sans); letter-spacing: .14em; text-transform: uppercase; color: var(--navy-soft); border-top: 0; }
+table.checks td.mono { font-family: var(--mono); font-size: 12.5px; }
+pre.review { margin: 16px 0 0; padding: 20px 22px; background: var(--card); border: 1px solid var(--hair); border-radius: var(--r-card); font: 12.5px/1.55 var(--mono); overflow-x: auto; color: var(--navy); box-shadow: var(--shadow-rest); }
 
-/* rules */
-.rules { display: grid; gap: 0; margin-top: 40px; border-top: 1px solid var(--rule); }
-.rules div { display: grid; gap: 6px; padding-block: 22px; border-bottom: 1px solid var(--rule); }
-.rules dt { font: 400 24px/1.15 var(--serif); letter-spacing: -.01em; }
-.rules dd { margin: 0; color: var(--navy-soft); max-width: 36em; }
-@media (min-width: 760px) { .rules div { grid-template-columns: 260px 1fr; align-items: baseline; gap: 32px; } }
-.status-list { margin: 28px 0 0; padding-left: 20px; color: var(--navy-soft); max-width: 40em; }
-.status-list li { margin-bottom: 8px; }
-.starts { background: var(--paper-2); }
-.book .btn { margin-top: 32px; }
-footer { border-top: 1px solid var(--rule); padding-block: 32px 44px; font-size: 15px; color: var(--navy-soft); }
+/* the rules */
+.rules { margin-top: 56px; display: grid; gap: 0; }
+.rule { padding: 28px 0; border-top: 1px solid var(--hair); display: grid; gap: 10px; }
+.rule .n { font: 500 11.5px/1 var(--sans); letter-spacing: .14em; color: var(--navy-faint); }
+.rule h3 { font-size: 24px; }
+.rule p { color: var(--navy-soft); max-width: 34em; font-size: 16.5px; }
+@media (min-width: 760px) {
+  .rules { grid-template-columns: 1fr 1fr; column-gap: 56px; }
+  .rule { grid-template-columns: 36px 1fr; column-gap: 0; }
+  .rule .n { padding-top: 7px; }
+  .rule h3 { grid-column: 2; }
+  .rule p { grid-column: 2; }
+}
+
+/* where it stands */
+.standing { margin-top: 48px; display: grid; gap: 0; max-width: 760px; }
+.standing div { display: grid; gap: 4px; padding: 20px 0; border-top: 1px solid var(--hair); }
+.standing dt { font-weight: 600; font-size: 16px; }
+.standing dd { margin: 0; color: var(--navy-soft); font-size: 16px; }
+@media (min-width: 760px) { .standing div { grid-template-columns: 200px 1fr; gap: 24px; align-items: baseline; } }
+
+.book .btn { margin-top: 36px; }
+footer { border-top: 1px solid var(--hair); padding-block: 32px 48px; font-size: 15px; color: var(--navy-soft); }
 footer .wrap { display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; }
 footer nav { display: flex; flex-wrap: wrap; gap: 22px; }
-video { width: 100%; max-width: 900px; border-radius: 14px; border: 1px solid var(--rule); margin-top: 28px; background: #000; display: block; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .btn, .flow li { transition: none; } }
+footer a { text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .rise { opacity: 1; transform: none; transition: none; }
+  .btn, .rail li, .rail li::before, .progress i { transition: none; }
+}
 </style>
 </head>
 <body>
@@ -156,106 +242,135 @@ video { width: 100%; max-width: 900px; border-radius: 14px; border: 1px solid va
 
 <main>
   <div class="wrap hero">
-    <h1>Every enquiry answered in minutes, owned by a named person, counted on Friday.</h1>
-    <p class="lede">This is the system we install at a clinic. Below, it runs for real in your browser: one enquiry from website form to paid patient, the clinical one that goes straight to a person, and the full test set.</p>
+    <span class="eyebrow">Enquiry handling · private clinics</span>
+    <h1>Every enquiry answered in minutes. Owned by a person. Counted on Friday.</h1>
+    <p class="lede">This page is the system we install, running on a test clinic. One enquiry goes from website form to paid patient. A clinical one goes straight to a person. The test set runs in front of you.</p>
     <div class="acts">
       <a class="btn go" href="#walk">Watch one go through</a>
       <a class="btn quiet" href="#tests">Run the test set</a>
+    </div>
+    <div class="note">
+      <p class="small">Nothing here is real. The clinic, the coordinator and every patient are invented, and messages land in a memory outbox on this page rather than anyone's phone.</p>
     </div>
   </div>
 
   <section id="how">
     <div class="wrap">
-      <h2>How an enquiry moves</h2>
-      <p class="lede">Six steps, one branch. Anything clinical or unclear leaves the machine and goes to the clinic's named responder.</p>
-      <ol class="flow" id="flow">
-        <li data-step="sources"><b>Sources</b><span>Website form, practice inbox, missed-call text-back. Nothing else.</span></li>
-        <li data-step="s1"><b>S1 Capture</b><span>One record per person, with its source and a named owner.</span></li>
-        <li data-step="s2"><b>S2 Respond</b><span>The approved acknowledgement, inside five minutes. It says nothing about treatment.</span></li>
-        <li data-step="sort"><b>Sort</b><span>Cheap checks first: rules, then the keyword list, then a small model only if it is switched on.</span></li>
-        <li data-step="s3"><b>S3 Booking</b><span>Real availability, one booking per slot, confirmation and reminders.</span></li>
-        <li data-step="s4"><b>S4 Follow-up</b><span>An approved sequence until a reply, a booking, a decision or a stop.</span></li>
-        <li data-step="s5"><b>S5 Outcome</b><span>Attended, plan accepted, paid. Paid only with evidence.</span></li>
-        <li data-step="s6"><b>S6 Review</b><span>Friday counts for the clinic, with the exceptions and one improvement.</span></li>
-        <li data-step="responder" class="person"><b>Responder</b><span>A named person at the clinic answers every clinical or unclear message and every real conversation. The system makes a task; it never guesses.</span></li>
+      <span class="eyebrow rise">How an enquiry moves</span>
+      <h2 class="rise">Six steps and one branch.</h2>
+      <p class="lede rise">Anything clinical or unclear leaves the machine and goes to the clinic's named responder. Everything else is handled by rules and approved wording, and a small model only if the clinic switches one on.</p>
+      <ol class="rail rise" id="flow">
+        <li data-step="sources"><span class="n">SOURCES</span><h3>Three doors</h3><p>Website form, practice inbox, missed-call text-back.</p></li>
+        <li data-step="s1"><span class="n">S1</span><h3>Capture</h3><p>One record per person, its source stamped, a named owner.</p></li>
+        <li data-step="s2"><span class="n">S2</span><h3>Respond</h3><p>The approved acknowledgement inside five minutes. Nothing about treatment.</p></li>
+        <li data-step="sort"><span class="n">SORT</span><h3>Cheapest check first</h3><p>Rules, then the keyword list. Clinical or unclear goes to a person.</p></li>
+        <li data-step="s3"><span class="n">S3</span><h3>Booking</h3><p>Real availability, one booking per slot, confirmation and reminders.</p></li>
+        <li data-step="s4"><span class="n">S4</span><h3>Follow-up</h3><p>An approved sequence until a reply, a booking, a decision or a stop.</p></li>
+        <li data-step="s5"><span class="n">S5</span><h3>Outcome</h3><p>Attended, plan accepted, paid. Paid only with evidence.</p></li>
+        <li data-step="s6"><span class="n">S6</span><h3>Review</h3><p>Friday counts for the clinic, the exceptions and one improvement.</p></li>
+        <li data-step="responder" class="branch"><span class="n">CLINICAL OR UNCLEAR</span><h3>The responder</h3><p>A named person at the clinic answers every clinical or unclear message and every real conversation. The system makes a task. It does not guess.</p></li>
       </ol>
-      <p class="alarm-line">Daily alarm: any enquiry in the last 24 hours without an acknowledgement and an owner, or a source that has gone dark, pings Zach on Telegram. Counts only, never a name.</p>
+      <div class="alarm-note rise">
+        <span class="k">Daily alarm</span>
+        <p class="small">Any enquiry in the last 24 hours without an acknowledgement and an owner, or a source that has gone dark, reaches Zach on Telegram. Counts only, never a name.</p>
+      </div>
     </div>
   </section>
 
   <section class="band" id="walk">
     <div class="wrap">
-      <h2>Watch one go through</h2>
-      <p class="lede">The real pipeline code, a test clinic we own, and an invented patient. The clock is ours to move, so a week takes a minute. Messages land in a memory outbox here; nothing is sent to anyone.</p>
-      <div class="scenarios" id="scenarios" role="tablist" aria-label="Scenario"></div>
-      <div class="controls">
-        <button class="btn go small" id="play" type="button">Play</button>
-        <button class="btn quiet small" id="next" type="button">Next step</button>
-        <button class="btn quiet small" id="restart" type="button">Restart</button>
-        <span class="clock" id="clock"></span>
-      </div>
+      <span class="eyebrow rise">Watch one go through</span>
+      <h2 class="rise">The real pipeline, a test clinic, an invented patient.</h2>
+      <p class="lede rise">The clock is ours to move, so a week takes a minute. Choose a scenario and press play, or step through.</p>
+      <div class="scenarios rise" id="scenarios" role="tablist" aria-label="Scenario"></div>
       <div class="stage">
-        <div class="narrwrap"><p class="narr" id="narr">Press Play.</p></div>
-        <div class="panel record" id="record"><h3>The record</h3><p class="empty">Nothing yet.</p></div>
-        <div class="panel" id="patient"><h3>What the patient sees</h3><p class="empty">Nothing yet.</p></div>
-        <div class="panel" id="clinic"><h3>Sarah's tasks (the responder)</h3><p class="empty">Nothing yet.</p></div>
-        <div class="panel" id="telegram"><h3>Zach's Telegram</h3><p class="empty">Quiet.</p></div>
-        <div class="panel" id="friday"><h3>Friday count so far</h3><p class="empty">Nothing yet.</p></div>
-        <div class="panel" id="log"><h3>What the system logged</h3><p class="empty">Nothing yet.</p></div>
+        <div class="story">
+          <div class="where"><b id="clock"></b><span id="stepcount"></span></div>
+          <p class="narr" id="narr">Press play.</p>
+          <div class="progress" aria-hidden="true"><i id="bar"></i></div>
+          <div class="controls">
+            <button class="btn go small" id="play" type="button">Play</button>
+            <button class="btn quiet small" id="next" type="button">Next step</button>
+            <button class="btn quiet small" id="restart" type="button">Restart</button>
+          </div>
+        </div>
+        <div class="device">
+          <div class="screen" id="patient"><div class="bar"><span>What the patient sees</span><span id="patient-who"></span></div><p class="empty">Nothing yet.</p></div>
+        </div>
       </div>
-      <p class="fine" style="margin-top:22px">Sarah Whitfield, Harbour Dental and every patient here are invented. The acknowledgement, booking and follow-up texts are working copy pending Eric's wording; the pipeline does not change when the words do.</p>
-      <h3 style="margin-top:56px;color:var(--paper)">The two-minute recording</h3>
-      <p class="fine" style="margin-top:10px">A screen recording of this page: Priya's enquiry from form to paid, Margaret's going straight to a person, and the test set running. Recorded 12 November 2026 from the same engine build.</p>
-      <video controls preload="metadata" playsinline src="walkthrough.mp4"></video>
+      <div class="strips">
+        <div class="strip" id="record"><h3>The record</h3><p class="empty">Nothing yet.</p></div>
+        <div class="strip" id="clinic"><h3>On Sarah's list</h3><p class="empty">Nothing yet.</p></div>
+        <div class="strip" id="behind">
+          <h3>Behind the scenes</h3>
+          <div class="tabs" role="tablist"><button type="button" data-tab="friday" aria-pressed="true">Friday count</button><button type="button" data-tab="telegram" aria-pressed="false">Zach's Telegram</button><button type="button" data-tab="log" aria-pressed="false">Log</button></div>
+          <div id="friday"><p class="empty">Nothing yet.</p></div>
+          <div id="telegram" hidden><p class="empty">Quiet.</p></div>
+          <div id="log" hidden><p class="empty">Nothing yet.</p></div>
+        </div>
+      </div>
+      <p class="small rise" style="margin-top:40px;max-width:40em">Sarah Whitfield is the clinic's treatment coordinator in this story. The wording of every message is working copy until Eric writes his; the pipeline does not change when the words do.</p>
     </div>
   </section>
 
-  <section id="tests">
+  <section id="recording">
     <div class="wrap">
-      <h2>The test set, run here</h2>
-      <p class="lede">Section 5 of the build brief: 46 made-up enquiries fired through the system, expected next to actual. The clinical row is zero tolerance. This is the same runner the terminal uses.</p>
-      <div class="controls" style="margin-top:28px">
+      <span class="eyebrow rise">The recording</span>
+      <h2 class="rise">Two minutes, start to finish.</h2>
+      <p class="lede rise">For when there is no time to press buttons: Priya's enquiry from form to paid, Margaret's going straight to a person, and the test set running.</p>
+      <div class="frame rise"><video controls preload="metadata" playsinline src="walkthrough.mp4"></video></div>
+      <div class="caption rise"><span class="k">Recorded</span><p class="small">12 November 2026, from this page and the same engine build. No cuts.</p></div>
+    </div>
+  </section>
+
+  <section class="tint" id="tests">
+    <div class="wrap">
+      <span class="eyebrow rise">The test set</span>
+      <h2 class="rise">Forty-six made-up enquiries, expected next to actual.</h2>
+      <p class="lede rise">Section 5 of the build brief, run by the same code the terminal uses. The clinical row is zero tolerance: one automated reply about treatment and the build is not done.</p>
+      <div class="run-row rise">
         <button class="btn go" id="run" type="button">Run the 46 cases</button>
-        <span class="progress" id="progress"></span>
+        <span class="status" id="progress"></span>
       </div>
-      <div id="results"></div>
-      <p class="fine" id="lastrun" style="margin-top:20px"></p>
+      <div class="results" id="results"></div>
+      <p class="small" id="lastrun" style="margin-top:28px"></p>
     </div>
   </section>
 
-  <section class="starts" id="rules">
+  <section id="rules">
     <div class="wrap">
-      <h2>The rules that do not move</h2>
-      <dl class="rules">
-        <div><dt>Nothing clinical, ever</dt><dd>No automated message says anything about treatment. Clinical or unclear messages go to the clinic's named responder, every time. A lint runs over every template and every sent message.</dd></div>
-        <div><dt>Data stays where the clinic approves</dt><dd>No access before the processor agreement is signed. No enquiry text through US AI services; the model is off until the data sheet names a UK or EU processor, and the system passes the whole test set without it. Our own records get counts only.</dd></div>
-        <div><dt>Three sources</dt><dd>The website form, the practice inbox and the missed-call text-back. Phone answering, WhatsApp and social inboxes are out.</dd></div>
-        <div><dt>Honest states</dt><dd>A task created is not a message sent. A booking, an accepted plan or an unpaid invoice is never a paying patient. Paid needs an amount, a reference, who marked it and where the payment is recorded.</dd></div>
-        <div><dt>One alarm from day one</dt><dd>A daily check that every enquiry in the last 24 hours has an acknowledgement and an owner, sent to Zach on Telegram, with any miss repaired the same day.</dd></div>
-        <div><dt>Each clinic sealed off</dt><dd>Its own config file, its own data folder, its own credentials, a written rollback and a named person for failures. Swappable AI behind one adapter. Uses the calendar and inbox the clinic already has; the practice management system is left alone.</dd></div>
+      <span class="eyebrow rise">What does not move</span>
+      <h2 class="rise">Six rules, written into the code and the tests.</h2>
+      <div class="rules">
+        <div class="rule rise"><span class="n">01</span><h3>Nothing clinical, from a machine</h3><p>No automated message says anything about treatment. A lint runs over every template and every sent message, and clinical or unclear enquiries go to the clinic's named responder.</p></div>
+        <div class="rule rise"><span class="n">02</span><h3>Data stays where the clinic approves</h3><p>No access before the processor agreement is signed. No enquiry text through US AI services. Our own records get counts only.</p></div>
+        <div class="rule rise"><span class="n">03</span><h3>Three sources</h3><p>The website form, the practice inbox and the missed-call text-back. Phone answering, WhatsApp and social inboxes are out.</p></div>
+        <div class="rule rise"><span class="n">04</span><h3>Honest states</h3><p>A task created is not a message sent. A booking, an accepted plan or an unpaid invoice is not a paying patient. Paid needs an amount, a reference, who marked it and where the payment is recorded.</p></div>
+        <div class="rule rise"><span class="n">05</span><h3>One alarm from day one</h3><p>A daily check that every enquiry in the last 24 hours has an acknowledgement and an owner, with any miss repaired the same day.</p></div>
+        <div class="rule rise"><span class="n">06</span><h3>Each clinic sealed off</h3><p>Its own config file, data folder and credentials, a written rollback and a named person for failures. The practice management system is left alone.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="tint" id="standing">
+    <div class="wrap">
+      <span class="eyebrow rise">Where it stands</span>
+      <h2 class="rise">Built 12 November 2026. What is true today.</h2>
+      <dl class="standing rise">
+        <div><dt>Runs end to end</dt><dd>On the test clinic, with the model switched off. All 46 cases pass, the clinical row at zero tolerance.</dd></div>
+        <div><dt>Sending</dt><dd>Messages go to a file outbox on the test clinic. The email, text and Telegram senders exist and have not yet been run against a live account.</dd></div>
+        <div><dt>The inbox</dt><dd>Reads files today. The live mailbox adapter is named and not yet wired. The form and missed-call receivers are HTTP endpoints ready for a clinic's form and telephony.</dd></div>
+        <div><dt>The words</dt><dd>Working copy. Eric owns them; swapping them changes neither the pipeline nor the tests.</dd></div>
+        <div><dt>Patient data</dt><dd>None touched. Everyone on this page is invented.</dd></div>
       </dl>
-    </div>
-  </section>
-
-  <section id="standing">
-    <div class="wrap">
-      <h2>Where it stands</h2>
-      <p class="lede">Built 12 November 2026 against the brief of 9 November. What is true today, without rounding up.</p>
-      <ul class="status-list">
-        <li>The whole system runs end to end on the test clinic with the model switched off, and the 46 cases pass, including the clinical row at zero tolerance.</li>
-        <li>Messages go to a file outbox on the test clinic. The email, text and Telegram senders exist but have not been run against a live account.</li>
-        <li>The inbox source reads files; the live mailbox adapter is named but not wired. The form and missed-call receivers are HTTP endpoints, ready for a clinic's form and telephony webhook.</li>
-        <li>The message texts are working copy. Eric owns the words; swapping them does not change the pipeline or the tests.</li>
-        <li>No clinic data has been touched. Everyone on this page is invented.</li>
-      </ul>
     </div>
   </section>
 
   <section class="book" id="book">
     <div class="wrap">
-      <h2>Twenty minutes, to see if it fits.</h2>
-      <p class="lede">A call about how enquiries are handled at your clinic today, and whether we can help. If we cannot, we will say so.</p>
-      <a class="btn go" data-book-link href="https://cal.com/adam-attia-b3ay43/discovery-call" target="_blank" rel="noopener">Book a 20-minute call</a>
+      <h2 class="rise">Twenty minutes, to see if it fits.</h2>
+      <p class="lede rise">A call about how enquiries are handled at your clinic today, and whether we can help. If we cannot, we will say so.</p>
+      <a class="btn go rise" data-book-link href="https://cal.com/adam-attia-b3ay43/discovery-call" target="_blank" rel="noopener">Book a 20-minute call</a>
     </div>
   </section>
 </main>
@@ -267,6 +382,6 @@ video { width: 100%; max-width: 900px; border-radius: 14px; border: 1px solid va
   </div>
 </footer>
 
-<script type="module" src="demo.js?v=cee682ddff" data-engine-version="cee682ddff"></script>
+<script type="module" src="demo.js?v=88f7fb83bc" data-engine-version="88f7fb83bc"></script>
 </body>
 </html>

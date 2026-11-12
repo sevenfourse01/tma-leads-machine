@@ -1999,4 +1999,4 @@ export const lastRun = {
   "tolerance": "zero"
  }
 };
-export const built = {"at":"2026-11-12T20:05:39.797Z","commit":"2c74674"};
+export const built = {"at":"2026-11-12T20:52:19.393Z","commit":"e3b36f4"};
